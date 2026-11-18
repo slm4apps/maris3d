@@ -1,0 +1,281 @@
+[
+ {
+  "name": "Bin",
+  "parts": 5,
+  "size_m": [
+   0.64,
+   0.56,
+   1.17
+  ]
+ },
+ {
+  "name": "Boy",
+  "parts": 7,
+  "size_m": [
+   0.24,
+   0.54,
+   1.16
+  ]
+ },
+ {
+  "name": "Bus",
+  "parts": 9,
+  "size_m": [
+   1.64,
+   5.2,
+   2.27
+  ]
+ },
+ {
+  "name": "Cabin",
+  "parts": 11,
+  "size_m": [
+   5.752,
+   6.0,
+   4.155
+  ]
+ },
+ {
+  "name": "Car",
+  "parts": 1,
+  "size_m": [
+   1.1,
+   1.8,
+   1.169
+  ]
+ },
+ {
+  "name": "Cat",
+  "parts": 6,
+  "size_m": [
+   0.783,
+   0.503,
+   0.655
+  ]
+ },
+ {
+  "name": "Decor",
+  "parts": 14,
+  "size_m": [
+   7.6,
+   3.705,
+   2.5
+  ]
+ },
+ {
+  "name": "DiningSet",
+  "parts": 16,
+  "size_m": [
+   1.4,
+   2.5,
+   1.225
+  ]
+ },
+ {
+  "name": "Fireplace",
+  "parts": 4,
+  "size_m": [
+   0.48,
+   1.4,
+   1.31
+  ]
+ },
+ {
+  "name": "Gift",
+  "parts": 4,
+  "size_m": [
+   0.83,
+   0.83,
+   0.59
+  ]
+ },
+ {
+  "name": "HeroDoorHinge",
+  "parts": 1,
+  "size_m": [
+   1.7,
+   0.12,
+   2.3
+  ]
+ },
+ {
+  "name": "HeroHouseFacade",
+  "parts": 14,
+  "size_m": [
+   9.2,
+   5.052,
+   6.0
+  ]
+ },
+ {
+  "name": "HeroPath",
+  "parts": 10,
+  "size_m": [
+   7.76,
+   0.5,
+   0.06
+  ]
+ },
+ {
+  "name": "House",
+  "parts": 8,
+  "size_m": [
+   5.4,
+   4.477,
+   4.173
+  ]
+ },
+ {
+  "name": "Kitchen",
+  "parts": 9,
+  "size_m": [
+   6.65,
+   0.65,
+   1.85
+  ]
+ },
+ {
+  "name": "Lamp",
+  "parts": 2,
+  "size_m": [
+   0.36,
+   0.36,
+   4.53
+  ]
+ },
+ {
+  "name": "LivingRoom",
+  "parts": 11,
+  "size_m": [
+   3.64,
+   1.2,
+   1.2
+  ]
+ },
+ {
+  "name": "Man",
+  "parts": 7,
+  "size_m": [
+   0.29,
+   0.76,
+   1.72
+  ]
+ },
+ {
+  "name": "Path",
+  "parts": 4,
+  "size_m": [
+   2.6,
+   0.56,
+   0.06
+  ]
+ },
+ {
+  "name": "PlayPark",
+  "parts": 39,
+  "size_m": [
+   9.2,
+   18.0,
+   2.386
+  ]
+ },
+ {
+  "name": "RoomShell",
+  "parts": 9,
+  "size_m": [
+   8.24,
+   4.24,
+   3.78
+  ]
+ },
+ {
+  "name": "Sledge",
+  "parts": 7,
+  "size_m": [
+   1.975,
+   2.259,
+   0.9
+  ]
+ },
+ {
+  "name": "SnowTruck",
+  "parts": 9,
+  "size_m": [
+   1.38,
+   3.87,
+   1.8
+  ]
+ },
+ {
+  "name": "Snowman",
+  "parts": 11,
+  "size_m": [
+   1.1,
+   1.1,
+   2.5
+  ]
+ },
+ {
+  "name": "Squirrel",
+  "parts": 5,
+  "size_m": [
+   0.429,
+   0.46,
+   0.53
+  ]
+ },
+ {
+  "name": "StreetBase",
+  "parts": 63,
+  "size_m": [
+   12.0,
+   251.85,
+   0.14
+  ]
+ },
+ {
+  "name": "Townhouse",
+  "parts": 10,
+  "size_m": [
+   4.3,
+   5.7,
+   6.64
+  ]
+ },
+ {
+  "name": "Tree",
+  "parts": 6,
+  "size_m": [
+   1.9,
+   1.9,
+   3.36
+  ]
+ },
+ {
+  "name": "Van",
+  "parts": 7,
+  "size_m": [
+   1.32,
+   3.08,
+   1.5
+  ]
+ },
+ {
+  "name": "Woman",
+  "parts": 8,
+  "size_m": [
+   0.6,
+   0.7,
+   1.64
+  ]
+ },
+ {
+  "name": "Wreath",
+  "parts": 2,
+  "size_m": [
+   0.17,
+   0.74,
+   0.77
+  ]
+ }
+]

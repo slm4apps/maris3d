@@ -1,0 +1,25 @@
+# Maris3D-SLM-Blender-0.5B v0.1 — Ollama Modelfile (default file)
+#
+# Local build:   ollama create maris3d-slm-blender-0.5b -f Modelfile
+# After publish you can also pull straight from Hugging Face — ALWAYS with the :Q8_0 tag:
+#   ollama run hf.co/slm4apps/Maris3D-Blender:Q8_0
+# (The untagged name resolves to the unmerged BASE q4_k_m build — NOT this merged default.
+#  An hf.co pull also bypasses this Modelfile — see SERVE.md for the remote Modelfile recipe.)
+FROM ./maris3d-slm-blender-0.5b-edit-q8_0.gguf
+
+# Serving parameters (full recipe in SERVE.md)
+PARAMETER temperature 0
+PARAMETER repeat_penalty 1.0
+PARAMETER num_ctx 8192
+
+# Mandatory generation cap. Ollama's default generation is UNLIMITED; prompts outside
+# the trained tool-loop (plain questions) then repeat forever. 800 covers the largest
+# observed tool-call bursts.
+PARAMETER num_predict 800
+
+# Always send the 26-tool `tools` array with each request (see SERVE.md): without it
+# the model replies with a canned formula line instead of an answer.
+
+# Identity line — canary A/B decided 8 Nov 2026: WITH the line pass 18.3% / usable
+# 65.0% vs 16.7% / 63.4% without (unparsed 15→9, edit bucket 0/10→3 pass). Ships on.
+SYSTEM You are SLM4Blender-0.5B, a compact local model by slm4apps that builds and edits Blender scenes through tool calls.

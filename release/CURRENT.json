@@ -1,0 +1,265 @@
+{
+  "schema": "maris3d-current/1",
+  "family": "Maris3D",
+  "release": "0.1.0",
+  "hf_org": "slm4apps",
+  "benchmark": {
+    "prompts": "frozen 180-request yardstick (kept with the maintainers; the public benchmark is being built)",
+    "n": 180,
+    "gates": {
+      "promotion_pass_pct": 26.7,
+      "noise_passes_per_mode": 2,
+      "note": "2600 baseline 21.7% pass; a candidate must beat it by 5 points"
+    }
+  },
+  "repo_url": "https://github.com/slm4apps/maris3d",
+  "current": {
+    "model": "maris3d-slm-blender-0.5b",
+    "public_name": "Maris3D-SLM-Blender-0.5B",
+    "base_model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+    "status": "published on Hugging Face, slm4apps/Maris3D-Blender, tag v0.1.0 (build + edit + q4 + LoRA, 1.77 GB)",
+    "format": "one base file + adapters: the q8_0 base is served once with the 5.6 MB edit adapter loaded; the copilot asks for scale 0 on a fresh prompt and 1.0 on a correction (one server, 512 MB). The merged edit q8_0 stays as the no-adapter single-file option (19.4 / 77.2). Strict-pass: the same adapter at scale 0.7. Plan first: the 5.6 MB planner adapter is loaded beside them and runs alone on a plan turn; MANIFEST.json lists the current file of each role for `maris3d update`.",
+    "artifacts": {
+      "gguf-edit-q8_0": {
+        "file": "maris3d-slm-blender-0.5b-edit-q8_0.gguf",
+        "sha256": "2879a3014ccfa070a569a7817f11401ff2c17544f22170ffd9ab1fe2342b10e9",
+        "bytes": 531067872,
+        "score": "pass 19.4 / usable 77.2; edit 26/30; build 94/120"
+      },
+      "gguf-q8_0": {
+        "file": "maris3d-slm-blender-0.5b-q8_0.gguf",
+        "sha256": "5604f0e2480ca5555a8d79a50ec87baeea64fdf50d0340f004ed099b08b95dd2",
+        "bytes": 531068000,
+        "score": "pass 21.7 / usable 68.9; edit 14/30; build 87/120"
+      },
+      "gguf-q4_k_m": {
+        "file": "maris3d-slm-blender-0.5b-q4_k_m.gguf",
+        "sha256": "e4ff8a9560a4fff4be6007e5e24b24df3c4ebb8598ffd2d4849641f5654de5f2",
+        "bytes": 397807712,
+        "score": "pass 18.3 / usable 67.2; build 91/120"
+      },
+      "gguf-edit-lora-f16": {
+        "file": "maris3d-slm-blender-0.5b-edit-lora-f16.gguf",
+        "sha256": "433163d903fb26028b11a7a309d6778bf2f95afd4b4b3c78d4cbb09b83d83d13",
+        "bytes": 5881344,
+        "note": "adapter for runtime scaling; at 0.7: pass 23.9 / usable 68.9; edit 24/30; build 82/120"
+      },
+      "gguf-planner-lora-f16": {
+        "file": "maris3d-slm-blender-0.5b-planner-v31-lora-f16.gguf",
+        "sha256": "8a315eaa440e732a81bb2cef245448f949d3b352bf428c371756bedea2ce7e74",
+        "bytes": 5881248,
+        "note": "planner adapter v3.1 (plan first); 300 held-out sentences: parsed 297, relation 98.6, items 96.3, placed-by 87.3 (98.5 on trained names), name 83.7"
+      }
+    },
+    "score": {
+      "pass": 35,
+      "partial": 104,
+      "fail": 41,
+      "n": 180,
+      "pass_pct": 19.4,
+      "usable_pct": 77.2
+    },
+    "score_base": {
+      "pass": 39,
+      "partial": 85,
+      "fail": 56,
+      "n": 180,
+      "pass_pct": 21.7,
+      "usable_pct": 68.9
+    },
+    "score_routed": {
+      "pass": 49,
+      "partial": 87,
+      "fail": 44,
+      "n": 180,
+      "pass_pct": 27.2,
+      "usable_pct": 75.6,
+      "build": "24.0 pass / 73.3 usable (n=150)",
+      "edit": "43.3 pass / 86.7 usable (n=30)"
+    },
+    "public_benchmarks": {
+      "3dcodebench_scenes_run": "212/212",
+      "bfcl_v4_simple_python_pct": 49.25
+    },
+    "limits": {
+      "edit": "weak on the bare base (14/30 usable), strong with the edit adapter or on the merged fallback file (26/30)",
+      "steering_sessions": "multi-turn edits work with the trained phrasing (edit bucket 26/30 usable on the merged file); fresh-loop re-edits re-add objects instead of editing; conversation carry-over between Builds = v0.2 fix"
+    },
+    "edit_adapter": "the edit LoRA ships as an adapter beside the base (scale 0 fresh, 1.0 correction); the merged file is the single-file fallback; strict-pass alternative = base + adapter @0.7",
+    "source": "hf/Maris3D-Blender/README.md (the staged card)",
+    "planner_adapter": {
+      "version": "v3.1",
+      "file": "maris3d-slm-blender-0.5b-planner-v31-lora-f16.gguf",
+      "held_out_sentences": 300,
+      "parsed": 297,
+      "relation_pct": 98.6,
+      "items_pct": 96.3,
+      "anchor_pct": 87.3,
+      "anchor_pct_trained_names": 98.5,
+      "recipe_pct": 83.7,
+      "edit_adapter_copies_compiled_part_exact": "283/448"
+    }
+  },
+  "previous_models_old_json_format": {
+    "0.5b": {
+      "version": "0.1.0",
+      "status": "superseded by Maris3D-SLM-Blender-0.5B ; its staging files are not published",
+      "public_name": "Maris3D-SLM-Blender-0.5B",
+      "base_model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+      "parameters": "494M",
+      "parameters_b": 0.494,
+      "context_trained": 4096,
+      "context_max": 32768,
+      "memory_gb": 0.8,
+      "memory_source": "peak resident memory in the CPU-server run, private gate notes",
+      "hf_repos": {
+        "safetensors": "maris3d-slm-blender-0.5b",
+        "gguf": "Maris3D-Blender"
+      },
+      "artifacts": {
+        "gguf-q8_0": {
+          "path": "maris3d-slm-blender-0.5b-Q8_0.gguf (not published)",
+          "sha256": "108abba2a4c2804b51568781d6b55abda256b1298ee4a331095c9075249bf414",
+          "bytes": 531068576
+        },
+        "gguf-q4_k_m": null,
+        "safetensors-bf16": null
+      },
+      "results": {
+        "bare": "release/results/maris3d-0.5b-v0.1-q8_0.json",
+        "repair2": "release/results/maris3d-0.5b-v0.1-q8_0-repair2.json"
+      },
+      "score": {
+        "pass_pct": 59.7,
+        "run_pct": 94.2,
+        "passed": 123,
+        "n": 206,
+        "by_level": {
+          "1": 64.6,
+          "2": 81.0,
+          "3": 62.7,
+          "4": 26.5
+        },
+        "tok_s": 15.2,
+        "tok_s_machine": "CPU-only Linux server"
+      },
+      "train_config": null,
+      "promoted": "2026-10-31",
+      "gate_basis": "repair2",
+      "gate_note": "Bare model is 59.7%, 0.3 points under the 60% pass gate; the gate is met only with the 2-retry repair loop (63.1%). 0.5B was published on the repair-loop basis.",
+      "score_repair2": {
+        "pass_pct": 63.1,
+        "run_pct": 95.1,
+        "passed": 130,
+        "n": 206,
+        "by_level": {
+          "1": 70.8,
+          "2": 82.8,
+          "3": 64.7,
+          "4": 30.6
+        },
+        "tok_s": 5.5
+      }
+    },
+    "1.5b": {
+      "version": "0.1.0",
+      "status": "confirmed",
+      "public_name": "Maris3D-SLM-Blender-1.5B",
+      "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "parameters": "1.54B",
+      "parameters_b": 1.544,
+      "context_trained": 4096,
+      "context_max": 32768,
+      "memory_gb": 1.9,
+      "memory_source": "peak resident memory in the CPU-server run, private gate notes",
+      "hf_repos": {
+        "safetensors": "maris3d-slm-blender-1.5b",
+        "gguf": "maris3d-slm-blender-1.5b-GGUF"
+      },
+      "artifacts": {
+        "gguf-q8_0": {
+          "path": "hf/maris3d-slm-blender-1.5b-GGUF/maris3d-slm-blender-1.5b-Q8_0.gguf",
+          "sha256": "f73f0f510a152fa955fee6be426830d631bee04423d32cd7dcde299732a25cfa",
+          "bytes": 1646573408
+        },
+        "gguf-q4_k_m": null,
+        "safetensors-bf16": {
+          "path": "hf/maris3d-slm-blender-1.5b/model.safetensors",
+          "sha256": "9a74fbc7751b6027f01ed0e8f8d03e646051981ad98b1bc19f4e06650a1fa24d",
+          "bytes": 3087467005
+        }
+      },
+      "results": {
+        "bare": "release/results/maris3d-1.5b-dev-q8_0.json",
+        "repair2": null
+      },
+      "score": {
+        "pass_pct": 72.33,
+        "run_pct": 96.6,
+        "passed": 149,
+        "n": 206,
+        "by_level": {
+          "1": 79.2,
+          "2": 89.7,
+          "3": 58.8,
+          "4": 59.2
+        },
+        "tok_s": 26.749740230171433,
+        "tok_s_machine": "Apple-silicon Mac"
+      },
+      "train_config": null,
+      "promoted": "2026-10-31",
+      "gate_basis": "bare",
+      "gate_note": ""
+    }
+  },
+  "sizes": {
+    "0.5b": {
+      "hf_repos": {
+        "gguf": "Maris3D-Blender"
+      },
+      "artifacts": {
+        "gguf-edit-q8_0": {
+          "path": "hf/Maris3D-Blender/maris3d-slm-blender-0.5b-edit-q8_0.gguf",
+          "sha256": "2879a3014ccfa070a569a7817f11401ff2c17544f22170ffd9ab1fe2342b10e9",
+          "bytes": 531067872
+        },
+        "gguf-q8_0": {
+          "path": "hf/Maris3D-Blender/maris3d-slm-blender-0.5b-q8_0.gguf",
+          "sha256": "5604f0e2480ca5555a8d79a50ec87baeea64fdf50d0340f004ed099b08b95dd2",
+          "bytes": 531068000
+        },
+        "gguf-q4_k_m": {
+          "path": "hf/Maris3D-Blender/maris3d-slm-blender-0.5b-q4_k_m.gguf",
+          "sha256": "e4ff8a9560a4fff4be6007e5e24b24df3c4ebb8598ffd2d4849641f5654de5f2",
+          "bytes": 397807712
+        },
+        "gguf-edit-lora-f16": {
+          "path": "hf/Maris3D-Blender/maris3d-slm-blender-0.5b-edit-lora-f16.gguf",
+          "sha256": "433163d903fb26028b11a7a309d6778bf2f95afd4b4b3c78d4cbb09b83d83d13",
+          "bytes": 5881344
+        }
+      },
+      "public_name": "Maris3D-SLM-Blender-0.5B",
+      "base_model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+      "parameters": "494M",
+      "context_trained": 2048,
+      "context_max": 32768,
+      "context_serve": 8192,
+      "memory_gb": 0.58,
+      "speed_gen_tps": {
+        "gtx_980m_laptop_calibrated": 141.5,
+        "mac_m3_llama_bench": 96.7,
+        "vm_4cpu_llama_bench": 62.1,
+        "median_s_per_row_vm": 9.2,
+        "measured": "8 Nov 2026"
+      },
+      "version": "0.1.0",
+      "score": {
+        "pass_pct": 21.7,
+        "passed": 39,
+        "n": 180
+      }
+    }
+  }
+}

@@ -1,0 +1,2037 @@
+{
+ "schema": "maris3d-result/1",
+ "model": {
+  "family_name": "Maris3D-SLM-Blender-1.5B",
+  "format": "gguf-q8_0",
+  "file": "maris3d-slm-blender-1.5b-Q8_0.gguf",
+  "sha256": "f73f0f510a152fa955fee6be426830d631bee04423d32cd7dcde299732a25cfa"
+ },
+ "benchmark": {
+  "n": 206,
+  "prompts_sha256": "043bf0c7fe42d849bccbbcb4e83a157c8eecb7f61e05a7da10570df01dd0d86e",
+  "blender": "5.2.2"
+ },
+ "settings": {
+  "mode": "tools",
+  "repair": 0,
+  "shots": 0,
+  "decoding": "greedy, 4096 ctx"
+ },
+ "summary": {
+  "n": 206,
+  "passed": 149,
+  "ran": 199,
+  "run_pct": 96.6,
+  "pass_pct": 72.33,
+  "by_level": {
+   "1": 79.2,
+   "2": 89.7,
+   "3": 58.8,
+   "4": 59.2
+  },
+  "by_level_counts": {
+   "1": [
+    38,
+    48
+   ],
+   "2": [
+    52,
+    58
+   ],
+   "3": [
+    30,
+    51
+   ],
+   "4": [
+    29,
+    49
+   ]
+  },
+  "tok_s": 26.749740230171433,
+  "ttft_s_median": 0.19725584983825684,
+  "deprecated_hits": 3,
+  "tok_s_machine": "Apple-silicon Mac"
+ },
+ "rows": [
+  {
+   "id": "b001",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b002",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b003",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "top z 4.0 outside (1.9, 2.1)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b004",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b005",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b006",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b007",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b008",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b009",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b010",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b011",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b012",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b013",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b014",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b015",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b016",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b017",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b018",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b019",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b020",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b021",
+   "level": 2,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no mesh with scale/dims (2, 1, 0.5)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b022",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b023",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b024",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b025",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b026",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b027",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b028",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b029",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b030",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b031",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b032",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b033",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "too few meshes with a material"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b034",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b035",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "too few meshes with a material"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b036",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b037",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "top z 4.7 outside (3.0, 3.6)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b038",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b039",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b040",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "too few meshes with a material"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b041",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b042",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b043",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "faces 34 not in (8, 8)",
+    "no mesh with dim[2] in [1.4,1.6]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b044",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b045",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no mesh with dim[2] in [2.9,3.1]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b046",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b047",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b048",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "x extent 10.0 outside (4.9, 5.1)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b049",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b050",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b051",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b052",
+   "level": 1,
+   "ran": false,
+   "passed": false,
+   "fails": [
+    "script did not execute"
+   ],
+   "error": "RuntimeError: bad tool JSON: Expecting value: line 1 column 2538 (char 2537)",
+   "retries": 0
+  },
+  {
+   "id": "b053",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b054",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b055",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b056",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b057",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b058",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b059",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b060",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b061",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no curve object"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b062",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b063",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b064",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b065",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b066",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b067",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b068",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b069",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "nothing rotated (1.5708, 0, 0)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b070",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "nothing rotated (3.1416, 0, 0)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b071",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b072",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b073",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b074",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b075",
+   "level": 1,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b076",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "nothing at (0, 0, 10)",
+    "nothing rotated (0, 0, 0)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b077",
+   "level": 1,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no world"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b078",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b079",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b080",
+   "level": 2,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no DECIMATE modifier with ratio=0.3"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b081",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b082",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b083",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b084",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b085",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b086",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b087",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b088",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b089",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b090",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b091",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b092",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b093",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b094",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b095",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b096",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b097",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b098",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b099",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b100",
+   "level": 2,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no material named like Glass"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b101",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b102",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b103",
+   "level": 2,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no SUBSURF modifier"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b104",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b105",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b106",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b107",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b108",
+   "level": 2,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "too few vertices"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b109",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b110",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b111",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b112",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b113",
+   "level": 2,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "nothing at (0, 0, 3)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b114",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b115",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b116",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b117",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b118",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b119",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b120",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b121",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b122",
+   "level": 2,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b123",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b124",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b125",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "frame_start 1 != 10",
+    "fps 24 != 30"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b126",
+   "level": 3,
+   "ran": false,
+   "passed": false,
+   "fails": [
+    "script did not execute"
+   ],
+   "error": "RuntimeError: ('bad tool JSON: Expecting ', ' delimiter: line 1 column 2236 (char 2235)')",
+   "retries": 0
+  },
+  {
+   "id": "b127",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b128",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no animation keyframes",
+    "missing keyframes [1, 100]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b129",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no animated light/material/camera data"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b130",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b131",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b132",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b133",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b134",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b135",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 3 not in [2,2]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b136",
+   "level": 3,
+   "ran": false,
+   "passed": false,
+   "fails": [
+    "script did not execute"
+   ],
+   "error": "TypeError: bpy_struct: item.attr = val: Object.parent ID type does not support assignment to itself",
+   "retries": 0
+  },
+  {
+   "id": "b137",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b138",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b139",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b140",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b141",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b142",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b143",
+   "level": 3,
+   "ran": false,
+   "passed": false,
+   "fails": [
+    "script did not execute"
+   ],
+   "error": "RuntimeError: bad tool JSON: Unterminated string starting at: line 1 column 2486 (char 2485)",
+   "retries": 0
+  },
+  {
+   "id": "b144",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b145",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b146",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b147",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b148",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b149",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b150",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "engine BLENDER_EEVEE != CYCLES",
+    "samples None != 64"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b151",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "resolution percentage 100 != 50"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b152",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "markers [] miss [1, 100]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b153",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b154",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no animated light/material/camera data"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b155",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 5 not in [1,1]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b156",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b157",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no mesh with dim[0] in [3.9,4.1]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b158",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no world"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b159",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no text object with body 'Title'"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b160",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 4 not in [6,6]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b161",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 8 not in [6,6]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b162",
+   "level": 3,
+   "ran": false,
+   "passed": false,
+   "fails": [
+    "script did not execute"
+   ],
+   "error": "RuntimeError: ('bad tool JSON: Expecting ', ' delimiter: line 1 column 2577 (char 2576)')",
+   "retries": 0
+  },
+  {
+   "id": "b163",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 2 not in [1,1]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b164",
+   "level": 3,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b165",
+   "level": 3,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 2 not in [1,1]",
+    "no camera object"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b166",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "top z 3.55 outside (1.8, 2.3)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b167",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b168",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 3 not in [2,2]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b169",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 3 not in [4,4]",
+    "too few meshes with a material"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b170",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "top z 2.6 outside (1.0, 2.0)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b171",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b172",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b173",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 6 not in [8,12]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b174",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b175",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "cylinder not at (-3.65, 0, 1.2)"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b176",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b177",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "too few meshes with a material"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b178",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b179",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b180",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b181",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b182",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 16 not in [30,30]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b183",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b184",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b185",
+   "level": 4,
+   "ran": false,
+   "passed": false,
+   "fails": [
+    "script did not execute"
+   ],
+   "error": "RuntimeError: bad tool JSON: Unterminated string starting at: line 1 column 2020 (char 2019)",
+   "retries": 0
+  },
+  {
+   "id": "b186",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b187",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "too few meshes with a material"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b188",
+   "level": 4,
+   "ran": false,
+   "passed": false,
+   "fails": [
+    "script did not execute"
+   ],
+   "error": "RuntimeError: ('bad tool JSON: Expecting ', ' delimiter: line 1 column 2052 (char 2051)')",
+   "retries": 0
+  },
+  {
+   "id": "b189",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b190",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b191",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b192",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b193",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b194",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b195",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b196",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 7 not in [1,1]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b197",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no NODES modifier",
+    "no node group"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b198",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b199",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b200",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b201",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "too few meshes with a material"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b202",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b203",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "no object named like Crate_UV"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b204",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "mesh count 5 not in [6,6]"
+   ],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b205",
+   "level": 4,
+   "ran": true,
+   "passed": true,
+   "fails": [],
+   "error": null,
+   "retries": 0
+  },
+  {
+   "id": "b206",
+   "level": 4,
+   "ran": true,
+   "passed": false,
+   "fails": [
+    "nothing rotated (0.349, 0, 0)"
+   ],
+   "error": null,
+   "retries": 0
+  }
+ ],
+ "source": {
+  "note": "Raw run of the confirmed 1.5B Q8_0 file on an Apple-silicon Mac, bare model, no repair, greedy decoding; converted with scripts/import_result.py (code and paths dropped). The private raw file is kept in the private workspace.",
+  "other_runs_same_file": "A CPU-only Linux server run reported 96.6% run, 72.3% pass, 9.1 tok/s (private RESULTS notes): same pass count, slower speed. Use tok_s only with the machine in mind."
+ }
+}

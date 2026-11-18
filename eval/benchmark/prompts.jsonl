@@ -1,0 +1,206 @@
+{"check": {"meshes": [1, 1]}, "id": "b001", "level": 1, "prompt": "Add a cube to the scene."}
+{"check": {"bbox_x": [3.9, 4.1], "meshes": [1, 1]}, "id": "b002", "level": 1, "prompt": "Add a UV sphere with radius 2 at the origin."}
+{"check": {"bbox_z": [1.9, 2.1], "meshes": [1, 1]}, "id": "b003", "level": 1, "prompt": "Add a cylinder with radius 1 and depth 4."}
+{"check": {"loc_near": [3, 0, 0], "meshes": [1, 1]}, "id": "b004", "level": 1, "prompt": "Add a cone at location (3, 0, 0)."}
+{"check": {"meshes": [1, 1]}, "id": "b005", "level": 1, "prompt": "Add a torus."}
+{"check": {"bbox_x": [9.9, 10.1], "meshes": [1, 1]}, "id": "b006", "level": 1, "prompt": "Add a plane scaled to 10 by 10 units."}
+{"check": {"meshes": [1, 1], "verts_min": 100}, "id": "b007", "level": 1, "prompt": "Add an ico sphere with 3 subdivisions."}
+{"check": {"meshes": [1, 1], "verts_min": 400}, "id": "b008", "level": 1, "prompt": "Add a monkey (Suzanne) mesh."}
+{"check": {"camera": 1, "loc_near": [0, -10, 5]}, "id": "b009", "level": 1, "prompt": "Add a camera at (0, -10, 5)."}
+{"check": {"light": "SUN"}, "id": "b010", "level": 1, "prompt": "Add a sun light."}
+{"check": {"light": "POINT", "loc_near": [4, 4, 6]}, "id": "b011", "level": 1, "prompt": "Add a point light at (4, 4, 6)."}
+{"check": {"curve": 1}, "id": "b012", "level": 1, "prompt": "Add a Bezier curve."}
+{"check": {"loc_near": [2, 3, 1], "meshes": [1, 1]}, "id": "b013", "level": 2, "prompt": "Add a cube, rotate it 45 degrees around Z and move it to (2, 3, 1)."}
+{"check": {"meshes": [1, 1], "modifier": "SUBSURF"}, "id": "b014", "level": 2, "prompt": "Add a cube and add a Subdivision Surface modifier with 2 levels."}
+{"check": {"meshes": [1, 1], "modifier": "BEVEL"}, "id": "b015", "level": 2, "prompt": "Add a cube with a Bevel modifier, width 0.1, 3 segments."}
+{"check": {"meshes": [1, 1], "modifier": "SOLIDIFY"}, "id": "b016", "level": 2, "prompt": "Add a plane and a Solidify modifier with thickness 0.2."}
+{"check": {"meshes": [1, 1], "modifier": "ARRAY"}, "id": "b017", "level": 2, "prompt": "Add a cube and an Array modifier with count 5 and a relative offset of 1.2 on X."}
+{"check": {"meshes": [1, 1], "modifier": "MIRROR"}, "id": "b018", "level": 2, "prompt": "Add a cube and a Mirror modifier on the X axis."}
+{"check": {"material": 1, "meshes": [1, 1]}, "id": "b019", "level": 2, "prompt": "Add a sphere and give it a red material named RedMat."}
+{"check": {"meshes": [1, 1]}, "id": "b020", "level": 2, "prompt": "Add a cube and apply smooth shading to it."}
+{"check": {"meshes": [1, 1], "scale_near": [2, 1, 0.5]}, "id": "b021", "level": 2, "prompt": "Add a cube and scale it to 2 by 1 by 0.5."}
+{"check": {"collection": "Props", "meshes": [1, 1], "name": "Crate"}, "id": "b022", "level": 2, "prompt": "Add a cube named Crate and put it in a new collection named Props."}
+{"check": {"meshes": [1, 1], "uv": 1}, "id": "b023", "level": 2, "prompt": "Add a cube and unwrap it with Smart UV Project."}
+{"check": {"meshes": [1, 1], "verts_min": 9}, "id": "b024", "level": 2, "prompt": "Add a plane and a Subdivision Surface modifier, then apply the modifier."}
+{"check": {"meshes": [1, 1], "verts_min": 300}, "id": "b025", "level": 2, "prompt": "Add a cube and join it with a sphere into one mesh object."}
+{"check": {"animated": 1, "meshes": [1, 1]}, "id": "b026", "level": 3, "prompt": "Add a cube and animate it moving from x=0 at frame 1 to x=10 at frame 60."}
+{"check": {"animated": 1, "frame_end": 120, "meshes": [1, 1]}, "id": "b027", "level": 3, "prompt": "Set the animation length to 120 frames and add a cube that rotates a full turn around Z over that time."}
+{"check": {"meshes": [1, 1], "name": "Rig", "parented": 1}, "id": "b028", "level": 3, "prompt": "Add an empty named Rig and parent a cube to it."}
+{"check": {"camera": 1, "light": "SUN", "meshes": [1, 1]}, "id": "b029", "level": 3, "prompt": "Create a basic studio setup: a plane as floor, a sun light and a camera."}
+{"check": {"bbox_x": [1.9, 2.1], "meshes": [5, 5]}, "id": "b030", "level": 3, "prompt": "Add 5 cubes in a row along the X axis, spaced 3 units apart."}
+{"check": {"meshes": [16, 16]}, "id": "b031", "level": 3, "prompt": "Create a 4 by 4 grid of spheres spaced 2.5 units apart."}
+{"check": {"meshes": [8, 8]}, "id": "b032", "level": 3, "prompt": "Add a circle of 8 cylinders with radius 5 around the origin."}
+{"check": {"light": "POINT", "material": 1, "meshes": [1, 1]}, "id": "b033", "level": 3, "prompt": "Add a sphere and a point light, and make the sphere use a metallic material with metallic 1.0 and roughness 0.2."}
+{"check": {"bbox_z": [0.5, 1.5], "meshes": [5, 5]}, "id": "b034", "level": 4, "prompt": "Model a simple table: a flat top 2 by 1 and 0.1 thick, with four legs. Use only cubes."}
+{"check": {"bbox_z": [0.8, 2.5], "material": 6, "meshes": [6, 8]}, "id": "b035", "level": 4, "prompt": "Make a low-poly chair with a seat, a back and four legs, all from cubes, and give it a wood-brown material."}
+{"check": {"meshes": [6, 6]}, "id": "b036", "level": 4, "prompt": "Build a snowman from three stacked spheres of decreasing size, with two small spheres as eyes and a cone as the nose."}
+{"check": {"bbox_z": [3.0, 3.6], "meshes": [8, 8]}, "id": "b037", "level": 4, "prompt": "Create a staircase with 8 steps, each step a cube 2 wide, 0.4 high and 0.6 deep, rising as it goes."}
+{"check": {"meshes": [3, 3]}, "id": "b038", "level": 4, "prompt": "Create a simple house: a cube body, a cone roof on top, and a door as a thin box on the front."}
+{"check": {"meshes": [3, 3]}, "id": "b039", "level": 4, "prompt": "Make a dumbbell: two spheres joined by a cylinder along the X axis."}
+{"check": {"material": 2, "meshes": [2, 2]}, "id": "b040", "level": 4, "prompt": "Create a ring (torus) with a small sphere gem on top, both with a gold material named Gold."}
+{"check": {"light": "POINT", "meshes": [3, 3]}, "id": "b041", "level": 4, "prompt": "Make a lamp: a cylinder base, a thin pole, a cone shade, and a point light inside the shade."}
+{"check": {"bbox_x": [3.9, 4.1], "meshes": [1, 1]}, "id": "b042", "level": 1, "prompt": "Create a cube whose edges are 4 units long."}
+{"check": {"dim": [2, 1.4, 1.6], "faces": [8, 8], "meshes": [1, 1]}, "id": "b043", "level": 1, "prompt": "I need a cylinder with 6 sides, 1.5 tall."}
+{"check": {"loc_near": [0, 5, 2], "meshes": [1, 1], "verts_max": 120}, "id": "b044", "level": 1, "prompt": "Place a UV sphere at (0, 5, 2) built from 16 segments and 8 rings."}
+{"check": {"bbox_x": [1.9, 2.1], "dim": [2, 2.9, 3.1], "meshes": [1, 1]}, "id": "b045", "level": 1, "prompt": "Add a cone that is 3 units tall with a base radius of 1."}
+{"check": {"bbox_x": [4.9, 5.1], "meshes": [1, 1]}, "id": "b046", "level": 1, "prompt": "Make a torus with a major radius of 2 and a minor radius of 0.5."}
+{"check": {"bbox_x": [5.9, 6.1], "meshes": [1, 1]}, "id": "b047", "level": 1, "prompt": "Create a flat circle mesh with 32 vertices and radius 3."}
+{"check": {"bbox_x": [4.9, 5.1], "meshes": [1, 1], "verts_max": 144, "verts_min": 100}, "id": "b048", "level": 1, "prompt": "Add a grid mesh with 10 subdivisions along each axis, 5 units wide."}
+{"check": {"bbox_x": [2.7, 3.1], "loc_near": [-2, -2, 0], "meshes": [1, 1]}, "id": "b049", "level": 1, "prompt": "Add an ico sphere with radius 1.5 located at (-2, -2, 0)."}
+{"check": {"light": "SPOT", "loc_near": [0, 0, 8]}, "id": "b050", "level": 1, "prompt": "Add a spot light at (0, 0, 8)."}
+{"check": {"light": "AREA"}, "id": "b051", "level": 1, "prompt": "Create an area light."}
+{"check": {"data_prop": ["LIGHT", "energy", 5.0], "light": "SUN"}, "id": "b052", "level": 1, "prompt": "Add a sun light and set its strength to 5."}
+{"check": {"data_prop": ["LIGHT", "energy", 1000.0], "light": "POINT"}, "id": "b053", "level": 1, "prompt": "Add a point light with 1000 watts of power."}
+{"check": {"camera": 1, "data_prop": ["CAMERA", "lens", 85.0]}, "id": "b054", "level": 1, "prompt": "Create a camera with a 85mm focal length."}
+{"check": {"camera": 1, "data_prop": ["CAMERA", "type", "ORTHO"]}, "id": "b055", "level": 1, "prompt": "Add an orthographic camera."}
+{"check": {"camera": 1}, "id": "b056", "level": 1, "prompt": "Add a camera and make it the active scene camera."}
+{"check": {"loc_near": [1, 2, 3], "type_count": {"EMPTY": [1, 1]}}, "id": "b057", "level": 1, "prompt": "Add an empty of plain axes type at (1, 2, 3)."}
+{"check": {"type_count": {"EMPTY": [1, 1]}}, "id": "b058", "level": 1, "prompt": "Add a sphere-shaped empty."}
+{"check": {"text": "Hello"}, "id": "b059", "level": 1, "prompt": "Add a text object that reads Hello."}
+{"check": {"loc_near": [0, 0, 1], "text": "BLENDER"}, "id": "b060", "level": 1, "prompt": "Create a 3D text saying BLENDER at (0, 0, 1)."}
+{"check": {"curve": 1}, "id": "b061", "level": 1, "prompt": "Add a Bezier circle with radius 3."}
+{"check": {"curve": 1}, "id": "b062", "level": 1, "prompt": "Add a NURBS path curve."}
+{"check": {"meshes": [1, 1], "name": "Ground"}, "id": "b063", "level": 1, "prompt": "Add a plane with the name Ground."}
+{"check": {"meshes": [1, 1], "name": "Box_01"}, "id": "b064", "level": 1, "prompt": "Add a cube and rename it to Box_01."}
+{"check": {"meshes": [1, 1], "rot_near": [1.5708, 0, 0]}, "id": "b065", "level": 1, "prompt": "Add a cube rotated 90 degrees about the X axis."}
+{"check": {"meshes": [1, 1], "scale_near": [2, 2, 2]}, "id": "b066", "level": 1, "prompt": "Add a cube, then double its size on every axis by changing its scale."}
+{"check": {"loc_near": [0, 0, 0], "meshes": [1, 1]}, "id": "b067", "level": 1, "prompt": "Add a cube at (0, 0, 5) and lower it so its location is the origin."}
+{"check": {"loc_near": [3, 0, 0], "meshes": [2, 2]}, "id": "b068", "level": 1, "prompt": "Add two spheres, one at (-3, 0, 0) and one at (3, 0, 0)."}
+{"check": {"meshes": [1, 1], "rot_near": [1.5708, 0, 0]}, "id": "b069", "level": 1, "prompt": "Create a cylinder lying on its side along the Y axis."}
+{"check": {"meshes": [1, 1], "rot_near": [3.1416, 0, 0]}, "id": "b070", "level": 1, "prompt": "Add a cone pointing downward (flipped upside down)."}
+{"check": {"bbox_x": [5.9, 6.1], "loc_near": [0, 0, 2], "meshes": [1, 1]}, "id": "b071", "level": 1, "prompt": "Create a plane at height z=2 sized 6 by 6."}
+{"check": {"bbox_x": [3.9, 4.1], "dim": [2, 0.15, 0.25], "meshes": [1, 1]}, "id": "b072", "level": 1, "prompt": "Make a very flat box: a cube that is 4 wide, 4 deep and 0.2 tall."}
+{"check": {"loc_near": [0, 0, 2], "meshes": [1, 1], "scale_near": [1.5, 1.5, 1.5], "verts_min": 400}, "id": "b073", "level": 1, "prompt": "Add a monkey head at (0, 0, 2) scaled to 1.5 times its normal size."}
+{"check": {"curve": 1, "loc_near": [0, 0, 3]}, "id": "b074", "level": 1, "prompt": "Add a Bezier curve and move it up to z=3."}
+{"check": {"meshes": [1, 1], "objects_min": 1, "verts_max": 8, "verts_min": 8}, "id": "b075", "level": 1, "prompt": "Create a cube with 8 vertices and nothing else in the scene."}
+{"check": {"camera": 1, "loc_near": [0, 0, 10], "rot_near": [0, 0, 0]}, "id": "b076", "level": 1, "prompt": "Add a camera looking straight down from 10 units above the origin."}
+{"check": {"meshes": [1, 1], "world": 1}, "id": "b077", "level": 1, "prompt": "Add a UV sphere and set the scene's world to exist with a background color of dark gray."}
+{"check": {"meshes": [1, 1], "mod_prop": ["SUBSURF", "levels", 3]}, "id": "b078", "level": 2, "prompt": "Add a cube and put a Subdivision Surface modifier on it with viewport level 3."}
+{"check": {"meshes": [1, 1], "mod_prop": ["WIREFRAME", "thickness", 0.05]}, "id": "b079", "level": 2, "prompt": "Give a plane a Wireframe modifier with a thickness of 0.05."}
+{"check": {"meshes": [1, 1], "mod_prop": ["DECIMATE", "ratio", 0.3]}, "id": "b080", "level": 2, "prompt": "Create a cylinder and attach a Decimate modifier that keeps 30 percent of the faces."}
+{"check": {"meshes": [1, 1], "mod_prop": ["DISPLACE", "strength", 0.5]}, "id": "b081", "level": 2, "prompt": "Add a sphere with a Displace modifier at strength 0.5."}
+{"check": {"meshes": [1, 1], "modifier": "MIRROR"}, "id": "b082", "level": 2, "prompt": "Make a cube with a Mirror modifier on Y only (not X)."}
+{"check": {"meshes": [1, 1], "mod_prop": ["BEVEL", "segments", 2]}, "id": "b083", "level": 2, "prompt": "Make a cube and then bevel it with a Bevel modifier whose amount is 0.25 using 2 segments."}
+{"check": {"meshes": [1, 1], "mod_prop": ["ARRAY", "count", 4]}, "id": "b084", "level": 2, "prompt": "Add a cube with an Array modifier of 4 copies and a constant offset of 3 units on Y."}
+{"check": {"dim": [2, 0.45, 0.55], "meshes": [1, 1], "verts_min": 8}, "id": "b085", "level": 2, "prompt": "Add a plane with a Solidify modifier, thickness 0.5, then apply it so the mesh has real thickness."}
+{"check": {"meshes": [1, 1], "mod_count": ["SUBSURF", 1], "modifier": "BEVEL"}, "id": "b086", "level": 2, "prompt": "Add a cube and use a Bevel modifier and a Subdivision Surface modifier on it, in that order."}
+{"check": {"meshes": [1, 1], "modifier": "SIMPLE_DEFORM"}, "id": "b087", "level": 2, "prompt": "Add a Simple Deform modifier that twists a tall box by 90 degrees."}
+{"check": {"meshes": [1, 1], "mod_prop": ["SUBSURF", "levels", 2]}, "id": "b088", "level": 2, "prompt": "Create a plane and subdivide it by adding a Subdivision Surface modifier set to Simple, level 2."}
+{"check": {"meshes": [1, 1], "modifier": "TRIANGULATE"}, "id": "b089", "level": 2, "prompt": "Add a Triangulate modifier to a cube."}
+{"check": {"meshes": [1, 1], "modifier": "WELD"}, "id": "b090", "level": 2, "prompt": "Add a cube and a Weld modifier."}
+{"check": {"meshes": [1, 1], "modifier": "SMOOTH"}, "id": "b091", "level": 2, "prompt": "Add a sphere and give it a Smooth modifier (Smooth by Angle is not needed)."}
+{"check": {"meshes": [1, 1], "modifier": "REMESH"}, "id": "b092", "level": 2, "prompt": "Add a cube with a Remesh modifier in voxel mode with a voxel size of 0.1."}
+{"check": {"mat_color": [0, 0, 1], "mat_name": "BlueMat", "material": 1, "meshes": [1, 1]}, "id": "b093", "level": 2, "prompt": "Make a blue material called BlueMat and assign it to a new cube."}
+{"check": {"mat_color": [0, 1, 0], "material": 1, "meshes": [1, 1]}, "id": "b094", "level": 2, "prompt": "Create a cylinder with a green material."}
+{"check": {"mat_prop": ["roughness", 0.1], "material": 1, "meshes": [1, 1]}, "id": "b095", "level": 2, "prompt": "Add a torus and make it shiny: material with roughness 0.1."}
+{"check": {"mat_prop": ["metallic", 1.0], "material": 1, "meshes": [1, 1]}, "id": "b096", "level": 2, "prompt": "Add a sphere with a fully metallic material (metallic 1)."}
+{"check": {"mat_color": [1, 0, 0], "material": 2, "meshes": [2, 2]}, "id": "b097", "level": 2, "prompt": "Add two cubes next to each other, the left one red and the right one white, with separate materials."}
+{"check": {"material": 1, "meshes": [1, 1]}, "id": "b098", "level": 2, "prompt": "Create a plane and give it a gray material using the node-based shader: set the Principled BSDF base color to (0.5, 0.5, 0.5, 1)."}
+{"check": {"material": 1, "meshes": [1, 1]}, "id": "b099", "level": 2, "prompt": "Add a cube with an emissive material: use the Emission input of the Principled BSDF with strength 5."}
+{"check": {"mat_name": "Glass", "material": 1, "meshes": [1, 1]}, "id": "b100", "level": 2, "prompt": "Give a sphere a semi-transparent glass look with alpha 0.3 on a material named Glass."}
+{"check": {"meshes": [1, 1], "smooth": 1}, "id": "b101", "level": 2, "prompt": "Add a UV sphere and shade it smooth."}
+{"check": {"meshes": [1, 1]}, "id": "b102", "level": 2, "prompt": "Add a cylinder and shade it flat."}
+{"check": {"meshes": [1, 1], "modifier": "SUBSURF", "smooth": 1}, "id": "b103", "level": 2, "prompt": "Add a monkey and shade it smooth with Subdivision Surface level 1."}
+{"check": {"meshes": [1, 1], "uv": 1}, "id": "b104", "level": 2, "prompt": "Add a cube and then use cube projection UV mapping on it."}
+{"check": {"meshes": [1, 1], "uv": 1}, "id": "b105", "level": 2, "prompt": "Unwrap a cylinder using the standard Unwrap operator after selecting all of its faces."}
+{"check": {"meshes": [1, 1], "uv": 1}, "id": "b106", "level": 2, "prompt": "Add a sphere and create a second UV map named Lightmap on its mesh."}
+{"check": {"dim": [2, 3.9, 4.1], "meshes": [1, 1], "verts_min": 12}, "id": "b107", "level": 2, "prompt": "Add a cube, enter edit mode, and extrude the top face up by 2 units."}
+{"check": {"meshes": [1, 1], "verts_min": 25}, "id": "b108", "level": 2, "prompt": "Add a plane and subdivide it twice using the Subdivide operator in edit mode."}
+{"check": {"meshes": [1, 1], "verts_min": 24}, "id": "b109", "level": 2, "prompt": "Create a cube and bevel all its edges in edit mode with an offset of 0.1."}
+{"check": {"meshes": [1, 1], "verts_min": 24}, "id": "b110", "level": 2, "prompt": "Add a cube, then inset each of its faces individually by 0.2 in edit mode."}
+{"check": {"bbox_x": [5.9, 6.1], "meshes": [1, 1], "scale_near": [1, 1, 1]}, "id": "b111", "level": 2, "prompt": "Add a cube and apply its scale after setting it to (3, 3, 3), so its scale reads 1 but it stays 6 units wide."}
+{"check": {"loc_near": [5, 5, 5], "meshes": [1, 1]}, "id": "b112", "level": 2, "prompt": "Add a cube and set its origin to the geometry center after moving it to (5, 5, 5)."}
+{"check": {"loc_near": [0, 0, 3], "meshes": [2, 2]}, "id": "b113", "level": 2, "prompt": "Add a cube and duplicate it, moving the copy 3 units up the Z axis."}
+{"check": {"meshes": [3, 3]}, "id": "b114", "level": 2, "prompt": "Make two linked duplicates of a sphere, so all three share one mesh."}
+{"check": {"meshes": [1, 1], "verts_max": 16, "verts_min": 16}, "id": "b115", "level": 2, "prompt": "Create two cubes and join them so there's a single mesh object, with a total of 16 vertices."}
+{"check": {"meshes": [1, 1]}, "id": "b116", "level": 2, "prompt": "Mirror a cube across the X axis by giving it a negative X scale and then applying the scale."}
+{"check": {"constraint": "CHILD_OF", "meshes": [1, 1], "type_count": {"EMPTY": [1, 1]}}, "id": "b117", "level": 2, "prompt": "Add a cube and add an Empty at the same place, then give the cube a Child Of constraint targeting the empty."}
+{"check": {"constraint": "TRACK_TO", "meshes": [1, 1], "type_count": {"EMPTY": [1, 1]}}, "id": "b118", "level": 2, "prompt": "Add a cube with a Track To constraint that points at an empty at (0, 10, 0)."}
+{"check": {"constraint": "LIMIT_LOCATION", "meshes": [1, 1]}, "id": "b119", "level": 2, "prompt": "Add a cube and limit its location so it can't go above z=4, using a constraint."}
+{"check": {"meshes": [1, 1], "shape_keys": 2}, "id": "b120", "level": 2, "prompt": "Add a sphere with two shape keys: the basis and one called Squash."}
+{"check": {"meshes": [2, 2], "mod_prop": ["BOOLEAN", "operation", "DIFFERENCE"]}, "id": "b121", "level": 2, "prompt": "Add a cube and make it a Boolean cutter: add a sphere, and give the cube a Boolean modifier with the difference operation against it."}
+{"check": {"hide_render": 1, "meshes": [1, 1]}, "id": "b122", "level": 2, "prompt": "Add a cube, set its display type to wire, and hide it from rendering."}
+{"check": {"animated": 1, "keyed": [1, 15, 30], "meshes": [1, 1]}, "id": "b123", "level": 3, "prompt": "Animate a sphere bouncing: z=0 at frame 1, z=3 at frame 15 and back to z=0 at frame 30."}
+{"check": {"animated": 1, "keyed": [1, 48], "meshes": [1, 1]}, "id": "b124", "level": 3, "prompt": "Make a cube grow from scale 1 at frame 1 to scale 3 at frame 48."}
+{"check": {"fps": 30, "frame_end": 90, "frame_start": 10}, "id": "b125", "level": 3, "prompt": "Set the timeline to run from frame 10 to frame 90, at 30 frames per second."}
+{"check": {"res": [1280, 720]}, "id": "b126", "level": 3, "prompt": "Set the render resolution to 1280 by 720."}
+{"check": {"animated": 1, "keyed": [1, 24], "meshes": [1, 1]}, "id": "b127", "level": 3, "prompt": "Make a cone spin on the Z axis: rotation 0 degrees at frame 1 and 180 degrees at frame 24."}
+{"check": {"animated": 1, "camera": 1, "keyed": [1, 100]}, "id": "b128", "level": 3, "prompt": "Add a camera that flies from (0, -10, 3) at frame 1 to (10, 0, 3) at frame 100."}
+{"check": {"data_animated": 1, "light": "POINT"}, "id": "b129", "level": 3, "prompt": "Animate a point light's power from 0 at frame 1 to 500 at frame 30."}
+{"check": {"animated": 1, "keyed": [1, 25, 50], "meshes": [1, 1]}, "id": "b130", "level": 3, "prompt": "Animate a cube's X location with keyframes at frames 1, 25 and 50 with values 0, 5 and 0."}
+{"check": {"animated": 1, "keyed": [1, 120], "meshes": [1, 1], "parent_of": ["", "Pivot"]}, "id": "b131", "level": 3, "prompt": "Make an object orbit the origin: an empty named Pivot with a sphere parented to it, and rotate the empty from 0 to 360 degrees on Z across frames 1 to 120."}
+{"check": {"meshes": [2, 2], "parented": 1}, "id": "b132", "level": 3, "prompt": "Add a cube and a sphere; make the sphere a child of the cube."}
+{"check": {"meshes": [3, 3], "parent_of": ["cube", "Group_A"]}, "id": "b133", "level": 3, "prompt": "Create three cubes parented to a single empty called Group_A."}
+{"check": {"collection": "Lights", "light": "SUN", "type_count": {"LIGHT": [2, 2]}}, "id": "b134", "level": 3, "prompt": "Make a new collection named Lights and put a sun and a point light into it."}
+{"check": {"collection": "Walls", "collections_min": 2, "meshes": [2, 2]}, "id": "b135", "level": 3, "prompt": "Create two collections, Walls and Floor, each with one cube inside."}
+{"check": {"camera": 1, "collection": "Cameras"}, "id": "b136", "level": 3, "prompt": "Put a camera in a collection called Cameras and make that camera the active one."}
+{"check": {"light": "SUN", "type_count": {"LIGHT": [3, 3]}}, "id": "b137", "level": 3, "prompt": "Build a three-point lighting setup: one sun light (key), one area light (fill) and one point light (rim)."}
+{"check": {"camera": 1, "light": "AREA", "meshes": [2, 2]}, "id": "b138", "level": 3, "prompt": "Set up a product shot: a sphere on a plane, a camera aimed at it and an area light above."}
+{"check": {"meshes": [15, 15]}, "id": "b139", "level": 3, "prompt": "Create a wall of bricks: 5 columns by 3 rows of cubes scaled to 2 by 1 by 1, all on the XZ plane."}
+{"check": {"meshes": [10, 10]}, "id": "b140", "level": 3, "prompt": "Place 10 spheres along a straight line from (0,0,0) to (9,9,0), one per unit step."}
+{"check": {"meshes": [12, 12]}, "id": "b141", "level": 3, "prompt": "Lay out a ring of 12 small cubes of side 0.5 around a circle of radius 6 in the XY plane."}
+{"check": {"meshes": [20, 20]}, "id": "b142", "level": 3, "prompt": "Make a spiral of 20 spheres: each rises 0.3 higher and moves around a circle of radius 3."}
+{"check": {"mat_name": "Dark", "material": 64, "meshes": [64, 64]}, "id": "b143", "level": 3, "prompt": "Create a checkerboard: an 8 by 8 grid of flat boxes, alternating between two materials named Dark and Light."}
+{"check": {"bbox_x": [19.9, 20.1], "meshes": [2, 2], "obj_at": ["sphere", [0, 0, 1]]}, "id": "b144", "level": 3, "prompt": "Add a plane as ground, scale it to 20 by 20 and add a sphere resting on it at z=1."}
+{"check": {"meshes": [2, 2], "parented": 1, "type_count": {"EMPTY": [1, 1]}}, "id": "b145", "level": 3, "prompt": "Make a pendulum: an empty at (0,0,5) as pivot, a thin cylinder rod of length 4 hanging under it and a sphere bob at the end, both parented to the pivot."}
+{"check": {"animated": 1, "keyed": [1, 30, 60], "meshes": [1, 1], "parent_of": ["", "Pivot"]}, "id": "b146", "level": 3, "prompt": "Swing the pendulum: build an empty named Pivot with a cube parented to it, then keyframe the empty's X rotation to -30 degrees at frame 1, 30 degrees at frame 30 and -30 degrees at frame 60."}
+{"check": {"constraint": "FOLLOW_PATH", "curve": 1, "meshes": [1, 1]}, "id": "b147", "level": 3, "prompt": "Animate a cube to move along a Bezier curve using a Follow Path constraint."}
+{"check": {"constraint": "COPY_LOCATION", "meshes": [2, 2]}, "id": "b148", "level": 3, "prompt": "Make a sphere follow a cube: give the sphere a Copy Location constraint targeting the cube."}
+{"check": {"camera": 1, "constraint": "TRACK_TO", "meshes": [1, 1]}, "id": "b149", "level": 3, "prompt": "Add a camera aimed at a cube with a Track To constraint."}
+{"check": {"engine": "CYCLES", "samples": 64}, "id": "b150", "level": 3, "prompt": "Set the render engine to Cycles with 64 samples."}
+{"check": {"file_format": "PNG", "res_percent": 50}, "id": "b151", "level": 3, "prompt": "Set the render output to PNG at 50 percent resolution scale."}
+{"check": {"markers": [1, 100]}, "id": "b152", "level": 3, "prompt": "Add a timeline marker named Start at frame 1 and one named End at frame 100."}
+{"check": {"animated": 1, "keyed": [10, 20], "meshes": [1, 1]}, "id": "b153", "level": 3, "prompt": "Make a sphere that appears to blink: hide it from rendering at frame 10 and show it again at frame 20, using keyframes on its render visibility."}
+{"check": {"data_animated": 1, "material": 1, "meshes": [1, 1]}, "id": "b154", "level": 3, "prompt": "Animate a material colour: a cube whose material diffuse colour goes from red at frame 1 to blue at frame 40."}
+{"check": {"animated": 1, "keyed": [1, 20, 40, 60, 80], "meshes": [1, 1]}, "id": "b155", "level": 3, "prompt": "Make a cube that moves in a square path: (0,0,0) then (4,0,0) then (4,4,0) then (0,4,0) then back, at frames 1, 20, 40, 60 and 80."}
+{"check": {"animated": 1, "keyed": [1, 40], "meshes": [1, 1]}, "id": "b156", "level": 3, "prompt": "Set linear interpolation on a cube's X location animation from 0 to 5 over frames 1 to 40."}
+{"check": {"dim": [0, 3.9, 4.1], "loc_near": [7, 0, 0], "meshes": [4, 4]}, "id": "b157", "level": 3, "prompt": "Create a simple solar system: a big sphere at the origin as the sun, and three smaller spheres at x=4, x=7 and x=10."}
+{"check": {"light": "SUN", "rot_near": [0.7854, 0, 0], "world": 1}, "id": "b158", "level": 3, "prompt": "Set a gray world background and a sun light pointing down at an angle of 45 degrees on X."}
+{"check": {"collection": "Text", "text": "Title"}, "id": "b159", "level": 3, "prompt": "Create a text object reading Title, put it inside a new collection named Text, and give it a material."}
+{"check": {"meshes": [6, 6]}, "id": "b160", "level": 3, "prompt": "Make a row of 6 cubes, each one scaled 20 percent bigger than the previous, starting at scale 1, 4 units apart."}
+{"check": {"meshes": [6, 6]}, "id": "b161", "level": 3, "prompt": "Duplicate a cylinder 4 times in a pyramid arrangement: 3 on the bottom row, 2 above and 1 at the top."}
+{"check": {"animated": 1, "keyed": [1, 240], "light": "SUN"}, "id": "b162", "level": 3, "prompt": "Animate the sun light's rotation to simulate a day: X rotation 0 at frame 1 and 180 degrees at frame 240."}
+{"check": {"animated": 1, "keyed": [30], "meshes": [1, 1], "parented": 1, "type_count": {"EMPTY": [1, 1]}}, "id": "b163", "level": 3, "prompt": "Make a door: a box and a hinge empty on its left edge, parent the door to the hinge and open it 90 degrees at frame 30."}
+{"check": {"meshes": [25, 25]}, "id": "b164", "level": 3, "prompt": "Generate 25 randomly placed cubes within a 10 by 10 area using a seeded random generator."}
+{"check": {"animated": 1, "camera": 1, "keyed": [1, 96], "meshes": [1, 1], "parent_of": ["", "Turn"]}, "id": "b165", "level": 3, "prompt": "Set up a turntable: a monkey at the origin with an empty named Turn, parent the camera to the empty, and rotate the empty a full 360 degrees around Z over frames 1 to 96."}
+{"check": {"bbox_z": [1.8, 2.3], "meshes": [7, 12]}, "id": "b166", "level": 4, "prompt": "Model a bookshelf: two side panels, a back panel and four shelves, all boxes. It should be about 2 tall."}
+{"check": {"meshes": [4, 6]}, "id": "b167", "level": 4, "prompt": "Build a simple bed: a mattress box, a frame underneath, a headboard and a pillow."}
+{"check": {"mat_color": [1, 0.4, 0], "material": 2, "meshes": [2, 2]}, "id": "b168", "level": 4, "prompt": "Make a traffic cone: a square base slab and a cone on top, and give both an orange material."}
+{"check": {"bbox_z": [3.0, 5.0], "material": 4, "meshes": [4, 4]}, "id": "b169", "level": 4, "prompt": "Create a low-poly tree: a brown cylinder trunk and three green cones stacked as foliage."}
+{"check": {"bbox_z": [1.0, 2.0], "meshes": [6, 6]}, "id": "b170", "level": 4, "prompt": "Make a low-poly car: a long box body, a smaller cabin box on top and four cylinder wheels turned on their sides."}
+{"check": {"bbox_z": [3.0, 5.0], "meshes": [5, 5]}, "id": "b171", "level": 4, "prompt": "Build a simple rocket: a tall cylinder, a cone nose, and three fins around the base."}
+{"check": {"meshes": [8, 8]}, "id": "b172", "level": 4, "prompt": "Make a robot from boxes: a body, a head with two eye spheres, two arms and two legs."}
+{"check": {"meshes": [8, 12]}, "id": "b173", "level": 4, "prompt": "Create a low-poly character with a sphere head, a capsule-like body from a cylinder plus two spheres, and stubby cylinder arms and legs."}
+{"check": {"meshes": [6, 6]}, "id": "b174", "level": 4, "prompt": "Model a windmill: a tapered tower from a cone, a small cylinder hub on the front and four thin boxes as blades."}
+{"check": {"meshes": [3, 3], "obj_at": ["cylinder", [-3.65, 0, 1.2]]}, "id": "b175", "level": 4, "prompt": "Make a goalpost with two upright cylinders and a crossbar cylinder between them, standing 2.4 high and 7.3 wide."}
+{"check": {"meshes": [5, 12]}, "id": "b176", "level": 4, "prompt": "Build a simple bridge: a long flat deck, two arches made from half tori, and railings as thin boxes along both sides."}
+{"check": {"mat_color": [1, 1, 1], "material": 2, "meshes": [2, 2]}, "id": "b177", "level": 4, "prompt": "Make a mug: a cylinder body, a torus for the handle on one side, and a ceramic white material on both."}
+{"check": {"meshes": [1, 2], "verts_min": 40}, "id": "b178", "level": 4, "prompt": "Create a hollow cup by using a Boolean difference between a cylinder and a smaller cylinder inside it, then apply the Boolean."}
+{"check": {"hide_render": 1, "meshes": [2, 2], "mod_prop": ["BOOLEAN", "operation", "DIFFERENCE"]}, "id": "b179", "level": 4, "prompt": "Make a cube with a round hole through its centre along Z using a Boolean modifier and a cylinder cutter, leaving the cutter in the scene hidden from render."}
+{"check": {"material": 1, "meshes": [2, 2], "modifier": "BEVEL"}, "id": "b180", "level": 4, "prompt": "Model a dice: a bevelled cube with a pip-sized sphere stuck into the top face, plus a white material."}
+{"check": {"meshes": [2, 2], "mod_count": ["SUBSURF", 2]}, "id": "b181", "level": 4, "prompt": "Make a donut: a torus with a slightly squashed Z scale, a pink icing disk on top (a flattened torus), and Subdivision Surface on both."}
+{"check": {"meshes": [30, 30]}, "id": "b182", "level": 4, "prompt": "Build a pyramid out of 4 rows of cubes: 16 cubes on the bottom (4 by 4), then 9, 4 and 1 above."}
+{"check": {"meshes": [10, 10]}, "id": "b183", "level": 4, "prompt": "Create a castle tower: a tall cylinder with a cone roof and eight small boxes around the top as battlements."}
+{"check": {"light": "POINT", "meshes": [3, 3]}, "id": "b184", "level": 4, "prompt": "Make a street lamp: a thin tall pole, a horizontal arm at the top, a lamp-head sphere at the arm's end, and a point light inside the sphere."}
+{"check": {"meshes": [3, 3]}, "id": "b185", "level": 4, "prompt": "Build a simple boat: a flattened, elongated hull from a scaled sphere, a mast cylinder and a triangular sail from a cone squashed flat."}
+{"check": {"meshes": [4, 4]}, "id": "b186", "level": 4, "prompt": "Create a satellite: a cube body, two flat panel boxes on each side and a small dish made from a flattened cone on top."}
+{"check": {"material": 9, "meshes": [9, 9]}, "id": "b187", "level": 4, "prompt": "Make a cactus: one tall green capsule from a cylinder and two spheres, with two smaller arms made the same way."}
+{"check": {"bbox_z": [1.4, 1.9], "meshes": [3, 3]}, "id": "b188", "level": 4, "prompt": "Create a wine glass: a thin cylinder stem, a wide flat disc base and a cone-shaped bowl on top, ending around 1.6 tall."}
+{"check": {"curve": 1, "data_prop": ["CURVE", "bevel_depth", 0.1]}, "id": "b189", "level": 4, "prompt": "Using a Curve object, make a Bezier circle with a bevel depth of 0.1 so it becomes a pipe ring."}
+{"check": {"curve": 1, "data_prop": ["CURVE", "extrude", 0.5]}, "id": "b190", "level": 4, "prompt": "Create a Bezier curve and extrude it by 0.5 so it has a ribbon shape."}
+{"check": {"data_prop": ["FONT", "extrude", 0.2], "text": "WELCOME"}, "id": "b191", "level": 4, "prompt": "Make a text object with the word WELCOME, extruded by 0.2 and beveled slightly."}
+{"check": {"meshes": [1, 1], "verts_min": 20}, "id": "b192", "level": 4, "prompt": "Create text reading OPEN, then convert it to a mesh."}
+{"check": {"curve": 1, "data_prop": ["CURVE", "bevel_depth", 0.05]}, "id": "b193", "level": 4, "prompt": "Make a spring: a helix curve built with a Python-generated poly spline of 60 points, with bevel depth 0.05 on the curve data."}
+{"check": {"meshes": [1, 1], "modifier": "NODES", "node_groups": 1}, "id": "b194", "level": 4, "prompt": "Make a Geometry Nodes modifier on a plane that uses an empty node group (just group input and group output)."}
+{"check": {"meshes": [1, 1], "modifier": "NODES", "node_groups": 1}, "id": "b195", "level": 4, "prompt": "Build a Geometry Nodes setup on a cube that subdivides the mesh with a Subdivide Mesh node, level 2."}
+{"check": {"meshes": [1, 1], "modifier": "NODES", "node_groups": 1}, "id": "b196", "level": 4, "prompt": "Create a Geometry Nodes tree on a plane that scatters points on its surface using Distribute Points on Faces and instances small cubes there."}
+{"check": {"modifier": "NODES", "node_groups": 1}, "id": "b197", "level": 4, "prompt": "Make a Geometry Nodes group that outputs a UV sphere of radius 2 (no input mesh needed), and attach it to an empty-mesh object."}
+{"check": {"meshes": [1, 1], "modifier": "NODES", "node_groups": 1}, "id": "b198", "level": 4, "prompt": "Add a plane, a Geometry Nodes modifier with a Set Position node that raises every vertex by 1 on Z."}
+{"check": {"meshes": [9, 9]}, "id": "b199", "level": 4, "prompt": "Build a ladder with two long vertical cylinders and seven horizontal rungs between them, using a loop for the rungs."}
+{"check": {"meshes": [10, 10]}, "id": "b200", "level": 4, "prompt": "Make a fence: 8 vertical posts spaced 1 unit apart plus two long horizontal rails running through them."}
+{"check": {"mat_color": [0.5, 0.5, 0.5], "material": 7, "meshes": [7, 8]}, "id": "b201", "level": 4, "prompt": "Model a simple sofa: a base block, a backrest block, two armrest blocks and three seat cushions, in a grey fabric material."}
+{"check": {"meshes": [4, 4]}, "id": "b202", "level": 4, "prompt": "Create a clock: a thin cylinder face, a torus rim, and two thin boxes for hour and minute hands pointing different directions."}
+{"check": {"meshes": [1, 1], "modifier": "BEVEL", "name": "Crate_UV", "uv": 1}, "id": "b203", "level": 4, "prompt": "Make a UV-mapped crate: a cube beveled with a small bevel modifier, unwrapped with Smart UV Project, and named Crate_UV."}
+{"check": {"meshes": [6, 6]}, "id": "b204", "level": 4, "prompt": "Build a 5-step spiral staircase: each step a flat box, rotated 30 degrees more than the last and rising 0.3, around a central pole."}
+{"check": {"meshes": [6, 6]}, "id": "b205", "level": 4, "prompt": "Make a snowflake-like star: 6 thin boxes radiating from the centre, each rotated 60 degrees apart around Z."}
+{"check": {"meshes": [2, 2], "rot_near": [0.349, 0, 0]}, "id": "b206", "level": 4, "prompt": "Create a Saturn model: a sphere for the planet and a flat wide torus as the rings tilted by 20 degrees."}

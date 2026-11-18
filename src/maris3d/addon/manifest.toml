@@ -1,0 +1,10 @@
+schema_version = 1
+id = "maris3d_copilot"
+version = "0.1.2"
+name = "Maris3D Copilot"
+tagline = "Build and edit Blender scenes from a prompt with a local SLM"
+maintainer = "Maris3D contributors"
+type = "add-on"
+license = ["SPDX:GPL-3.0-or-later"]
+blender_version_min = "4.2.0"
+tags = ["Modeling", "Scene"]

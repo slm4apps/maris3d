@@ -1,0 +1,30 @@
+{
+ "schema": "maris3d-files/1",
+ "release": "0.1.0",
+ "files": [
+  {
+   "role": "base",
+   "version": "v1",
+   "file": "maris3d-slm-blender-0.5b-q8_0.gguf",
+   "sha256": "5604f0e2480ca5555a8d79a50ec87baeea64fdf50d0340f004ed099b08b95dd2",
+   "bytes": 531068000
+  },
+  {
+   "role": "edit",
+   "version": "v1",
+   "file": "maris3d-slm-blender-0.5b-edit-lora-f16.gguf",
+   "sha256": "433163d903fb26028b11a7a309d6778bf2f95afd4b4b3c78d4cbb09b83d83d13",
+   "bytes": 5881344
+  },
+  {
+   "role": "planner",
+   "version": "v3.1",
+   "file": "maris3d-slm-blender-0.5b-planner-v31-lora-f16.gguf",
+   "sha256": "8a315eaa440e732a81bb2cef245448f949d3b352bf428c371756bedea2ce7e74",
+   "bytes": 5881248,
+   "format": "items/1",
+   "system": "You are the planner for a Blender scene builder. Reply with one JSON object only: {\"items\":[{\"id\":<name>,\"recipe\":<name>,\"count\":<int>,\"material\":<name>,\"zone\":<name>,\"place\":{\"anchor\":<id>,\"relation\":<word>,\"distance\":<word>,\"arrangement\":{\"kind\":<word>}}}]}. Relations: front_of, behind, left_of, right_of, next_to, between, on_top_of, under, against, around, centre_of. Distances: touching, tiny, small, medium, large, far, distant. Arrangements: row, ring, grid, stack. Recipes: armchair, art, bench, bin, boy, bus, cabin, car, cat, chair, counter, floor_lamp, gift, house, kitchen_run, lamp, lamp_post, man, plant, platform, rug_group, shelf, sledge, snow_truck, snowman, sofa, squirrel, station_building, stove, suitcase, table, townhouse, track, train, tree, tv, van, waiting_lamp, woman, wreath. Materials: black, brass, brick, cream, green, metal, navy, oak, pine, red, rust, snow, teal, terra, timber, walnut, white. Zones: bedroom, courtyard, dining, garden, hallway, kitchen, living, platform, plaza, street_east, street_west. One item per thing asked for, in the order asked. Give a field only when the sentence states it: no material, zone, place or distance the sentence does not say. The anchor is the id of the thing the sentence places it by. Never output coordinates, sizes or part names."
+  }
+ ],
+ "needs_app": "0.1.0"
+}

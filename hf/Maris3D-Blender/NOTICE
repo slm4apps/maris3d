@@ -1,0 +1,24 @@
+Maris3D
+Copyright 2026 Maris3D contributors
+
+This product includes and is derived from third-party work. Full licence texts are in LICENSES/.
+
+1. Base models (derived from): Qwen2.5-Coder-0.5B-Instruct (used by Maris3D-SLM-Blender-0.5B v0.1) and, for the previous models,
+   Qwen2.5-Coder-1.5B-Instruct. Copyright 2024 Alibaba Cloud / Qwen team, licensed under the Apache License 2.0
+   (LICENSES/Qwen2.5-Coder-Apache-2.0.txt). The Qwen2.5-Coder-0.5B-Instruct model is Apache-2.0, Copyright Alibaba Cloud / Qwen team.
+   Changes made: a LoRA fine-tune (rank 8) merged into the weights and converted to GGUF (q8_0).
+   The Maris3D model weights are LoRA fine-tunes of these models, merged into them and
+   converted to GGUF. Changes: fine-tuned to emit Blender tool calls as JSON (see TECHNICAL-REPORT.md).
+   The Qwen name is used only to identify the base model; Maris3D is not made or endorsed by Alibaba Cloud.
+
+2. Tools used to produce and run the models (not redistributed in this repository or in the model repos):
+   - llama.cpp / ggml (MIT, Copyright 2023-2026 The ggml authors): GGUF conversion and inference.
+   - mlx-lm (MIT): LoRA training and merging on Apple silicon.
+   - Ollama: optional local runtime.
+
+3. Blender: the code in src/maris3d/blender/ runs inside Blender and imports its Python API (bpy), so it is
+   licensed GPL-3.0-or-later (LICENSES/GPL-3.0-or-later.txt).
+
+4. Trademarks: "Blender" and the Blender logo are trademarks of the Blender Foundation. Maris3D is an independent
+   community project, not affiliated with, endorsed by or sponsored by the Blender Foundation. "Qwen" is a trademark of
+   Alibaba Cloud. All other names belong to their owners.
