@@ -49,7 +49,7 @@ maris3d serve start    # one local server on port 9931
 ```
 
 Then open the sidebar tab **Maris3D Copilot** in Blender's 3D View, type a sentence and press **Run**. Weights: [slm4apps/Maris3D-Blender](https://huggingface.co/slm4apps/Maris3D-Blender).
-Details for llama.cpp, Ollama and MCP: [USAGE.md](USAGE.md). 0.1 stays reachable at the `v0.1.0` revision of the same Hugging Face repository and at the GitHub tag `v0.1.1`; see [release-v0.1.md](release-v0.1.md).
+Details for llama.cpp, Ollama and MCP: [USAGE.md](USAGE.md). 0.1 stays reachable at the `v0.1.0` revision of the same Hugging Face repository and at the GitHub tag `v0.1.2`; see [release-v0.1.md](release-v0.1.md).
 
 ## How you can help
 

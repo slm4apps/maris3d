@@ -7,7 +7,7 @@ Maris3D 0.2 is two model files from [slm4apps/Maris3D-Blender](https://huggingfa
 | `maris3d-slm-blender-0.5b-q8_0.gguf` | 531 MB | The base (Qwen2.5-Coder-0.5B-Instruct fine-tune), the same file as 0.1 |
 | `maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf` | 12 MB | One adapter: planning, the parts of a new thing, word edits and talk |
 
-`MANIFEST.json` lists the current file of each role with its sha256, `SHA256SUMS` every file. 0.2 needs the 0.2 app; the 0.1 files stay at the `v0.1.0` revision of the same repository and the 0.1 app at the GitHub tag `v0.1.1`.
+`MANIFEST.json` lists the current file of each role with its sha256, `SHA256SUMS` every file. 0.2 needs the 0.2 app; the 0.1 files stay at the `v0.1.0` revision of the same repository and the 0.1 app at the GitHub tag `v0.1.2`.
 
 Requirements: Python 3.9+ and Blender 4.2 or newer (5.2 LTS verified; `BLENDER_BIN` points at the executable). The app uses only the Python
 standard library.

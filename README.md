@@ -67,7 +67,7 @@ Want one shape with your own numbers? Type them: `Add a cylinder named Cup at 0.
 - **Edits by words:** "make the table darker", "move the lamp next to the sofa". The model says what changes, code applies it and checks it.
 - **Talk:** ask about the scene and it answers from what is there.
 - **Animation:** spin, bounce, move, rise, grow, shrink, swing, orbit, pulse and colour change, written by the app's code.
-- **Breaking change:** 0.2 needs the 0.2 app. 0.1 stays available at tag [v0.1.1](https://github.com/slm4apps/maris3d/releases/tag/v0.1.1) and as [Maris3D-Blender v0.1.0](https://huggingface.co/slm4apps/Maris3D-Blender/tree/v0.1.0).
+- **Breaking change:** 0.2 needs the 0.2 app. 0.1 stays available at tag [v0.1.2](https://github.com/slm4apps/maris3d/releases/tag/v0.1.2) and as [Maris3D-Blender v0.1.0](https://huggingface.co/slm4apps/Maris3D-Blender/tree/v0.1.0).
 
 ## How it works
 
