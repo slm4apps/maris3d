@@ -1,0 +1,21 @@
+{
+ "schema": "maris3d-files/1",
+ "release": "0.2.1",
+ "files": [
+  {
+   "role": "base",
+   "version": "v2",
+   "file": "maris3d-slm-blender-0.5b-q8_0.gguf",
+   "sha256": "1cde9c09daba3852e08247a3f084502524cc9b84de2d2e677350b62cfa1f1033",
+   "bytes": 531068032
+  },
+  {
+   "role": "one",
+   "version": "v2.1",
+   "file": "maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf",
+   "sha256": "0b0c7e80e73a60501321eb70b34ee3f86766ac822ad14bd3221141d8f2d2e616",
+   "bytes": 11746528
+  }
+ ],
+ "needs_app": "0.2.0"
+}

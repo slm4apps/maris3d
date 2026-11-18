@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maris3d"
+version = "0.2.1"
+description = "Small language models that write Blender scenes from a text request: tool DSL, checker, benchmark, MCP server and OpenAI-compatible bridge."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE", "LICENSES/*"]
+authors = [{ name = "Zino Adidi" }]
+keywords = ["blender", "slm", "small-language-model", "qwen", "llm", "mcp", "gguf"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Topic :: Multimedia :: Graphics :: 3D Modeling",
+]
+dependencies = []          # the DSL, checker, MCP server and bridge use the Python standard library only
+
+[project.optional-dependencies]
+eval = ["llama-cpp-python>=0.3"]          # only for eval/maris3d_eval/run_eval.py --backend llama
+train = ["mlx-lm>=0.30"]                 # Apple silicon LoRA training, see train/
+# detachable copilot extras: standard library only, so they add no packages; the names let a host opt in explicitly
+checks = []                              # maris3d.extras.checks: checklist and edit guard
+planner = []                             # maris3d.extras.planner + extras.recipes: recipe / API / self plan chain (offline by default)
+screenshots = []                         # offscreen viewport render through Blender (blender/render_scene.py)
+
+[project.scripts]
+maris3d = "maris3d.cli:main"
+maris3d-mcp = "maris3d.mcp.server:main"
+maris3d-setup = "maris3d.setup:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"maris3d.addon" = ["*.toml", "maris/*.json", "maris/*.blend"]
+"maris3d.blender" = ["*.py"]
+"maris3d.copilot" = ["data/*.json"]
+"maris3d.extras.recipes" = ["data/*.json"]
+"maris3d.text" = ["*.json"]

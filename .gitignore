@@ -1,0 +1,25 @@
+# weights and large binaries: published on Hugging Face, never in this repo
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.npz
+hf/*/tokenizer.json
+# build and run output
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+*.log
+*.partial
+# local-only results and secrets guard
+/results/
+.env
+.env.*
+*.pem
+*.key
+# scratch
+.scratch/

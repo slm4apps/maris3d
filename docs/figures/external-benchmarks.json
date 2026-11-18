@@ -1,0 +1,14 @@
+{
+ "conditions": "identical settings for every model: llama-server, greedy decoding, native Qwen tool calls, 4 CPU threads, November 2026",
+ "tests": [
+  {"name": "BFCL v4 simple (python, 400)", "unit": "%", "models": {"Maris3D SLM Blender 0.5B": 49.25, "Qwen2.5-Coder-0.5B (untrained)": 0.0, "Qwen3.5-0.8B (untrained)": 76.0}},
+  {"name": "BFCL v4 multiple (200)", "unit": "%", "models": {"Maris3D SLM Blender 0.5B": 39.5, "Qwen2.5-Coder-0.5B (untrained)": 0.0, "Qwen3.5-0.8B (untrained)": 71.0}},
+  {"name": "3DCodeBench executable (212 scenes)", "unit": "%", "models": {"Maris3D SLM Blender 0.5B": 100.0, "Qwen2.5-Coder-0.5B (untrained)": 0.0, "Qwen3.5-0.8B (untrained)": 0.0}}
+ ],
+ "notes": [
+  "MCP-Universe 3D one-shot (19 tasks): 0/19 for all three models",
+  "3DCodeBench Chamfer distance, lower is better (165 comparable scenes): Maris3D SLM Blender 0.5B 0.1118",
+  "speed, 4 threads (generation 128 tokens / prompt processing 512 tokens, tokens/s): 62.1/289.1 vs 62.8/266.5 (base 0.5B) vs 33.6/175.1 (Qwen3.5-0.8B)",
+  "the untrained base scores 0.0 on BFCL because it does not emit tool calls in the native format; extracting its answers from plain text gives 74.0% on simple, but that is not an official BFCL number"
+ ]
+}

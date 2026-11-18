@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 430" width="800" height="430" role="img" aria-label="Maris3D SLM Blender 0.5B versus untrained base models on the 180-request benchmark" font-family="Helvetica, Arial, sans-serif" font-size="12">
+<title>Maris3D SLM Blender 0.5B versus untrained base models on the 180-request benchmark</title><rect width="100%" height="100%" fill="#ffffff"/>
+<text x="10" y="24" font-size="15" text-anchor="start" fill="#1f2937" font-weight="bold">Pass and usable rate, 180-request Blender benchmark</text>
+<text x="10" y="42" font-size="10" text-anchor="start" fill="#6b7280" font-weight="normal">real agent loop, native tool calls; every scene executed and checked in headless Blender (Nov 2026)</text>
+<line x1="360.0" y1="60" x2="360.0" y2="386" stroke="#e5e7eb"/>
+<text x="360.0" y="400" font-size="10" text-anchor="middle" fill="#6b7280" font-weight="normal">0%</text>
+<line x1="430.0" y1="60" x2="430.0" y2="386" stroke="#e5e7eb"/>
+<text x="430.0" y="400" font-size="10" text-anchor="middle" fill="#6b7280" font-weight="normal">20%</text>
+<line x1="500.0" y1="60" x2="500.0" y2="386" stroke="#e5e7eb"/>
+<text x="500.0" y="400" font-size="10" text-anchor="middle" fill="#6b7280" font-weight="normal">40%</text>
+<line x1="570.0" y1="60" x2="570.0" y2="386" stroke="#e5e7eb"/>
+<text x="570.0" y="400" font-size="10" text-anchor="middle" fill="#6b7280" font-weight="normal">60%</text>
+<line x1="640.0" y1="60" x2="640.0" y2="386" stroke="#e5e7eb"/>
+<text x="640.0" y="400" font-size="10" text-anchor="middle" fill="#6b7280" font-weight="normal">80%</text>
+<line x1="710.0" y1="60" x2="710.0" y2="386" stroke="#e5e7eb"/>
+<text x="710.0" y="400" font-size="10" text-anchor="middle" fill="#6b7280" font-weight="normal">100%</text>
+<text x="352" y="87" font-size="11" text-anchor="end" fill="#1f2937" font-weight="bold">Maris3D SLM Blender 0.5B, default (edit-merged)</text>
+<rect x="360" y="70" width="67.9" height="12" fill="#d97706"/>
+<text x="432.9" y="80" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">19.4</text>
+<rect x="360" y="86" width="270.2" height="12" fill="#2563eb"/>
+<text x="635.2" y="96" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">77.2</text>
+<text x="352" y="133" font-size="11" text-anchor="end" fill="#1f2937" font-weight="bold">Maris3D SLM Blender 0.5B, strict mode (adapter @0.7)</text>
+<rect x="360" y="116" width="83.7" height="12" fill="#d97706"/>
+<text x="448.65" y="126" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">23.9</text>
+<rect x="360" y="132" width="241.2" height="12" fill="#2563eb"/>
+<text x="606.1500000000001" y="142" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">68.9</text>
+<text x="352" y="179" font-size="11" text-anchor="end" fill="#1f2937" font-weight="bold">Maris3D SLM Blender 0.5B, build base (Q8_0)</text>
+<rect x="360" y="162" width="76.0" height="12" fill="#d97706"/>
+<text x="440.95" y="172" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">21.7</text>
+<rect x="360" y="178" width="241.2" height="12" fill="#2563eb"/>
+<text x="606.1500000000001" y="188" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">68.9</text>
+<text x="352" y="225" font-size="11" text-anchor="end" fill="#1f2937" font-weight="bold">Maris3D SLM Blender 0.5B, build base (Q4_K_M)</text>
+<rect x="360" y="208" width="64.0" height="12" fill="#d97706"/>
+<text x="429.05" y="218" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">18.3</text>
+<rect x="360" y="224" width="235.2" height="12" fill="#2563eb"/>
+<text x="600.2" y="234" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">67.2</text>
+<text x="352" y="271" font-size="11" text-anchor="end" fill="#1f2937" font-weight="normal">Qwen3-1.7B, untrained</text>
+<rect x="360" y="254" width="17.5" height="12" fill="#d97706"/>
+<text x="382.5" y="264" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">5</text>
+<rect x="360" y="270" width="44.8" height="12" fill="#2563eb"/>
+<text x="409.8" y="280" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">12.8</text>
+<text x="352" y="317" font-size="11" text-anchor="end" fill="#1f2937" font-weight="normal">Qwen2.5-Coder-1.5B, untrained</text>
+<rect x="360" y="300" width="0.0" height="12" fill="#d97706"/>
+<text x="365.0" y="310" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">0</text>
+<rect x="360" y="316" width="0.0" height="12" fill="#2563eb"/>
+<text x="365.0" y="326" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">0</text>
+<text x="352" y="363" font-size="11" text-anchor="end" fill="#1f2937" font-weight="normal">Qwen2.5-Coder-0.5B, untrained (our base model)</text>
+<rect x="360" y="346" width="0.0" height="12" fill="#d97706"/>
+<text x="365.0" y="356" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">0</text>
+<rect x="360" y="362" width="0.0" height="12" fill="#2563eb"/>
+<text x="365.0" y="372" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">0</text>
+<rect x="360" y="412" width="10" height="10" fill="#d97706"/><text x="375" y="420" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">pass % (every check holds)</text>
+<rect x="580" y="412" width="10" height="10" fill="#2563eb"/><text x="595" y="420" font-size="10" text-anchor="start" fill="#1f2937" font-weight="normal">usable % (pass or small fixes)</text>
+</svg>

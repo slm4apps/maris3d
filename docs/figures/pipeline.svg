@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 150" width="760" height="150" role="img" aria-label="Pipeline from request to verified scene" font-family="Helvetica, Arial, sans-serif" font-size="12">
+<title>Pipeline from request to verified scene</title><rect width="100%" height="100%" fill="#ffffff"/>
+<text x="10" y="24" font-size="15" text-anchor="start" fill="#1f2937" font-weight="bold">From request to verified scene</text>
+<rect x="10" y="50" width="124" height="54" rx="6" fill="#f3f4f6" stroke="#9ca3af"/>
+<text x="72" y="81" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">request (text)</text>
+<line x1="134" y1="77" x2="156" y2="77" stroke="#1f2937" stroke-width="2"/><polygon points="156,72 162,77 156,82" fill="#1f2937"/>
+<rect x="158" y="50" width="124" height="54" rx="6" fill="#f3f4f6" stroke="#9ca3af"/>
+<text x="220" y="74" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">Maris3D</text>
+<text x="220" y="89" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">JSON tool calls</text>
+<line x1="282" y1="77" x2="304" y2="77" stroke="#1f2937" stroke-width="2"/><polygon points="304,72 310,77 304,82" fill="#1f2937"/>
+<rect x="306" y="50" width="124" height="54" rx="6" fill="#f3f4f6" stroke="#9ca3af"/>
+<text x="368" y="74" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">compile_calls</text>
+<text x="368" y="89" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">bpy script</text>
+<line x1="430" y1="77" x2="452" y2="77" stroke="#1f2937" stroke-width="2"/><polygon points="452,72 458,77 452,82" fill="#1f2937"/>
+<rect x="454" y="50" width="124" height="54" rx="6" fill="#f3f4f6" stroke="#9ca3af"/>
+<text x="516" y="74" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">headless Blender</text>
+<text x="516" y="89" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">scene dump</text>
+<line x1="578" y1="77" x2="600" y2="77" stroke="#1f2937" stroke-width="2"/><polygon points="600,72 606,77 600,82" fill="#1f2937"/>
+<rect x="602" y="50" width="124" height="54" rx="6" fill="#f3f4f6" stroke="#9ca3af"/>
+<text x="664" y="74" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">scene check</text>
+<text x="664" y="89" font-size="11" text-anchor="middle" fill="#1f2937" font-weight="normal">pass / fail</text>
+<text x="10" y="135" font-size="11" text-anchor="start" fill="#6b7280" font-weight="normal">On a failed check the failed message can go back to the model (retry loop, up to 2 times).</text>
+</svg>

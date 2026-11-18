@@ -1,0 +1,41 @@
+{
+ "schema": "maris3d-result/1",
+ "model": {
+  "family_name": "Maris3D SLM Blender 0.5B",
+  "format": "gguf-q8_0",
+  "file": "maris3d-slm-blender-0.5b-Q8_0.gguf",
+  "sha256": "108abba2a4c2804b51568781d6b55abda256b1298ee4a331095c9075249bf414"
+ },
+ "benchmark": {
+  "n": 206,
+  "prompts_sha256": "043bf0c7fe42d849bccbbcb4e83a157c8eecb7f61e05a7da10570df01dd0d86e",
+  "blender": "5.2.2"
+ },
+ "settings": {
+  "mode": "tools",
+  "repair": 2,
+  "decoding": "greedy, 4096 ctx"
+ },
+ "summary": {
+  "n": 206,
+  "passed": 130,
+  "ran": null,
+  "run_pct": 95.1,
+  "pass_pct": 63.1,
+  "by_level": {
+   "1": 70.8,
+   "2": 82.8,
+   "3": 64.7,
+   "4": 30.6
+  },
+  "tok_s": 5.5,
+  "ttft_s_median": null,
+  "tok_s_machine": "CPU-only Linux server"
+ },
+ "rows": [],
+ "source": {
+  "note": "Numbers copied from a gate run: same file with the repair loop (2 retries). tok/s measured under server load and not comparable.",
+  "raw_result_json": "not included in this repository: the per-prompt JSON of this run is not part of the release; the summary numbers in this file are what was measured.",
+  "unreconciled": "A second run of the same file on a Mac gave 34.5% pass with 43% run under heavy memory pressure; it is not used."
+ }
+}

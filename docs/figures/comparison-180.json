@@ -1,0 +1,15 @@
+{
+ "benchmark": "Maris3D 180-request Blender benchmark",
+ "conditions": "real agent loop, native Qwen tool calls, greedy decoding, every scene executed and checked in headless Blender; 180 requests across seven scene types (single object, animation, arrays/rings, parenting, geometry nodes, edit, multi-part)",
+ "measured": "November 2026",
+ "note": "pass = every scene check holds; usable = pass or pass with small fixes. The untrained baselines are the same class of model without our fine-tune, run through the identical loop.",
+ "models": [
+  {"name": "Maris3D SLM Blender 0.5B, default (edit-merged)", "pass_pct": 19.4, "usable_pct": 77.2, "ours": true},
+  {"name": "Maris3D SLM Blender 0.5B, strict mode (adapter @0.7)", "pass_pct": 23.9, "usable_pct": 68.9, "ours": true},
+  {"name": "Maris3D SLM Blender 0.5B, build base (Q8_0)", "pass_pct": 21.7, "usable_pct": 68.9, "ours": true},
+  {"name": "Maris3D SLM Blender 0.5B, build base (Q4_K_M)", "pass_pct": 18.3, "usable_pct": 67.2, "ours": true},
+  {"name": "Qwen3-1.7B, untrained", "pass_pct": 5.0, "usable_pct": 12.8, "ours": false},
+  {"name": "Qwen2.5-Coder-1.5B, untrained", "pass_pct": 0.0, "usable_pct": 0.0, "ours": false},
+  {"name": "Qwen2.5-Coder-0.5B, untrained (our base model)", "pass_pct": 0.0, "usable_pct": 0.0, "ours": false}
+ ]
+}

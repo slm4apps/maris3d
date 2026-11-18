@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use Maris3D, please cite the technical report."
+title: "Maris3D SLM Blender 0.5B: a small language model that builds and edits Blender scenes"
+type: software
+version: 0.2.0
+date-released: 2026-11-18
+license: Apache-2.0
+repository-code: "https://github.com/slm4apps/maris3d"
+abstract: >-
+  A Qwen2.5-Coder-0.5B-Instruct fine-tune (v0.1, Maris3D SLM Blender 0.5B: build LoRA with the edit LoRA
+  merged into the default file) that builds and edits Blender scenes by calling tools in the
+  standard Qwen tool-call format. Early release: on the 180-request yardstick the default file
+  gives 35 of 180 requests fully correct (19.4%) and 139 of 180 (77.2%) usable. Distributed as
+  GGUF from slm4apps/Maris3D-Blender (tag v0.1.0).
+authors:
+  - name: "Zino Adidi"
+keywords: [blender, slm, small language model, tool calling, LoRA, Qwen2.5-Coder]

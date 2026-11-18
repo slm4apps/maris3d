@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Maris3D benchmark result (public form)",
+  "type": "object",
+  "required": ["schema", "model", "benchmark", "summary", "rows"],
+  "properties": {
+    "schema": {"const": "maris3d-result/1"},
+    "model": {"type": "object", "required": ["family_name", "format"],
+      "properties": {"family_name": {"type": "string"}, "format": {"type": "string"}, "file": {"type": "string"}, "sha256": {"type": ["string", "null"]}}},
+    "benchmark": {"type": "object", "required": ["n", "prompts_sha256"],
+      "properties": {"n": {"const": 206}, "prompts_sha256": {"type": "string"}, "blender": {"type": "string"}}},
+    "settings": {"type": "object"},
+    "summary": {"type": "object", "required": ["n", "run_pct", "pass_pct", "passed"],
+      "properties": {"n": {"type": "integer"}, "passed": {"type": "integer"}, "ran": {"type": "integer"}, "run_pct": {"type": "number"}, "pass_pct": {"type": "number"},
+        "by_level": {"type": "object"}, "tok_s": {"type": ["number", "null"]}, "ttft_s_median": {"type": ["number", "null"]}}},
+    "rows": {"type": "array", "items": {"type": "object", "required": ["id", "level", "ran", "passed"]}},
+    "source": {"type": "object", "description": "where the numbers came from (private path names are never stored here)"}
+  }
+}

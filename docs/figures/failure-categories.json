@@ -1,0 +1,15 @@
+{
+ "source": "release/results/maris3d-1.5b-dev-q8_0.json",
+ "note": "first failed check of each failed prompt, grouped by its wording (coarse)",
+ "counts": {
+  "object count wrong": 12,
+  "size, extent or face count outside range": 10,
+  "material missing or wrong": 9,
+  "script did not run": 7,
+  "world, scene settings, animation or markers": 7,
+  "position or rotation wrong": 5,
+  "modifier missing": 3,
+  "curve or text object missing": 2,
+  "other": 2
+ }
+}

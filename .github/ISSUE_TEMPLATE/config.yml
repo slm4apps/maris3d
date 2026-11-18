@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: How to phrase a request
+    url: https://github.com/slm4apps/maris3d/blob/main/docs/PROMPTING-GUIDE.md
+    about: What the model and the planner understand, with examples that were run.
+  - name: Questions and ideas
+    url: https://github.com/slm4apps/maris3d/discussions
+    about: Ask, show what you built, propose something.
