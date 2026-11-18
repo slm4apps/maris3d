@@ -15,7 +15,7 @@
 # Remove everything again: `maris3d` files live in ~/.local/share/maris3d and ~/.cache/maris3d.
 set -eu
 
-VERSION="0.2.1"
+VERSION="0.2.1.1"
 WHEEL_URL="${MARIS3D_WHEEL:-https://github.com/slm4apps/maris3d/releases/download/v${VERSION}/maris3d-${VERSION}-py3-none-any.whl}"
 HOME_DIR="${MARIS3D_HOME:-$HOME/.local/share/maris3d}"
 BIN_DIR="$HOME/.local/bin"

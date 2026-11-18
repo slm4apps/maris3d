@@ -9,7 +9,7 @@ Type a sentence, get a scene. Offline, on your own machine.
 [![Release](https://img.shields.io/github/v/release/slm4apps/maris3d)](https://github.com/slm4apps/maris3d/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/slm4apps/maris3d/ci.yml?label=CI)](https://github.com/slm4apps/maris3d/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-![Version 0.2.0](https://img.shields.io/badge/version-0.2.0-informational)
+![Version 0.2.1.1](https://img.shields.io/badge/version-0.2.1.1-informational)
 [![Blender 4.2+](https://img.shields.io/badge/Blender-4.2%2B%20(5.2%20LTS%20tested)-orange)](https://www.blender.org)
 
 <img src="docs/figures/demo-street.jpg" alt="A snowy street with houses, a bus, a snowman and a Christmas tree, built in Blender by Maris3D" width="820">

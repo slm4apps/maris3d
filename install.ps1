@@ -8,8 +8,9 @@
 # `maris3d install` (the Blender add-on, the model files from Hugging Face, llama-server, a self-test).
 $ErrorActionPreference = "Stop"
 
-$Version = "0.2.1"
+$Version = "0.2.1.1"
 $WheelUrl = "https://github.com/slm4apps/maris3d/releases/download/v$Version/maris3d-$Version-py3-none-any.whl"
+if ($env:MARIS3D_WHEEL) { $WheelUrl = $env:MARIS3D_WHEEL }   # a local wheel, for testing (as in install.sh)
 $HomeDir = if ($env:MARIS3D_HOME) { $env:MARIS3D_HOME } else { Join-Path $env:LOCALAPPDATA "maris3d" }
 
 function Say($msg) { Write-Host "maris3d: $msg" }
@@ -25,22 +26,30 @@ foreach ($cand in @("py -3", "python", "python3")) {
 }
 if (-not $Py) { throw "maris3d: Python 3.9 or newer is needed: https://www.python.org/downloads/windows/ (tick 'Add python.exe to PATH')" }
 
-$exe, $pyargs = $Py
+# Keep the extra arguments a list: a lone string ("-3") splatted into a native command runs nothing.
+$exe = $Py[0]; $pyargs = @($Py | Select-Object -Skip 1)
 Say "making a private environment in $HomeDir\venv"
 & $exe @pyargs -m venv (Join-Path $HomeDir "venv")
 $VPy = Join-Path $HomeDir "venv\Scripts\python.exe"
+if (-not (Test-Path $VPy)) { throw "maris3d: could not make the environment in $HomeDir\venv with $($Py -join ' ')" }
 & $VPy -m pip install --quiet --upgrade pip | Out-Null
 
 Say "installing maris3d $Version"
 & $VPy -m pip install --quiet --upgrade $WheelUrl
 if ($LASTEXITCODE -ne 0) { throw "maris3d: could not install from $WheelUrl" }
 
-$Scripts = Join-Path $HomeDir "venv\Scripts"
+# The command goes on PATH as a small .cmd that runs the signed python.exe: Windows 11 Smart App Control
+# blocks the unsigned launcher .exe that pip makes (venv\Scripts\maris3d.exe).
+$Bin = Join-Path $HomeDir "bin"
+New-Item -ItemType Directory -Force $Bin | Out-Null
+Set-Content -Path (Join-Path $Bin "maris3d.cmd") -Encoding ASCII -Value "@`"$VPy`" -m maris3d %*"
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if (-not ($UserPath -split ";" | Where-Object { $_ -eq $Scripts })) {
-    [Environment]::SetEnvironmentVariable("Path", "$UserPath;$Scripts", "User")
-    Say "added $Scripts to your PATH (new terminals will find 'maris3d')"
+if (-not ($UserPath -split ";" | Where-Object { $_ -eq $Bin })) {
+    [Environment]::SetEnvironmentVariable("Path", "$UserPath;$Bin", "User")
+    Say "added $Bin to your PATH (new terminals will find 'maris3d')"
 }
 
 Say "setting up Blender and the model"
-& (Join-Path $Scripts "maris3d.exe") install @args
+# No @args: under "irm | iex" there are none, and in nested PowerShell hosts $args can hold the caller's own values.
+& $VPy -m maris3d install
+if ($LASTEXITCODE -ne 0) { throw "maris3d: setup did not finish; run 'maris3d doctor' in a new terminal to see what is missing" }

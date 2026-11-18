@@ -81,41 +81,74 @@ def download_model(variant="q8_0", sha_line=None):
     return dest, want[:16]
 
 
+# One tested llama.cpp build. "latest" is not usable: its newest release can carry no binaries, and the
+# asset names change (win-cpu-x64.zip, macos-arm64.tar.gz). Bump LLAMA_BUILD after testing a newer one.
+LLAMA_BUILD = "b12503"
+LLAMA_EXE = "llama-server.exe" if sys.platform == "win32" else "llama-server"
+
+
+def _llama_asset():
+    import platform
+    m = platform.machine().lower()
+    arm = m in ("arm64", "aarch64")
+    return {"darwin": f"macos-{'arm64' if arm else 'x64'}.tar.gz",
+            "linux": f"ubuntu-{'arm64' if arm else 'x64'}.tar.gz",
+            "win32": f"win-cpu-{'arm64' if arm else 'x64'}.zip"}.get(sys.platform)
+
+
 def find_llama_server():
-    for p in (CACHE / "llama-server",):
-        if p.exists():
+    """The one `maris3d install` unpacked (with its libraries), else the one on PATH."""
+    import shutil
+    for p in sorted((CACHE / "llama").glob(f"*/**/{LLAMA_EXE}"), reverse=True):
+        if p.is_file():
             return str(p)
-    return subprocess.run(["which", "llama-server"], capture_output=True, text=True).stdout.strip() or None
+    old = CACHE / LLAMA_EXE          # where 0.2.1 and earlier put a lone binary
+    if old.is_file():
+        return str(old)
+    return shutil.which("llama-server")
 
 
 def download_llama_server():
-    """Best-effort fetch of a ggml-org release binary for this platform (the GPU recipe:
-    Metal on arm64 Mac, Vulkan on Win/Linux, CPU otherwise — llama-server picks it itself)."""
-    import platform
-    tag = {"darwin": ("macos", "arm64" if platform.machine() == "arm64" else "x64"),
-           "linux": ("ubuntu", "x64"), "win32": ("windows", "x64")}.get(sys.platform)
-    if not tag:
+    """Best-effort fetch of the pinned ggml-org build for this platform; the whole archive is unpacked so
+    the server's libraries (DLLs on Windows) sit next to it. Returns the server's path or None."""
+    kind = _llama_asset()
+    if not kind:
         return None
-    os_name, arch = tag
-    rel = json.loads(_get("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest", timeout=30))
-    want = f"-bin-{os_name}-{arch}.zip"
-    asset = next((a for a in rel["assets"] if a["name"].endswith(want)), None)
-    if not asset:
+    name = f"llama-{LLAMA_BUILD}-bin-{kind}"
+    url = f"https://github.com/ggml-org/llama.cpp/releases/download/{LLAMA_BUILD}/{name}"
+    dest = CACHE / "llama" / LLAMA_BUILD
+    try:
+        arc = CACHE / "llama" / name
+        arc.parent.mkdir(parents=True, exist_ok=True)
+        if not arc.exists():
+            part = arc.with_name(arc.name + ".part")
+            part.write_bytes(_get(url, timeout=600))
+            part.rename(arc)
+        dest.mkdir(parents=True, exist_ok=True)
+        if name.endswith(".zip"):
+            import zipfile
+            with zipfile.ZipFile(arc) as z:
+                z.extractall(dest)
+        else:
+            import tarfile
+            with tarfile.open(arc) as z:
+                try:
+                    z.extractall(dest, filter="data")
+                except TypeError:        # Python < 3.12: refuse absolute and parent paths by hand
+                    root = dest.resolve()
+                    for mbr in z.getmembers():
+                        if not (dest / mbr.name).resolve().is_relative_to(root):
+                            raise RuntimeError(f"unsafe path in archive: {mbr.name}")
+                    z.extractall(dest)
+        arc.unlink()
+    except Exception as e:
+        _say(t("cli.install.llama_download_failed", error=e))
         return None
-    zpath = CACHE / f"llama-{asset['name']}"
-    zpath.parent.mkdir(parents=True, exist_ok=True)
-    if not zpath.exists():
-        with open(zpath, "wb") as f:
-            f.write(_get(asset["browser_download_url"], timeout=600))
-    import zipfile
-    with zipfile.ZipFile(zpath) as z:
-        for n in z.namelist():
-            if n.endswith("llama-server"):
-                out = CACHE / "llama-server"
-                with z.open(n) as src, open(out, "wb") as dst:
-                    dst.write(src.read())
-                out.chmod(0o755)
-                return str(out)
+    for p in dest.glob(f"**/{LLAMA_EXE}"):
+        if p.is_file():
+            if sys.platform != "win32":
+                p.chmod(0o755)
+            return str(p)
     return None
 
 
@@ -259,7 +292,15 @@ def serve_command(binary, gguf, lora, port, parts=None):
 def _start_one(binary, gguf, lora, port, pid_path, log, parts=None):
     cmd = serve_command(binary, gguf, lora, port, parts)
     _say(" ".join(cmd))
-    proc = subprocess.Popen(cmd, stdout=log, stderr=log, stdin=subprocess.DEVNULL, start_new_session=True)
+    try:
+        proc = subprocess.Popen(cmd, stdout=log, stderr=log, stdin=subprocess.DEVNULL, start_new_session=True)
+    except OSError as e:
+        # Windows 11 Smart App Control (and other app-control policies) run only signed programs;
+        # the llama.cpp builds are not signed. Ollama's installer is.
+        if getattr(e, "winerror", None) in (4551, 1260):
+            _say(t("cli.serve.blocked_by_windows"))
+            return None
+        raise
     pid_path.write_text(str(proc.pid))
     for _ in range(60):
         time.sleep(0.5)
