@@ -9,7 +9,7 @@ App only; the model files are unchanged (Hugging Face tag v0.2.1).
   `maris3d.cmd` and the signed `python.exe`, because Windows 11 Smart App Control blocks the unsigned launcher pip makes.
 - **llama-server download fixed on every platform.** The install fetches one tested llama.cpp build (b12503) with its
   libraries, instead of the newest release, which no longer carries the program.
-- When Windows blocks `llama-server.exe` (Smart App Control runs only signed programs), `maris3d serve start` says so and
+- When Windows blocks `llama-server.exe` or its libraries (Smart App Control runs only signed programs), `maris3d serve start` says so and
   points to Ollama.
 - `python -m maris3d` works as the `maris3d` command.
 

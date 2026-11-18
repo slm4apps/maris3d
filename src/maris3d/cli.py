@@ -289,6 +289,13 @@ def serve_command(binary, gguf, lora, port, parts=None):
     return cmd
 
 
+def _log_has_text(path):
+    try:
+        return Path(path).stat().st_size > 0
+    except OSError:
+        return False
+
+
 def _start_one(binary, gguf, lora, port, pid_path, log, parts=None):
     cmd = serve_command(binary, gguf, lora, port, parts)
     _say(" ".join(cmd))
@@ -312,6 +319,11 @@ def _start_one(binary, gguf, lora, port, pid_path, log, parts=None):
         except Exception:
             if proc.poll() is not None:
                 _say(t("cli.serve.exited", port=port, log=CACHE / "serve.log"))
+                # Smart App Control may also let the program start, then block its unsigned DLLs: it exits
+                # before writing a line (0xC0000428, invalid image hash).
+                if sys.platform == "win32" and (proc.returncode in (-1073740760, 3221226536)
+                                                or not _log_has_text(CACHE / "serve.log")):
+                    _say(t("cli.serve.blocked_by_windows"))
                 return None
     _say(t("cli.serve.slow", port=port))
     return proc.pid
