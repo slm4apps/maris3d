@@ -187,8 +187,8 @@ class Layout(unittest.TestCase):
 class Build(unittest.TestCase):
     def test_the_built_parts_are_counted_exact(self):
         result, ex, session, _rt = run()
-        self.assertEqual(result.built["parts"], 15)
-        self.assertEqual(result.built["exact"], 15)
+        self.assertEqual(result.built["parts"], 14)
+        self.assertEqual(result.built["exact"], 14)
         self.assertEqual(result.built["missing"] + result.built["moved"], 0)
         self.assertEqual(result.built["strays"], [])
         self.assertIn("Bench2", session.groups)
@@ -198,7 +198,7 @@ class Build(unittest.TestCase):
         ex = FakeExecutor()
         result = Copilot(Never(), Session(ex)).run_items(STATION)
         self.assertEqual(result.built["by"], "code")
-        self.assertEqual((result.built["parts"], result.built["exact"]), (15, 15))
+        self.assertEqual((result.built["parts"], result.built["exact"]), (14, 14))
         self.assertEqual((result.built["moved"], result.built["missing"], result.built["unfixed"]), (0, 0, 0))
         self.assertEqual(result.built["strays"], [])
         self.assertEqual(result.errors, [])
@@ -208,7 +208,7 @@ class Build(unittest.TestCase):
 
     def test_a_part_in_the_wrong_place_is_moved_and_counted(self):
         result, ex, _session, _rt = run(Lazy())
-        self.assertEqual(result.built["moved"], 15)
+        self.assertEqual(result.built["moved"], 14)
         self.assertEqual(result.built["exact"], 0)
         self.assertGreater(result.built["wrong_place"], 0)      # the place is dropped, not the size:
         self.assertEqual(result.built["wrong_size"], 0)         # the two are counted apart
@@ -469,8 +469,8 @@ class PlannerV3(unittest.TestCase):
         from maris3d.copilot import vocabulary as V
         self.assertEqual(runtime.system, V.OUTLINE_SYSTEM)             # the prompt it was trained on
         self.assertEqual([i["id"] for i in result.plan["items"]], [i["id"] for i in STATION])
-        self.assertEqual(result.built["parts"], 15)
-        self.assertEqual(result.built["exact"], 15)
+        self.assertEqual(result.built["parts"], 14)      # the station building has no door
+        self.assertEqual(result.built["exact"], 14)
 
     def test_north_is_marked_once_and_leaves_with_the_first_request(self):
         runtime = self.V3({"items": STATION})
@@ -504,13 +504,21 @@ class PlannerV3(unittest.TestCase):
         self.assertEqual(result.moved["place"]["relation"], "behind")   # the copied word, mapped back
         self.assertEqual(len(ex.objs), before)                           # nothing new was built
 
-    def test_an_exact_instruction_goes_to_the_word_edit_adapter_not_the_planner(self):
+    def test_an_exact_instruction_is_read_by_code_no_model_asked(self):
         runtime = self.V3({"items": STATION})
         runtime.edit_answer = {"kind": "question", "say": "Which table?"}
         ex = FakeExecutor()
         result = Copilot(runtime, Session(ex)).run_auto("Add a cube named TableTop at 1, 2, 0.75 with a scale of 0.6, 0.4, 0.03.")
+        self.assertEqual(runtime.roles, [])                  # neither the planner nor the edit model
+        self.assertEqual(list(ex.objs), ["TableTop"])
+        self.assertEqual(result.mode, "change")
+
+    def test_an_exact_sentence_with_more_in_it_still_goes_to_the_edit_model(self):
+        runtime = self.V3({"items": STATION})
+        runtime.edit_answer = {"kind": "question", "say": "Which table?"}
+        ex = FakeExecutor()
+        result = Copilot(runtime, Session(ex)).run_auto("Add a cube named TableTop at 1, 2, 0.75 and make it red.")
         self.assertEqual(runtime.roles, ["edit"])
-        self.assertEqual(ex.objs, {})
         self.assertEqual(result.text, "Which table?")
 
     def test_a_new_session_still_knows_what_was_built(self):

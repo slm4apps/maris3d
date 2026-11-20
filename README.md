@@ -9,7 +9,7 @@ Type a sentence, get a scene. Offline, on your own machine.
 [![Release](https://img.shields.io/github/v/release/slm4apps/maris3d)](https://github.com/slm4apps/maris3d/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/slm4apps/maris3d/ci.yml?label=CI)](https://github.com/slm4apps/maris3d/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-![Version 0.2.1.1](https://img.shields.io/badge/version-0.2.1.1-informational)
+![Version 0.2.2](https://img.shields.io/badge/version-0.2.2-informational)
 [![Blender 4.2+](https://img.shields.io/badge/Blender-4.2%2B%20(5.2%20LTS%20tested)-orange)](https://www.blender.org)
 
 <img src="docs/figures/demo-street.jpg" alt="A snowy street with houses, a bus, a snowman and a Christmas tree, built in Blender by Maris3D" width="820">
@@ -18,15 +18,15 @@ Type a sentence, get a scene. Offline, on your own machine.
 
 <img src="assets/maris/pose-ninja.png" alt="Maris, the Maris3D mascot, a low-poly figure in a ninja outfit in a ready stance" width="150" align="right">
 
-Maris3D 0.2 is a 0.5B model and a Blender add-on. You describe a scene in a sentence. The model
+Maris3D 0.2.2 is a 0.5B model and a Blender add-on. You describe a scene in a sentence. The model
 answers in plain words: which things, how many, what they are made of and where they stand. The
 app turns those words into exact Blender tool calls, builds the scene, reads it back and checks it.
 The model never writes a number; code computes every size and position. No cloud, no account, no
-API key: the model is one 531 MB base file plus a 12 MB adapter.
+API key: the model is one 531 MB base file plus a 23 MB adapter.
 
 ## Install
 
-You do not need to clone this repository. One command installs the Blender add-on, downloads the model from Hugging Face (about 543 MB, sha256-checked) and tests it in your Blender.
+You do not need to clone this repository. One command installs the Blender add-on, downloads the model from Hugging Face (about 554 MB, sha256-checked) and tests it in your Blender.
 
 | macOS / Linux | Windows (PowerShell) |
 |---|---|
@@ -39,7 +39,7 @@ You need Python 3.9+ and Blender 4.2 or newer. The installer asks before each st
 
 - **With pip:** `pip install git+https://github.com/slm4apps/maris3d`, then `maris3d install`.
 - **Ollama:** download the files from [slm4apps/Maris3D-Blender](https://huggingface.co/slm4apps/Maris3D-Blender), run `ollama create maris3d-slm-blender-0.5b -f Modelfile`, then pick Ollama in the app's settings.
-- **llama-server by hand:** `llama-server -m maris3d-slm-blender-0.5b-q8_0.gguf --lora maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf --lora-init-without-apply --jinja -c 8192`. Serve with temperature 0 and repeat penalty 1.05 (the app sends both).
+- **llama-server by hand:** `llama-server -m maris3d-slm-blender-0.5b-q8_0.gguf --lora maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf --lora-init-without-apply --jinja -c 8192`. Serve with temperature 0 and repeat penalty 1.05 (the app sends both).
 - Something wrong? `maris3d doctor` checks every part and says what to fix.
 
 </details>
@@ -48,7 +48,7 @@ You need Python 3.9+ and Blender 4.2 or newer. The installer asks before each st
 
 1. `maris3d serve start` (one local server).
 2. Open Blender. Press `N` in the 3D View and pick the **Maris3D Copilot** tab.
-3. Type a sentence, press **Run**.
+3. Type a sentence, press **Run**. Or press the mic button and say it (voice input, offline: `maris3d install --voice`).
 
 Things to try:
 
@@ -60,10 +60,24 @@ Every answer shows what was built, then a one-line summary read from the real sc
 
 Want one shape with your own numbers? Type them: `Add a cylinder named Cup at 0.45, 0.15, 0.86 with a radius of 0.10 and a depth of 0.18.` The numbers are copied as typed.
 
+## What is new in 0.2.2
+
+- **A new adapter** (`maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf`, 23 MB) on the same base; update the app (re-run the one-line install), then `maris3d update` fetches only the adapter. It knows more change words: camera, light, text, retext, attach, aim, finish (bevel, subdivide, thicken, wire, mirror, array, taper, bend, twist) and scene (background colour, length, frame rate). The app tells the model which cameras, lights and texts are in the scene; `MARIS3D_KIT_WORDS=0` turns the new words off.
+- **Exact adds are read by code.** `Add a cube named Path at -1, 0, 0 with a scale of 0.4, 2.0, 0.01` (or with a radius and depth, a major and minor radius, a rotation) is built from the numbers as written, without asking the model: 203 of the 204 exact adds of the 0.1 demo scene are built exactly.
+- **Undo by voice or text:** "undo", "undo that", "go back" or "revert it" undoes the last request.
+- **Voice input**, on your machine (see below).
+- **Maris** behaves more like she lives in the scene: sized like a person, carries parts in from the edge of the ground, keeps facing what she placed, runs to a chair before she sits, carries a whole group when a request moves it. **Follow Maris** (off by default) lets the view drift after her.
+
+### Voice input
+
+1. `maris3d install --voice` (the interactive install asks too). It sets up whisper.cpp with a small English speech model; speech is turned into text on your machine.
+2. You need a sound recorder: sox, ffmpeg, ALSA's `arecord`, or Windows' own.
+3. In the **Maris3D Copilot** tab press the mic button next to the prompt, say what to make or change, press it again. The words fill the prompt and run.
+
 ## What is new in 0.2
 
 - **Words, not numbers.** 0.1 wrote tool calls with coordinates. 0.2 answers in one small word language (things, relations such as *behind* or *on top of*, sizes such as *half* or *double*); the app's compiler writes the tool calls.
-- **One adapter** (12 MB) for planning, designing the parts of a new thing, word edits and talk, instead of 0.1's separate edit and planner adapters.
+- **One adapter** for planning, designing the parts of a new thing, word edits and talk, instead of 0.1's separate edit and planner adapters.
 - **Edits by words:** "make the table darker", "move the lamp next to the sofa". The model says what changes, code applies it and checks it.
 - **Talk:** ask about the scene and it answers from what is there.
 - **Animation:** spin, bounce, move, rise, grow, shrink, swing, orbit, pulse and colour change, written by the app's code.
@@ -98,7 +112,7 @@ Nothing is ever asked to write or run free-form code. More in
 
 Screen recordings of the demo street being built in Blender 5.2 (recorded with 0.1), sped up, and
 a render of the finished scene. Each thing is one typed request; the 204 requests of these demo
-scenes, replayed through the 0.2 app, build **188 exactly** (right thing, place and size).
+scenes, replayed through the 0.2.2 app, build **203 of 204 exactly** (right thing, place and size).
 
 ![the finished street, a slow zoom into the hero house and its fireplace](demo/gifs/hero-street.gif)
 
@@ -122,21 +136,25 @@ Every recording and render is in [demo/gifs/](demo/gifs/README.md).
 
 ## Results
 
-Held-out sets the model never trained on, scored by outcome through the app's own code.
+Held-out sets the model never trained on, scored by outcome through the app's own code (0.2.2).
 
 | What | Result |
 |---|---|
-| Plan from one sentence: the things named are right | 97.3 % (3,033 things in 716 sentences) |
-| the relation (behind, next to, on top of ...) is right | 97.0 % |
-| the thing it is placed by is right | 95.8 % |
-| Parts of a new thing: the answer parses / passes the app's rules | 99.9 % / 95.7 % (1,268 names) |
-| Word edits: the change asked for is the change made | 90.4 % (726 requests) |
-| Talk: the reply is right | 95.8 % (118 turns); 0 invented things in 383 turns |
-| The 0.1 demo scene, its 204 requests replayed through the 0.2 app: built exactly | 92.2 % (188 of 204) |
+| Plan from one sentence: the things named are right | 97.3 % (2,951 of 3,033 things in 716 sentences) |
+| the relation (behind, next to, on top of ...) is right | 97.1 % |
+| the thing it is placed by is right | 95.9 % |
+| the whole sentence is planned right | 84.1 % (602 of 716) |
+| Parts of a new thing: the answer parses / passes the app's rules | 99.9 % / 99.0 % (1,268 names) |
+| Word edits: the change asked for is the change made | 85.4 % (726 requests) |
+| Talk: the reply is right | 96.1 % (152 turns), 96.5 % (231 turns, a second set); 0 invented things in 383 turns |
+| Long sentences that join several groups of things: the whole plan exact | 40.0 % (60 sentences) |
+| The 0.1 demo scene, its 204 exact adds through the 0.2.2 app (read by code): built exactly | 99.5 % (203 of 204) |
+
+Both versions on every set: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 ## Scores
 
-Measured on 180 frozen Blender requests, the same set and scorer as 0.1. PASS = fully correct;
+Measured on 180 frozen Blender requests, the same set and scorer as 0.1 (run on 0.2.0; not run again for 0.2.2). PASS = fully correct;
 usable = PASS or needs a small fix.
 
 | Model | PASS | usable |
@@ -165,7 +183,7 @@ Method and the rest: [docs/BENCHMARKS.md](docs/BENCHMARKS.md), the
 ## Limits
 
 - **Early.** Plans and edits are measured on held-out sets above; whole scenes can still come out wrong. Check what it built.
-- **Things only:** furniture, buildings, vehicles, people, plants, street and room scenes. No lights, cameras or text from a plain request yet; an animation that names a camera or a light gets a real one from the app's animation code.
+- **Things only:** furniture, buildings, vehicles, people, plants, street and room scenes. No lights, cameras or text from a plain request yet; an animation that names a camera or a light gets a real one from the app's animation code, and from 0.2.2 a change to a built scene can add a camera, a light or a text.
 - **Weakest modes:** edit follow-ups and geometry nodes (see Scores above).
 - Does not see images.
 
@@ -182,7 +200,7 @@ The model files live in the Hugging Face organisation `slm4apps`, repository [sl
 | File | What it is | Size |
 |---|---|---|
 | `maris3d-slm-blender-0.5b-q8_0.gguf` | the base (the same file as 0.1) | 531 MB |
-| `maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf` | the 0.2 adapter | 12 MB |
+| `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf` | the 0.2.2 adapter | 23 MB |
 | `Modelfile` | the Ollama entry `maris3d-slm-blender-0.5b` | |
 | `MANIFEST.json`, `SHA256SUMS` | the current file of each role with its sha256; `maris3d update` fetches only what changed | |
 
@@ -203,7 +221,7 @@ History: [CHANGELOG.md](CHANGELOG.md). What is next: [ROADMAP.md](ROADMAP.md).
 
 ## Support the project
 
-Maris3D is built and trained by one person on home machines. If it is useful to you, you can support the next versions on [Ko-fi](https://ko-fi.com/zinoadidi) or [Buy Me a Coffee](https://buymeacoffee.com/zinoadidi).
+Maris3D is built and trained by one person on home machines. If it is useful to you, you can support the next versions on [Ko-fi](https://ko-fi.com/zinoadidi) or [Buy Me a Coffee](https://buymeacoffee.com/zinoadidi). Videos of Maris3D building scenes are on [YouTube](https://www.youtube.com/@SLMForApps).
 
 ## Licences and credits
 

@@ -8,7 +8,8 @@ The converters write what they find on the machine that ran them: general.name a
 training folder, general.base_model.* and general.tags made from the local base-model path, an "mlx" tag, and
 the base model's chat template with its stock identity. This copy:
   * sets general.name;
-  * removes general.base_model.*, general.basename, general.finetune, general.tags, general.url, general.source.*;
+  * removes general.base_model.*, general.basename, general.finetune, general.tags, general.url, general.source.*,
+    general.version (the training step);
   * replaces the template's default system line with scripts/maris3d_identity.IDENTITY (model files only);
   * keeps every tensor and every other key unchanged.
 Then it reads the copy back with scripts/scan_private.py and fails (deleting the copy) on any finding.
@@ -27,7 +28,8 @@ import scan_private as S  # noqa: E402
 
 DROP_PREFIX = ("general.base_model.", "general.source.", "general.dataset.")
 DROP = {"general.basename", "general.finetune", "general.tags", "general.url", "general.repo_url",
-        "general.organization", "general.author", "general.base_model.count"}
+        "general.organization", "general.author", "general.base_model.count",
+        "general.version"}   # the converter writes the training step here (e.g. 9000), not the release
 
 
 def main():

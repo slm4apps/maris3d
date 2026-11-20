@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "maris3d"
-version = "0.2.1.1"
+version = "0.2.2"
 description = "Small language models that write Blender scenes from a text request: tool DSL, checker, benchmark, MCP server and OpenAI-compatible bridge."
 readme = "README.md"
 requires-python = ">=3.9"

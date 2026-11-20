@@ -5,6 +5,7 @@ import unittest
 
 from maris3d.copilot import apply_change as AC
 from maris3d.copilot import edit_words as EW
+from maris3d.copilot import kit_words as KIT
 
 from tests.test_apply_change import Sim, build, ch, run, statuses
 
@@ -184,7 +185,7 @@ class ExactRoute(unittest.TestCase):
         cop, sim = self._copilot(EW.wrap(answer))
         cop.run_auto("Add a cube named Box at 1, 2, 0 with a size of 0.5")
         asked = cop.runtime.asked[0]["messages"][0]["content"]
-        self.assertEqual(asked, EW.EDIT_SYSTEM_EXACT)
+        self.assertEqual(asked, EW.EDIT_SYSTEM_EXACT + KIT.KIT_SYSTEM)
         self.assertEqual(obj(sim, "Box")["loc"], [1.0, 2.0, 0.0])
         self.assertEqual(obj(sim, "Box")["dims"], [0.5, 0.5, 0.5])
 

@@ -26,7 +26,7 @@ model-index:
       name: Blender scene generation from a text request
     dataset:
       type: maris3d-benchmark
-      name: Maris3D 180-request benchmark
+      name: Maris3D 180-request benchmark (measured on 0.2.0)
     metrics:
     - type: pass
       value: 23.3
@@ -36,7 +36,7 @@ model-index:
       name: usable scene %
 ---
 
-# Maris3D SLM Blender 0.5B (v0.2.1)
+# Maris3D SLM Blender 0.5B (v0.2.2)
 
 *A 0.5B model that builds Blender scenes from plain words, offline.*
 
@@ -68,12 +68,13 @@ they are made of and where they stand. The Maris3D app turns those words into ex
 tool calls, builds the scene, reads it back and checks it. The model never writes a number; code
 computes every size and position.
 
-It runs fully offline on your own machine: one 531 MB base file plus a 12 MB adapter, on a
-4-core laptop CPU at 28.5 tok/s in 876 MB of memory.
+It runs fully offline on your own machine: one 531 MB base file plus a 23 MB adapter, on a
+4-core laptop CPU at 28.5 tok/s in 876 MB of memory (measured with the 0.2.0 adapter).
 
-On held-out sets it plans the right things **97.3 %** of the time, designs a new thing's parts
-that pass the app's rules **95.7 %**, makes the word edit asked for **90.4 %**, and replays the
-204 requests of the 0.1 demo scene **188 exactly (92.2 %)**.
+On held-out sets it plans the right things **97.3 %** of the time (2,951 of 3,033 things in 716
+sentences), designs a new thing's parts that pass the app's rules **99.0 %** (1,268 names), answers
+talk right **96.1 %** (152 turns) and invents nothing in 383 turns. The app builds **203 of the 204**
+exact adds of the 0.1 demo scene exactly (**99.5 %**).
 Read the limits section before you use it.
 
 **Uncensored by training.** The fine-tune leaves no refusal behavior: dark game-art requests (weapons,
@@ -84,7 +85,7 @@ gore, horror props, standard 3D art fare) are planned like anything else. 0 of 1
 | File | What it is |
 |---|---|
 | `maris3d-slm-blender-0.5b-q8_0.gguf` | The base (531 MB): the 0.1 weights, with Maris3D metadata. |
-| `maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf` | The adapter (12 MB): plans, parts, word edits, talk. |
+| `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf` | The adapter (23 MB): plans, parts, word edits, talk. |
 | `Modelfile` | The Ollama entry `maris3d-slm-blender-0.5b`, with the settings the app sends. |
 | `MANIFEST.json`, `SHA256SUMS` | The current file of each role with its sha256, read by `maris3d update`. |
 
@@ -101,8 +102,12 @@ gore, horror props, standard 3D art fare) are planned like anything else. 0 of 1
 - **Talk.** Ask about the scene and it answers from what is there.
 - Breaking change: 0.2 needs the 0.2 app. 0.1 stays available as
   [Maris3D-Blender v0.1.0](https://huggingface.co/slm4apps/Maris3D-Blender/tree/v0.1.0)
-  and at tag `v0.1.1` on GitHub.
+  and at tag `v0.1.2` on GitHub.
 - **0.2.1:** The same weights as 0.2.0. The files now carry the Maris3D name and identity; `maris3d update` fetches both again (543 MB).
+- **0.2.2:** A new adapter, trained further on edit and parts rows and blended from two of its checkpoints. It knows
+  more change words: cameras, lights, texts, aim, attach, finishes (bevel, mirror, array, twist ...) and scene settings.
+  Same base file; update the app (re-run the one-line install), then `maris3d update` fetches only the adapter (23 MB). The app reads exact adds ("Add a cube named Path
+  at -1, 0, 0 with a scale of 0.4, 2.0, 0.01") by code, and adds voice input, undo and a livelier Maris.
 
 ## See it build
 
@@ -111,8 +116,8 @@ The finished demo street, rendered in Blender: a slow zoom into the hero house a
 ![the finished street, a slow zoom into the hero house and its fireplace](figures/hero-street.gif)
 
 Screen recordings of the street being built (Blender 5.2, recorded with 0.1, sped up). Each thing is
-one typed request. The 204 requests of these demo scenes, replayed through the 0.2 app:
-**188 built exactly** (right thing, place and size).
+one typed request. The 204 requests of these demo scenes, replayed through the 0.2.2 app:
+**203 built exactly** (right thing, place and size).
 
 | | |
 |---|---|
@@ -134,9 +139,9 @@ hair and pose each time; every part appears in turn, then a 360 turn.
   `maris3d serve start` runs llama-server with them. `maris3d update` later fetches only the files
   that changed.
 - **llama-server by hand:**
-  `llama-server -m maris3d-slm-blender-0.5b-q8_0.gguf --lora maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf --lora-init-without-apply --jinja -c 8192`
+  `llama-server -m maris3d-slm-blender-0.5b-q8_0.gguf --lora maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf --lora-init-without-apply --jinja -c 8192`
 - **Ollama:** `ollama create maris3d-slm-blender-0.5b -f Modelfile` (that is `:latest`, the name the app uses;
-  `ollama cp maris3d-slm-blender-0.5b maris3d-slm-blender-0.5b:0.2.1` keeps this version by name), then pick Ollama in the app's settings.
+  `ollama cp maris3d-slm-blender-0.5b maris3d-slm-blender-0.5b:0.2.2` keeps this version by name), then pick Ollama in the app's settings.
 
 Serve with temperature 0, a context of 8,192 and repeat penalty 1.05 (the app sends these on every request).
 
@@ -144,23 +149,31 @@ Serve with temperature 0, a context of 8,192 and repeat penalty 1.05 (the app se
 
 ### Held-out sets
 
-Sets the model never trained on, scored by outcome through the app's own code.
+Sets the model never trained on, scored by outcome through the app's own code (0.2.2; edit rows use the prompt without the new change words, see BENCHMARKS section 2b for both).
 
 | What | Result |
 |---|---|
-| Plan from one sentence: the things named are right | 97.3 % (3,033 things in 716 held-out sentences) |
-| the relation (behind, next to, on top of ...) is right | 97.0 % |
-| the thing it is placed by is right | 95.8 % |
+| Plan from one sentence: the things named are right | 97.3 % (2,951 of 3,033 things in 716 held-out sentences) |
+| the relation (behind, next to, on top of ...) is right | 97.1 % |
+| the thing it is placed by is right | 95.9 % |
+| the whole sentence is planned right | 84.1 % (602 of 716) |
 | Parts of a new thing: the answer parses | 99.9 % (1,268 held-out names) |
-| the design passes the app's rules | 95.7 % |
-| Word edits: the change asked for is the change made | 90.4 % (726 held-out change requests) |
-| Talk: the reply is right | 95.8 % (118 held-out talk turns) |
+| the design passes the app's rules | 99.0 % |
+| Word edits: the change asked for is the change made | 85.4 % (726 held-out change requests) |
+| Talk: the reply is right | 96.1 % (152 held-out turns); 96.5 % (231 turns, a second set) |
 | Talk: things invented that are not in the scene | 0 in 383 turns |
-| The 0.1 demo scene, its 204 requests replayed through the 0.2 app: built exactly (right thing, place and size) | 92.2 % (188 of 204) |
+| Long sentences that join several groups of things: the whole plan exact (things, counts, places) | 40.0 % (60 held-out sentences) |
+| The app's code, no model: the 0.1 demo scene, its 204 exact adds through the 0.2.2 app, built exactly (right thing, place and size) | 99.5 % (203 of 204) |
 
-![0.2 on the held-out sets](figures/held_out.png)
+With the new change words in the prompt (150 held-out rows each): the whole sentence planned right
+82.0 %, parts pass the app's rules 100 %, talk right 96.7 %.
+Every set, side by side with 0.2.1: [BENCHMARKS](https://github.com/slm4apps/maris3d/blob/main/docs/BENCHMARKS.md).
+
+![0.2.0 on the held-out sets](figures/held_out.png)
 
 ### The 180-request benchmark
+
+Run on 0.2.0; not run again for 0.2.2.
 
 Our internal suite of real requests across single objects, multi-part scenes, arrays and rings,
 parenting, geometry nodes, animation and edits (the public benchmark is being prepared), with the
@@ -215,7 +228,7 @@ again.
 
 ![public benchmarks, 0.1](figures/v0.1-public.png)
 
-## Speed
+## Speed (measured with the 0.2.0 adapter)
 
 Base + adapter in llama-server, as the app serves it, on CPU only:
 
@@ -243,7 +256,8 @@ conversations in the word language.
 ## Limits
 
 - No lights, cameras or text from a plain request yet; an animation that names a camera or a light
-  ("a camera circling the cube") gets a real one from the app's animation code.
+  ("a camera circling the cube") gets a real one from the app's animation code, and from 0.2.2 a
+  change to a built scene can add a camera, a light or a text.
 - It writes the word language; the Maris3D app's compiler turns that into Blender tool calls.
 - Edit follow-ups on the 180-request benchmark: 46.7 % usable (0.1: 86.7 %).
 - Where it is weaker, mode by mode:
@@ -252,7 +266,7 @@ conversations in the word language.
 
 ## Support the project
 
-Maris3D is built and trained by one person on home machines. If it is useful to you, you can support the next versions on [Ko-fi](https://ko-fi.com/zinoadidi) or [Buy Me a Coffee](https://buymeacoffee.com/zinoadidi).
+Maris3D is built and trained by one person on home machines. If it is useful to you, you can support the next versions on [Ko-fi](https://ko-fi.com/zinoadidi) or [Buy Me a Coffee](https://buymeacoffee.com/zinoadidi). Videos of Maris3D building scenes are on [YouTube](https://www.youtube.com/@SLMForApps).
 
 ## Licence
 

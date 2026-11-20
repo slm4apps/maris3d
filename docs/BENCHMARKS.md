@@ -3,6 +3,18 @@
 Maris3D 0.2 answers in words and the app's code writes the Blender calls, so it is scored in two ways: held-out sets for each kind of answer (section 2), and the 180-request yardstick that
 0.1 was also scored on (section 1). Section 3 holds the external benchmarks, which were run for 0.1 only.
 
+## What each test measures
+
+- **Plan** (716 held-out sentences, 3,033 things): one sentence in, the model's plan out. Each thing is checked: the right thing, count, relation, the thing it is placed by, distance, size, material. "Whole sentence right" means every thing in it is right.
+- **Parts** (1,268 held-out names): the model designs a new thing from its parts. "Parses" = the answer can be read; "passes the rules" = the app's checks accept the design (parts exist before they are used, known size words, no name used twice).
+- **Word edits** (811 held-out rows, 726 of them change requests): a scene and a request to change it. Right = the app, applying the answer, makes the change asked for.
+- **Talk** (152 and 231 held-out turns, a few of them build or question turns): right = the reply is the right kind; "invented" counts things named that are not in the scene.
+- **Sets with the new change words** (150 rows each): the same four jobs, with the 0.2.2 prompt that lists the scene's cameras, lights and texts.
+- **Long sentences** (60 composites, 36 rooms, 24 scenes): long requests that join several groups of things. "Whole plan exact" = the things, the counts and every placement match.
+- **Hard parts sets** (317 core names, 22 new names): parts designs for names outside the usual set.
+- **The 0.1 demo scene** (204 requests): the exact adds typed to build the 0.1 demo street, run through the app's code with a stand-in for Blender that records each call's name, place and size; exact = the named object has the typed place and size (tolerance 0.01 m or 1 %).
+- **The 180-request yardstick** (section 1): whole scenes built in Blender and judged against a checklist per request.
+
 ## 1. The 180-request yardstick
 
 180 frozen Blender requests across seven modes: single objects, multipart objects, edits, animation, arrays and rings, parenting, geometry nodes. Each request is run in Blender and the finished
@@ -51,6 +63,42 @@ Sentences, names and change requests the adapter never trained on, scored by out
 | Talk: things invented that are not in the scene | 0 in 383 turns |
 
 Serving: temperature 0, context 8,192, repeat penalty 1.05.
+
+Measured on 0.2.0 (0.2.1 has the same weights). 0.2.1 and 0.2.2 on the same sets: section 2b, which scores both with the 0.2.2 app's code, so its 0.2.1 column differs slightly from this section.
+
+## 2b. 0.2.1 and 0.2.2 on the same sets
+
+Same rows, same scorer, temperature 0. Edit rows use the prompt without the new change words except the "New change words" rows.
+
+| Set | Measure | 0.2.1 | 0.2.2 |
+|---|---|---|---|
+| Plan, 716 sentences | things right (of 3,033) | 97.3 % (2,952) | 97.3 % (2,951) |
+| | relation right | 97.0 % (2,941) | 97.1 % (2,946) |
+| | placed by the right thing | 95.8 % (2,906) | 95.9 % (2,908) |
+| | whole sentence right (of 716) | 82.0 % (587) | 84.1 % (602) |
+| Parts, 1,268 names | answer parses | 99.9 % | 99.9 % |
+| | passes the app's rules | 95.1 % | 99.0 % |
+| Word edits | change requests right (726) | 90.4 % | 85.4 % |
+| | all rows right (811) | 88.4 % | 84.8 % |
+| Talk, 152 turns | reply right | 85.5 % | 96.1 % |
+| | talk turns right (118) | 94.9 % | 94.9 % |
+| Talk, second set, 231 turns | reply right | 84.4 % | 96.5 % |
+| | talk turns right (197) | 89.3 % | 95.9 % |
+| Talk, both sets | things invented (383 turns) | 0 | 0 |
+| New change words: plan, 150 | whole sentence right | 78.7 % (118) | 82.0 % (123) |
+| | things right (of 642) | 97.2 % (624) | 97.2 % (624) |
+| New change words: parts, 150 | passes the app's rules | 94.0 % | 100 % |
+| New change words: edits, 150 | rows right | 64.7 % | 61.3 % |
+| New change words: talk, 150 | reply right | 87.3 % | 96.7 % |
+| Long sentences: composites, 60 | whole plan exact | 5.0 % | 40.0 % |
+| Long sentences: rooms, 36 | whole plan exact | 0.0 % | 0.0 % |
+| Long sentences: scenes, 24 | whole plan exact | 0.0 % | 0.0 % |
+| Hard parts: 317 common names, outside the training set | passes the app's rules | 93.1 % | 99.1 % |
+| Hard parts: 22 new names, outside the training set | passes the app's rules | 95.5 % | 90.9 % |
+| 0.1 demo scene, 204 exact adds, answered by the model | built exactly | 96.1 % (196) | 79.9 % (163) |
+| | the same, with the new change words | | 81.9 % (167) |
+| | read by code (0.2.2 app) | | 99.5 % (203) |
+
 
 ## 3. External benchmarks (0.1 only)
 

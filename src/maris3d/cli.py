@@ -29,9 +29,9 @@ from .runtimes.detect import detect
 CACHE = Path.home() / ".cache" / "maris3d"
 SETTINGS = Path.home() / ".config" / "maris3d" / "settings.json"
 HF_BASE = "https://huggingface.co/slm4apps/Maris3D-Blender"
-HF_TAG = "v0.2.1"   # install reads this release's tagged files; `maris3d update` reads main (MANIFEST needs_app guards it)
+HF_TAG = "v0.2.2"   # install reads this release's tagged files; `maris3d update` reads main (MANIFEST needs_app guards it)
 MODELS = {"q8_0": "maris3d-slm-blender-0.5b-q8_0.gguf",                    # the base everything rides on
-          "one-lora": "maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf",           # outline plan, word edit, talk
+          "one-lora": "maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf",           # outline plan, word edit, talk
           "parts-lora": "maris3d-slm-blender-parts-lora-f16.gguf"}       # parts designer add-on
 PORT = 9931
 # the product: ONE server (base q8_0) with the one adapter loaded; the copilot names a role on
@@ -152,6 +152,120 @@ def download_llama_server():
     return None
 
 
+# Voice input: one tested whisper.cpp build (binaries for Linux and Windows; macOS uses Homebrew's
+# whisper-cpp, or builds from the same source tag) and one small English model, sha256-pinned.
+WHISPER_BUILD = "b5454"
+WHISPER_SRC_TAG = "v1.9.5"
+WHISPER_MODEL = "ggml-base.en-q5_1.bin"
+WHISPER_MODEL_SHA = "4baf70dd0d7c4247ba2b81fafd9c01005ac77c2f9ef064e00dcf195d0e2fdd2f"
+WHISPER_MODEL_URL = f"https://huggingface.co/ggerganov/whisper.cpp/resolve/main/{WHISPER_MODEL}"
+
+
+def _whisper_asset():
+    import platform
+    arm = platform.machine().lower() in ("arm64", "aarch64")
+    return {"linux": f"ubuntu-{'arm64' if arm else 'x64'}.tar.gz",
+            "win32": "win-cpu-arm64.zip" if arm else "x64.zip"}.get(sys.platform)
+
+
+def _unpack(arc, dest):
+    dest.mkdir(parents=True, exist_ok=True)
+    root = dest.resolve()
+    if arc.name.endswith(".zip"):
+        import zipfile
+        with zipfile.ZipFile(arc) as z:
+            for name in z.namelist():
+                if not (dest / name).resolve().is_relative_to(root):
+                    raise RuntimeError(f"unsafe path in archive: {name}")
+            z.extractall(dest)
+    else:
+        import tarfile
+        with tarfile.open(arc) as z:
+            try:
+                z.extractall(dest, filter="data")
+            except TypeError:        # Python < 3.12
+                for mbr in z.getmembers():
+                    if not (dest / mbr.name).resolve().is_relative_to(root):
+                        raise RuntimeError(f"unsafe path in archive: {mbr.name}")
+                z.extractall(dest)
+
+
+def download_whisper():
+    """whisper.cpp's command-line program for this machine; returns its path or raises."""
+    import shutil
+    from .copilot import voice
+    have = voice.find_whisper(CACHE)
+    if have:
+        return have
+    kind = _whisper_asset()
+    if kind:
+        name = f"whisper-bin-{kind}"
+        url = f"https://github.com/ggml-org/whisper.cpp/releases/download/{WHISPER_BUILD}/{name}"
+        arc = CACHE / "whisper" / name
+        arc.parent.mkdir(parents=True, exist_ok=True)
+        part = arc.with_name(arc.name + ".part")
+        part.write_bytes(_get(url, timeout=600))
+        part.rename(arc)
+        _unpack(arc, CACHE / "whisper" / WHISPER_BUILD)
+        arc.unlink()
+        got = voice.find_whisper(CACHE)
+        if got and sys.platform != "win32":
+            os.chmod(got, 0o755)
+        if got:
+            return got
+        raise RuntimeError(f"no whisper-cli in {name}")
+    if sys.platform == "darwin" and shutil.which("brew"):
+        _say(t("cli.install.voice_brew"))
+        subprocess.run(["brew", "install", "whisper-cpp"], check=True)
+        got = voice.find_whisper(CACHE)
+        if got:
+            return got
+    if shutil.which("cmake") and shutil.which("git"):    # build the same tag from source
+        src = CACHE / "whisper" / "src"
+        if not src.exists():
+            subprocess.run(["git", "clone", "--depth", "1", "--branch", WHISPER_SRC_TAG,
+                            "https://github.com/ggml-org/whisper.cpp", str(src)], check=True)
+        out = CACHE / "whisper" / WHISPER_SRC_TAG
+        subprocess.run(["cmake", "-S", str(src), "-B", str(out), "-DCMAKE_BUILD_TYPE=Release",
+                        "-DWHISPER_BUILD_TESTS=OFF"], check=True)
+        subprocess.run(["cmake", "--build", str(out), "-j", "--config", "Release", "--target", "whisper-cli"],
+                       check=True)
+        got = voice.find_whisper(CACHE)
+        if got:
+            return got
+    raise RuntimeError("no whisper.cpp build for this machine (install whisper-cpp, or cmake + git)")
+
+
+def download_whisper_model():
+    """The small English speech model, sha256-checked."""
+    dest = CACHE / "whisper" / WHISPER_MODEL
+    if dest.exists() and hashlib.sha256(dest.read_bytes()).hexdigest() == WHISPER_MODEL_SHA:
+        return dest
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    body = _get(WHISPER_MODEL_URL, timeout=1200)
+    got = hashlib.sha256(body).hexdigest()
+    if got != WHISPER_MODEL_SHA:
+        raise RuntimeError(t("cli.error.sha_mismatch", name=WHISPER_MODEL, got=got[:16], want=WHISPER_MODEL_SHA[:16]))
+    tmp = dest.with_suffix(".part")
+    tmp.write_bytes(body)
+    tmp.rename(dest)
+    return dest
+
+
+def setup_voice():
+    """{"whisper": path, "model": path} or None (and says why)."""
+    from .copilot import voice
+    try:
+        prog, model = download_whisper(), download_whisper_model()
+    except Exception as e:
+        _say(t("cli.install.voice_failed", error=e))
+        return None
+    _say(t("cli.install.voice_ready", path=prog))
+    if voice.find_recorder() is None:
+        _say(t("cli.install.voice_no_recorder"))
+    return {"whisper": str(prog), "model": str(model)}
+
+
 def selftest(blender_bin, live=False):
     """Run the assembled extension's headless self-test in blender -b."""
     import shutil as _sh
@@ -247,6 +361,17 @@ def cmd_install(args):
                 _say(t("cli.install.no_llama"))
         else:
             _say(t("cli.install.model_skipped"))
+    voice_cfg = None
+    want_voice = getattr(args, "voice", False) or (live and _ask_yes(t("cli.install.ask_voice"), default=False))
+    if want_voice:
+        voice_cfg = setup_voice()
+    else:
+        _say(t("cli.install.voice_skipped"))
+    if voice_cfg:
+        try:
+            addonbuild.configure_voice(blender, voice_cfg["whisper"], voice_cfg["model"])
+        except Exception as e:
+            _say(t("cli.install.voice_failed", error=e))
     ready, out = None, ""
     want_test = True if not live else _ask_yes(t("cli.install.ask_selftest"))
     if want_test:
@@ -266,7 +391,8 @@ def cmd_install(args):
             _say(t("cli.install.urls_skipped", error=e))
     SETTINGS.parent.mkdir(parents=True, exist_ok=True)
     SETTINGS.write_text(json.dumps({"blender": str(blender), "blender_version": ver,
-                                    "addon_dir": str(ext), "runtime": runtime or {}}, indent=2))
+                                    "addon_dir": str(ext), "runtime": runtime or {},
+                                    "voice": voice_cfg or {}}, indent=2))
     _say(t("cli.install.settings_saved", path=SETTINGS))
     if ready is None:
         _say(t("cli.install.done_untested"))
@@ -471,6 +597,7 @@ def main(argv=None):
                    help=t("cli.help.model"))
     i.add_argument("--from", dest="from_dir", help=t("cli.help.from_dir"))
     i.add_argument("--skip-model", action="store_true", help=t("cli.help.skip_model"))
+    i.add_argument("--voice", action="store_true", help=t("cli.help.voice"))
     i.add_argument("--express", action="store_true",
                    help=t("cli.help.express"))
     i.set_defaults(fn=cmd_install)

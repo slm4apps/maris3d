@@ -15,8 +15,8 @@
 | Fully correct on the 180-request yardstick: 23.3 %, usable 75.0 % (0.1: 28.3 % / 88.9 %); one run. 0.2 is not better than 0.1 on that set | [BENCHMARKS.md](BENCHMARKS.md) section 1 |
 | Animation: 20 of 37 animation requests on the yardstick moved things as asked | same |
 | A follow-up that adds a new thing to a scene that is already built often does nothing yet: 14 of 30 follow-up edits changed the scene | same |
-| Word edits: 90.4 % of 726 held-out change requests did the change asked for | [BENCHMARKS.md](BENCHMARKS.md) section 2 |
-| No lights, cameras or text from a plain request: a look-alike object or nothing (an animation that names a camera or a light gets a real one) | [FAQ.md](FAQ.md) |
+| Word edits: 85.4 % of 726 held-out change requests did the change asked for | [BENCHMARKS.md](BENCHMARKS.md) section 2b |
+| No lights, cameras or text from a plain request: a look-alike object or nothing (an animation that names a camera or a light gets a real one); from 0.2.2 a change to a built scene can add a camera, a light or a text | [FAQ.md](FAQ.md) |
 | Not a general tool caller: it was trained for Blender scenes only (0.1 scored 49.25 % on BFCL v4 simple_python; 0.2 was not run on it) | [BENCHMARKS.md](BENCHMARKS.md) section 3 |
 | No sculpting, rigging, simulation, node-based shaders beyond the basics, or file import | [DSL.md](DSL.md) |
 | English only; Blender 5.2 LTS verified; a context of 8,192 tokens | [USAGE.md](USAGE.md) |

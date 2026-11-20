@@ -5,7 +5,7 @@ Maris3D 0.2 is two model files from [slm4apps/Maris3D-Blender](https://huggingfa
 | File | Size | Role |
 |---|---|---|
 | `maris3d-slm-blender-0.5b-q8_0.gguf` | 531 MB | The base (Qwen2.5-Coder-0.5B-Instruct fine-tune), the same file as 0.1 |
-| `maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf` | 12 MB | One adapter: planning, the parts of a new thing, word edits and talk |
+| `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf` | 23 MB | One adapter: planning, the parts of a new thing, word edits and talk |
 
 `MANIFEST.json` lists the current file of each role with its sha256, `SHA256SUMS` every file. 0.2 needs the 0.2 app; the 0.1 files stay at the `v0.1.0` revision of the same repository and the 0.1 app at the GitHub tag `v0.1.2`.
 
@@ -16,6 +16,7 @@ standard library.
 
 ```sh
 maris3d install          # the add-on into Blender, the base and the adapter (sha256-checked), a self-test
+maris3d install --voice  # also voice input: whisper.cpp and a 60 MB English speech model (sha256-checked)
 maris3d serve start      # one llama-server on port 9931: the base with the adapter loaded
 maris3d serve status     # what is running
 maris3d doctor           # checks Blender, the add-on, the server and the settings
@@ -31,7 +32,8 @@ front of the platform, close to it
 
 The model answers in words (which things, where they stand); the app's compiler turns the words into Blender tool calls and builds the scene,
 reads it back and checks it. Later sentences change the scene ("make the bench red", "move the lamp next to the sofa") or ask about it
-("how many chairs are there?"). One request is one **Undo**. What you can say is in [PROMPTING-GUIDE.md](PROMPTING-GUIDE.md).
+("how many chairs are there?"). One request is one **Undo**. With voice input set up, the mic button next to the prompt
+records what you say (press it again to stop); whisper.cpp writes it down on your machine and the words run as the prompt. What you can say is in [PROMPTING-GUIDE.md](PROMPTING-GUIDE.md).
 
 A new adapter does not cost a new download of the 531 MB base:
 
@@ -47,7 +49,7 @@ sha256 leaves the old file serving. A release that needs a newer app is refused 
 ## llama.cpp by hand
 
 ```sh
-llama-server -m maris3d-slm-blender-0.5b-q8_0.gguf --lora maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf --lora-init-without-apply \
+llama-server -m maris3d-slm-blender-0.5b-q8_0.gguf --lora maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf --lora-init-without-apply \
   --jinja -c 8192 --temp 0 --port 9931
 ```
 

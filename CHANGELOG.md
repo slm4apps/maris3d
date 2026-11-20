@@ -2,6 +2,34 @@
 
 All notable changes. Release numbers are public versions (v0.1, v0.2 ...), kept as git tags and Hugging Face revisions.
 
+## [0.2.2] - 2026-11-20
+- **New adapter, `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf`.** The base file is unchanged; update the app (re-run the one-line install), then `maris3d update`
+  fetches the new adapter. It knows more change words: camera (looks at a thing, from front, back, left, right or
+  above), light (sun, lamp, spot or soft; dim, normal or bright), text, retext, attach, aim, finish (bevel, subdivide,
+  thicken, wire, mirror, array, taper, bend, twist) and scene (background colour, length, frame rate).
+- The app tells the model which cameras, lights and texts are in the scene, so a change can name them.
+  `MARIS3D_KIT_WORDS=0` turns the new words off.
+- **Exact adds are read by code.** "Add a cube named Path at -1, 0, 0 with a scale of 0.4, 2.0, 0.01" (and the same
+  with a radius and depth, or a major and minor radius, or a rotation) is built from the numbers as written, without
+  asking the model. A sentence that asks for more than that still goes to the model.
+- **Undo by voice or text.** "undo", "undo that", "go back" or "revert it" undoes the last request.
+- **Voice input.** A mic button next to the prompt: press it, say what to make or change, press it again; the words fill
+  the prompt and run. Speech is turned into text on your machine by whisper.cpp with a small English model.
+  `maris3d install --voice` sets it up (the interactive install asks); it needs a sound recorder (sox, ffmpeg, ALSA's
+  `arecord`, or Windows' own).
+- **Maris, the mascot,** behaves more like she lives in the scene:
+  - she is sized like a person next to what is built, with her feet on the ground's surface;
+  - parts she carries in start at the edge of the ground she stands on;
+  - small parts and parts fixed onto others (a door, a window, decorations) grow in where they belong;
+  - she keeps facing what she just placed, and turns smoothly;
+  - when a request moves a group (the three balls of a snowman), she carries the whole group to its new place;
+  - she runs to a chair or bench before she sits on it, and the seat height counts from the ground;
+  - at hello the view shows her and her lines, then eases a little further out;
+  - when she greets you, the wand turns up and out.
+- **Follow Maris** (off by default): the view drifts after her while she carries a part.
+- Her greeting says "Say or type what to make".
+- The station building has no door (it stood alone in the open front).
+
 ## [0.2.1.1] - 2026-11-18
 App only; the model files are unchanged (Hugging Face tag v0.2.1).
 - **Windows installer fixed.** The one-line PowerShell install stopped before it made its private Python folder, and

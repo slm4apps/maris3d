@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Build Maris, the Maris3D mascot: a small low-poly girl who weaves a gold thread into a little toy train.
+"""Build Maris, the Maris3D mascot: a small low-poly girl who weaves a little gold toy with her star wand.
 
 Run headless:  blender -b --factory-startup -P assets/maris/build_maris.py -- OUT_DIR [--render]
 
@@ -140,16 +140,38 @@ def build_body():
                                   radius=0.032, depth=0.24, rotation=(0, -14 * x, 0))
         parts["hand" + side] = add("ico", "Hand" + side, "skin", (0.196 * x, 0, 0.372),
                                    subdivisions=1, radius=0.04)
-    parts["spindle"] = add("cyl", "Spindle", "wood", (-0.205, -0.02, 0.36), vertices=6,
-                           radius=0.009, depth=0.24)
-    parts["whorl"] = add("cyl", "Whorl", "wood", (-0.205, -0.02, 0.29), vertices=10, radius=0.04,
-                         depth=0.016)
+    # her wand (the stick she weaves with): a short wooden stick with a gold star on its tip; the
+    # toy floats beside the star, nothing ties them (no thread to stretch when she moves)
+    parts["spindle"] = add("cyl", "Spindle", "wood", (-0.205, -0.02, 0.43), vertices=6,
+                           radius=0.009, depth=0.2)
+    parts["wandstar"] = wand_star()
     for name in TOYS:
         parts["toy_" + name] = woven_toy(name)
     return parts
 
 
-TOY_AT, TOY_TURN = (0.0, -0.37, 0.0), 20.0
+TOY_AT, TOY_TURN = (-0.35, -0.12, 0.40), 20.0       # floating beside the wand's star, at her side
+WAND_TIP = (-0.205, -0.02, 0.555)
+
+
+def wand_star():
+    """A flat five-point gold star facing the viewer (-y), on the wand's tip."""
+    import bmesh
+    me = bpy.data.meshes.new("WandStar")
+    bm = bmesh.new()
+    ring = []
+    for i in range(10):
+        a = math.radians(90 + 36 * i)
+        r = 0.045 if i % 2 == 0 else 0.019
+        ring.append(bm.verts.new((WAND_TIP[0] + r * math.cos(a), WAND_TIP[1], WAND_TIP[2] + r * math.sin(a))))
+    face = bm.faces.new(ring)
+    ext = bmesh.ops.extrude_face_region(bm, geom=[face])
+    bmesh.ops.translate(bm, vec=(0, 0.012, 0), verts=[v for v in ext["geom"] if isinstance(v, bmesh.types.BMVert)])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me); bm.free()
+    ob = bpy.data.objects.new("WandStar", me)
+    bpy.context.collection.objects.link(ob)
+    return finish(ob, "WandStar", "gold")
 
 
 def toy_point(x, y, z):
@@ -375,30 +397,169 @@ def build_outfits(parts):
     for i, z in enumerate((0.625, 0.585, 0.545)):
         piece("conductor", f"ConductorButton{i}", "spine", add("ico", f"ConductorButton{i}",
               "brass", (0, -0.118, z), subdivisions=1, radius=0.012))
+    # ninja: hood with an eye slit, lower-face mask, headband with two tails, sash, sword on the
+    # back. Colourable like any outfit: suit = dress + bodice slots, band + sash + grips = band.
+    piece("ninja", "NinjaHood", "head", trimmed_sphere(
+        "NinjaHood", "bodice", (0, 0.006, 0.80), 0.184,
+        lambda c: not (c.y < -0.05 and 0.765 < c.z < 0.875)))
+    piece("ninja", "NinjaMask", "head", trimmed_sphere(
+        "NinjaMask", "bodice", (0, -0.004, 0.79), 0.175, lambda c: c.z < 0.772))
+    piece("ninja", "NinjaBand", "head", add("torus", "NinjaBand", "band", (0, 0.006, 0.87),
+          major_radius=0.172, minor_radius=0.014, major_segments=16, minor_segments=4))
+    piece("ninja", "NinjaTailL", "head", add("cube", "NinjaTailL", "band", (0.035, 0.27, 0.835),
+          size=1.0, scale=(0.028, 0.15, 0.006), rotation=(-28, 0, 14)))
+    piece("ninja", "NinjaTailR", "head", add("cube", "NinjaTailR", "band", (-0.035, 0.27, 0.835),
+          size=1.0, scale=(0.028, 0.15, 0.006), rotation=(-28, 0, -14)))
+    piece("ninja", "NinjaSash", "spine", add("torus", "NinjaSash", "band", (0, 0, 0.52),
+          major_radius=0.121, minor_radius=0.017, major_segments=16, minor_segments=4))
+    piece("ninja", "NinjaKnot", "spine", add("cube", "NinjaKnot", "band", (0.1, -0.07, 0.47),
+          size=1.0, scale=(0.018, 0.022, 0.08), rotation=(0, 14, 20)))
+    back = Vector((-0.5, 0, 0.866))             # the sword on her back, hilt over the right shoulder
+    piece("ninja", "NinjaSheath", "spine", rod("NinjaSheath", "bodice", (0.04, 0.165, 0.43), back,
+                                               0.36, 0.019, 8))
+    piece("ninja", "NinjaHilt", "spine", rod("NinjaHilt", "band", Vector((0.04, 0.165, 0.43)) + back * 0.37,
+                                             back, 0.11, 0.013, 6))
+    # tools: shown only while she places a part (pose "place"), in the right hand, pointing on
+    # from the arm so the swing aims them at the part
+    hand, aim = Vector((-0.196, 0, 0.372)), Vector((-0.2, -0.35, -0.92)).normalized()
+    start = hand - aim * 0.03
+
+    def tool(outfit, name, ob):
+        ob["maris_tool"] = outfit
+        parts[name] = ob
+        bones[name] = "arm.R"
+
+    tool("sea", "ToolSeaWand", rod("ToolSeaWand", "wood", start, aim, 0.25, 0.008, 6))
+    tool("sea", "ToolSeaStar", star("ToolSeaStar", "gold", start + aim * 0.27, 0.045))
+    tool("winter", "ToolWinterCane", rod("ToolWinterCane", "fur", start, aim, 0.25, 0.01, 8))
+    for i in range(3):
+        tool("winter", f"ToolWinterStripe{i}", rod(f"ToolWinterStripe{i}", "dress",
+             start + aim * (0.06 + 0.07 * i), aim, 0.025, 0.012, 8))
+    tool("winter", "ToolWinterFlake", star("ToolWinterFlake", "fur", start + aim * 0.27, 0.04, points=6))
+    tool("conductor", "ToolConductorGrip", rod("ToolConductorGrip", "wood", start, aim, 0.07, 0.014, 8))
+    tool("conductor", "ToolConductorBaton", rod("ToolConductorBaton", "fur", start + aim * 0.06, aim,
+                                                0.2, 0.007, 6))
+    tool("conductor", "ToolConductorTip", add("ico", "ToolConductorTip", "brass",
+                                              tuple(start + aim * 0.265), subdivisions=1, radius=0.014))
+    tool("ninja", "ToolNinjaGrip", rod("ToolNinjaGrip", "band", start, aim, 0.09, 0.012, 6))
+    tool("ninja", "ToolNinjaGuard", rod("ToolNinjaGuard", "gold", start + aim * 0.09, aim, 0.01, 0.03, 8))
+    tool("ninja", "ToolNinjaBlade", blade("ToolNinjaBlade", "blade", start + aim * 0.1, aim, 0.34))
+    # sitting: the standing cone dress cannot bend, so the sit poses swap it for a seated skirt
+    # (a lap, plus a front drape over a seat edge or a skirt pooled on the ground) and two shoes.
+    # Built where they sit once the pose has lowered the root by SIT_DROP.
+    def seated(poses, name, ob):
+        ob["maris_pose"] = ",".join(poses)      # a plain string: glb extras and old Blenders
+        parts[name] = ob
+        bones[name] = "root"
+
+    d = SIT_DROP
+    seated(("sit", "sit_seat"), "SitLap", add("uv", "SitLap", "dress", (0, -0.1, 0.165 + d), segments=10,
+           ring_count=6, radius=1.0, scale=(0.15, 0.17, 0.07)))
+    seated(("sit_seat",), "SitDrape", add("cone", "SitDrape", "dress", (0, -0.19, 0.0 + d), vertices=10,
+           radius1=0.22, radius2=0.15, depth=0.3, scale=(1, 0.5, 1)))
+    seated(("sit",), "SitPool", add("cone", "SitPool", "dress", (0, -0.03, 0.075 + d), vertices=12,
+           radius1=0.31, radius2=0.12, depth=0.15, scale=(1, 1.12, 1)))
+    for side, x in (("L", 1), ("R", -1)):
+        seated(("sit_seat",), "SitShoe" + side, add("uv", "SitShoe" + side, "bodice",
+               (0.065 * x, -0.25, -0.15 + d), segments=8, ring_count=5, radius=1.0,
+               scale=(0.035, 0.06, 0.028)))
+        seated(("sit",), "SitFoot" + side, add("uv", "SitFoot" + side, "bodice",
+               (0.075 * x, -0.34, 0.025 + d), segments=8, ring_count=5, radius=1.0,
+               scale=(0.036, 0.06, 0.026)))
     for outfit in OUTFITS:                     # create every outfit material once
         for slot in OUTFITS[outfit]["colours"]:
             material(slot, outfit)
     return bones
 
 
-def set_outfit(objects, name):
-    """Wear one outfit: recolour slots, show its pieces, hide what it replaces. The add-on does
-    the same at run time from maris.json (by object name and the maris_slot property)."""
-    outfit = OUTFITS[name]
+SIT_DROP = 0.34                                # how far the sit poses lower her (hips to z 0.17)
+
+
+def _mesh_object(name, slot, bm):
+    me = bpy.data.meshes.new("Maris_" + name)
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("Maris_" + name, me)
+    bpy.context.collection.objects.link(ob)
+    return finish(ob, name, slot)
+
+
+def trimmed_sphere(name, slot, center, radius, keep):
+    """A low-poly sphere with the vertices for which keep(co) is false removed (hood slit, mask)."""
+    import bmesh
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=10, radius=radius)
+    bmesh.ops.translate(bm, verts=bm.verts, vec=Vector(center))
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not keep(v.co)], context="VERTS")
+    return _mesh_object(name, slot, bm)
+
+
+def rod(name, slot, start, axis, length, radius, verts):
+    """A cylinder from start along axis (unit vector)."""
+    axis = Vector(axis).normalized()
+    centre = Vector(start) + axis * (length / 2)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=verts, radius=radius, depth=length, location=centre)
+    ob = bpy.context.active_object
+    ob.rotation_euler = Vector((0, 0, 1)).rotation_difference(axis).to_euler()
+    return finish(ob, name, slot)
+
+
+def star(name, slot, centre, size, points=5):
+    """A flat star facing -Y (towards the camera), slightly thick."""
+    import bmesh
+    bm = bmesh.new()
+    ring = []
+    for i in range(points * 2):
+        a = math.pi / 2 + math.pi * i / points
+        r = size if i % 2 == 0 else size * 0.45
+        ring.append(bm.verts.new((r * math.cos(a), 0.0, r * math.sin(a))))
+    face = bm.faces.new(ring)
+    out = bmesh.ops.extrude_face_region(bm, geom=[face])
+    bmesh.ops.translate(bm, verts=[e for e in out["geom"] if isinstance(e, bmesh.types.BMVert)],
+                        vec=(0, size * 0.3, 0))
+    bmesh.ops.translate(bm, verts=bm.verts, vec=Vector(centre) - Vector((0, size * 0.15, 0)))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return _mesh_object(name, slot, bm)
+
+
+def blade(name, slot, start, axis, length):
+    """A slim curved-tip sword blade from start along axis."""
+    import bmesh
+    axis = Vector(axis).normalized()
+    side = axis.cross(Vector((0, 1, 0))).normalized()     # the blade's width, across the swing
+    flat = axis.cross(side).normalized()
+    bm = bmesh.new()
+    w, t = 0.016, 0.004
+    pts = [(0.0, w), (0.85, w), (1.0, -w * 0.2), (0.85, -w), (0.0, -w)]
+    for sgn in (1, -1):
+        for u, v in pts:
+            bm.verts.new(Vector(start) + axis * (u * length) + side * v + flat * (t * sgn))
+    bm.verts.ensure_lookup_table()
+    n = len(pts)
+    bm.faces.new(bm.verts[:n])
+    bm.faces.new(list(reversed(bm.verts[n:])))
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((bm.verts[i], bm.verts[j], bm.verts[n + j], bm.verts[n + i]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return _mesh_object(name, slot, bm)
+
+
+def set_outfit(objects, name, pose="idle"):
+    """Wear one outfit in one pose: recolour slots, show its pieces, hide what it replaces, and
+    apply the pose's pieces (maris.json pose_parts: seated skirt, tool, no toy). The add-on does
+    the same at run time with show.visible() (by object name and the maris_* properties)."""
     for ob in objects:
         if ob.type != "MESH":
             continue
         slot = ob.get("maris_slot")
         if slot and slot not in ("skin", "hair", "brow") and ob.data.materials:
             ob.data.materials[0] = material(slot, name)
-        base = ob.name[len(SPEC["prefix"]):]
-        if "maris_outfit" in ob:
-            show = ob["maris_outfit"] == name
-        elif base in [h for o in OUTFITS.values() for h in o["hide"]]:
-            show = base not in outfit["hide"]
-        else:
-            continue
-        ob.hide_render = ob.hide_viewport = not show
+    look = {ob.name: ob for ob in objects}
+    for ob_name, shown in show.visible(SPEC, list(look), name, pose,
+                                       props={n: dict(o.items()) for n, o in look.items()},
+                                       toy=BUILD_TOY).items():
+        look[ob_name].hide_render = look[ob_name].hide_viewport = not shown
 
 
 def set_hair(objects, name):
@@ -434,6 +595,7 @@ def build_rig():
     bone("head", (0, 0, 0.66), (0, 0, 0.98), "spine")
     bone("arm.L", (0.135, 0, 0.62), (0.2, 0, 0.36), "spine")
     bone("arm.R", (-0.135, 0, 0.62), (-0.2, 0, 0.36), "spine")
+    bone("wand", (-0.196, 0, 0.372), (-0.196, 0, 0.55), "arm.R")   # the wand turns in her hand
     bpy.ops.object.mode_set(mode="OBJECT")
     for pb in arm.pose.bones:
         pb.rotation_mode = "XYZ"
@@ -441,11 +603,11 @@ def build_rig():
 
 
 def attach(parts, arm, extra=()):
-    where = {"root": ("dress",) + tuple(k for k in parts if k.startswith("toy_")), "spine": ("bodice",),
+    where = {"root": ("dress",), "spine": ("bodice",) + tuple(k for k in parts if k.startswith("toy_")),
              "head": ("head", "hair", "band", "eyeL", "eyeR", "cheekL", "cheekR", "braid0",
                       "braid1", "braid2", "braid3", "browL", "browR", "mouthSmile",
                       "mouthFrown", "mouthO", "mouthWide"),
-             "arm.L": ("armL", "handL"), "arm.R": ("armR", "handR", "spindle", "whorl")}
+             "arm.L": ("armL", "handL"), "arm.R": ("armR", "handR"), "wand": ("spindle", "wandstar")}
     where = {b: list(n) for b, n in where.items()}
     for name, bone in dict(extra).items():
         where[bone].append(name)
@@ -459,52 +621,6 @@ def attach(parts, arm, extra=()):
             ob.parent_bone = bone
             bpy.context.view_layer.update()
             ob.matrix_world = world
-
-
-def build_thread(parts, arm):
-    """A gold NURBS thread from the spindle tip to the toy, hooked to both so it follows."""
-    tip = bpy.data.objects.new("Maris_ThreadTip", None)
-    end = bpy.data.objects.new("Maris_ThreadEnd", None)
-    for e in (tip, end):
-        bpy.context.collection.objects.link(e)
-        e.empty_display_size = 0.02
-    tip.location = (-0.205, -0.02, 0.24)
-    end_at = tuple(bpy.data.objects["Maris_Toy" + BUILD_TOY.capitalize()]["toy_thread_end"])
-    end.location = end_at
-    bpy.context.view_layer.update()
-    for e, bone in ((tip, "arm.R"), (end, "root")):
-        world = e.matrix_world.copy()
-        e.parent, e.parent_type, e.parent_bone = arm, "BONE", bone
-        bpy.context.view_layer.update()
-        e.matrix_world = world
-    curve = bpy.data.curves.new("Maris_Thread", "CURVE")
-    curve.dimensions = "3D"
-    curve.bevel_depth = 0.0065                 # thick enough to read at thumbnail size
-    curve.bevel_resolution = 1
-    spline = curve.splines.new("NURBS")
-    spline.points.add(2)
-    pts = ((-0.205, -0.02, 0.24), (-0.10, -0.26, 0.10), end_at)
-    for p, co in zip(spline.points, pts):
-        p.co = (*co, 1.0)
-    spline.order_u = 3
-    spline.use_endpoint_u = True
-    ob = bpy.data.objects.new("Maris_Thread", curve)
-    bpy.context.collection.objects.link(ob)
-    ob.data.materials.append(material("gold"))
-    bpy.context.view_layer.update()
-    for e, idx in ((tip, 0), (end, 2)):
-        hook = ob.modifiers.new("hook_" + e.name, "HOOK")
-        hook.object = e
-        hook.vertex_indices_set([idx])
-        hook.matrix_inverse = e.matrix_world.inverted()
-    # each toy keeps where the thread's end goes, in the end marker's own (bone) space
-    for toy in [o for o in bpy.data.objects if "maris_toy" in o]:
-        end.matrix_world = Matrix.Translation(Vector(toy["toy_thread_end"]))
-        bpy.context.view_layer.update()
-        toy["thread_end_local"] = list(end.location)
-    end.matrix_world = Matrix.Translation(Vector(end_at))
-    bpy.context.view_layer.update()
-    return ob
 
 
 def key(arm, frame, poses):
@@ -525,7 +641,7 @@ def key(arm, frame, poses):
 
 REST = {"root": dict(rot=(0, 0, 0), loc=(0, 0, 0), scale=(1, 1, 1)),
         "spine": dict(rot=(0, 0, 0), scale=(1, 1, 1)), "head": dict(rot=(0, 0, 0)),
-        "arm.L": dict(rot=(0, 0, 0)), "arm.R": dict(rot=(0, 0, 0))}
+        "arm.L": dict(rot=(0, 0, 0)), "arm.R": dict(rot=(0, 0, 0)), "wand": dict(rot=(0, 0, 0))}
 
 
 def merged(*layers):
@@ -540,15 +656,38 @@ def merged(*layers):
 # (root, spine, head) nod forward with +X, turn with Y, tilt sideways with Z; the down-pointing arm
 # bones swing forward with -X and lift sideways with Z (arm.L negative, arm.R positive).
 UP_R = {"arm.R": dict(rot=(0, 0, 150))}
+WAVE_WAND = {"wand": dict(rot=(0, 0, -150))}         # arm up: the wand turned up and out, not behind her head
+UP_W = {**UP_R, **WAVE_WAND}
+SITTING = {"root": dict(loc=(0, -SIT_DROP, 0)), "spine": dict(rot=(-6, 0, 0)),
+           "arm.L": dict(rot=(-38, 0, 8)), "arm.R": dict(rot=(-38, 0, -8))}
+# arms up beside the head, hands over it: the carried part rides there (show.CARRY_HOLD)
+HOLD = {"arm.L": dict(rot=(-12, 0, -158)), "arm.R": dict(rot=(-12, 0, 158)), "spine": dict(rot=(-4, 0, 0))}
+
+
+def DASH(lift, sway):
+    """One key of the dash: leaning far forward, head up, arms trailing straight back."""
+    return {"root": dict(loc=(0, lift, 0), rot=(0, sway, 0)), "spine": dict(rot=(34, 0, 0)),
+            "head": dict(rot=(-26, 0, 0)), "arm.L": dict(rot=(58, 0, -10)),
+            "arm.R": dict(rot=(58, 0, 10))}
+
+
+def NINJA(look, lift):
+    """One ninja idle key: guard arms, crouched, head turned `look` degrees, root up `lift`."""
+    crouch = (1.04, 0.94, 1.04) if lift == 0 else (0.97, 1.03, 0.97)
+    return {"root": dict(loc=(0, lift, 0), scale=crouch), "spine": dict(rot=(9, 0, 0)),
+            "head": dict(rot=(-4, look, 0)), "arm.L": dict(rot=(-62, 0, 22)),
+            "arm.R": dict(rot=(-62, 0, -22))}
+
+
 SEQUENCES = {
     "idle": [(1, {}), (24, {"spine": dict(scale=(1, 1.025, 1)), "head": dict(rot=(0, 6, 0))}),
              (48, {})],
     "rise": [(1, {"root": dict(loc=(0, -0.9, 0), scale=(0.6, 0.6, 0.6))}),
              (16, {"root": dict(loc=(0, 0.08, 0), scale=(1.05, 1.05, 1.05))}),
              (24, {})],
-    "wave": [(1, {}), (8, UP_R),
-             (14, {"arm.R": dict(rot=(0, 0, 125))}), (20, UP_R),
-             (26, {"arm.R": dict(rot=(0, 0, 125))}), (32, UP_R), (40, {})],
+    "wave": [(1, {}), (8, UP_W),
+             (14, {"arm.R": dict(rot=(0, 0, 125)), **WAVE_WAND}), (20, UP_W),
+             (26, {"arm.R": dict(rot=(0, 0, 125)), **WAVE_WAND}), (32, UP_W), (40, {})],
     "weave": [(1, {"arm.R": dict(rot=(-35, 0, -15))}), (7, {"arm.R": dict(rot=(-45, 0, 5))}),
               (13, {"arm.R": dict(rot=(-35, 0, 20))}), (19, {"arm.R": dict(rot=(-25, 0, 0))}),
               (25, {"arm.R": dict(rot=(-35, 0, -15))})],
@@ -563,8 +702,47 @@ SEQUENCES = {
                             "head": dict(rot=(0, 0, 14))}),
               (20, {"arm.L": dict(rot=(0, 0, -40)), "arm.R": dict(rot=(0, 0, 40)),
                     "head": dict(rot=(0, 0, 14))}), (28, {})],
-    "sit": [(1, {}), (12, {"root": dict(loc=(0, -0.13, 0)), "spine": dict(rot=(-10, 0, 0)),
-                           "arm.L": dict(rot=(-30, 0, 10)), "arm.R": dict(rot=(-30, 0, -10))})],
+    # sit: the root drops SIT_DROP (hips at z 0.17) and the seated skirt replaces the dress
+    # (maris.json pose_parts); "sit" is on the ground, "sit_seat" on a chair (the add-on puts her
+    # on the seat top). Hands rest on the lap.
+    "sit": [(1, {}), (5, {"root": dict(loc=(0, -SIT_DROP * 0.9, 0))}), (12, SITTING)],
+    "sit_seat": [(1, {}), (5, {"root": dict(loc=(0, -SIT_DROP * 0.9, 0))}), (12, SITTING)],
+    # carrying a part: grab it (dip, then arms up: it zips over her head), dash with it (lean far
+    # forward, arms trailing back), trip on small things, crash into big ones, place it with the tool
+    "carry": [(1, {}), (3, {"root": dict(scale=(1.08, 0.88, 1.08)), "spine": dict(rot=(18, 0, 0)),
+                            "arm.L": dict(rot=(-55, 0, 6)), "arm.R": dict(rot=(-55, 0, -6))}),
+              (6, {"root": dict(loc=(0, 0.05, 0)), "arm.L": dict(rot=(-165, 0, -10)),
+                   "arm.R": dict(rot=(-165, 0, 10))}),
+              (8, HOLD)],
+    "run": [(1, DASH(0.0, 0)), (4, DASH(0.07, 6)), (7, DASH(0.0, 0)), (10, DASH(0.07, -6)),
+            (13, DASH(0.0, 0))],
+    "trip": [(1, DASH(0.0, 0)),
+             (3, {"root": dict(rot=(38, 0, 0), loc=(0, 0.05, 0)), "spine": dict(rot=(30, 0, 0)),
+                  "head": dict(rot=(-25, 0, 0)), "arm.L": dict(rot=(-130, 0, -35)),
+                  "arm.R": dict(rot=(-110, 0, 35))}),
+             (6, {"root": dict(rot=(20, 0, 0), loc=(0, 0.1, 0)), "spine": dict(rot=(20, 0, 0)),
+                  "arm.L": dict(rot=(-60, 0, -60)), "arm.R": dict(rot=(-150, 0, 50))}),
+             (11, DASH(0.0, 0))],
+    "crash": [(1, DASH(0.0, 0)),
+              (2, {"root": dict(scale=(1.18, 0.8, 1.18)), "spine": dict(rot=(-22, 0, 0)),
+                   "head": dict(rot=(-18, 0, 0)), "arm.L": dict(rot=(0, 0, -70)),
+                   "arm.R": dict(rot=(0, 0, 70))}),
+              (6, {"root": dict(loc=(0, 0.06, 0), rot=(-10, 0, 0)), "spine": dict(rot=(-14, 0, 0)),
+                   "head": dict(rot=(0, 0, 16)), "arm.L": dict(rot=(0, 0, -50)),
+                   "arm.R": dict(rot=(0, 0, 50))}),
+              (10, {"head": dict(rot=(0, 0, -14)), "arm.L": dict(rot=(0, 0, -25)),
+                    "arm.R": dict(rot=(0, 0, 25))}),
+              (14, {"head": dict(rot=(0, 0, 8))}), (17, {})],
+    "place": [(1, HOLD),
+              (5, {"arm.R": dict(rot=(-165, 0, -8)), "arm.L": dict(rot=(-35, 0, 0)),
+                   "spine": dict(rot=(-8, 0, 0)), "head": dict(rot=(-10, 0, 0))}),
+              (9, {"arm.R": dict(rot=(-70, 0, 8)), "arm.L": dict(rot=(-20, 0, 0)),
+                   "spine": dict(rot=(14, 0, 0)), "head": dict(rot=(8, 0, 0))}),
+              (16, {"arm.R": dict(rot=(-80, 0, 4)), "spine": dict(rot=(6, 0, 0))}), (24, {})],
+    # the ninja's idle: never still. Low guard, bouncing on the spot, snapping looks left and right
+    "ninja_idle": [(1, NINJA(0, 0.0)), (4, NINJA(0, 0.05)), (7, NINJA(28, 0.0)), (10, NINJA(28, 0.05)),
+                   (13, NINJA(0, 0.0)), (16, NINJA(-28, 0.05)), (19, NINJA(-28, 0.0)),
+                   (22, NINJA(0, 0.05)), (25, NINJA(0, 0.0))],
     "sad": [(1, {}), (12, {"head": dict(rot=(22, 0, 0)), "spine": dict(rot=(8, 0, 0)),
                            "arm.L": dict(rot=(0, 0, 6)), "arm.R": dict(rot=(0, 0, -6))})],
     "dance": [(1, {}),
@@ -629,6 +807,32 @@ def stage():
     return [floor, key_light, cam]
 
 
+CHAIR_SEAT = SPEC["sitting"]["seat_height"]   # the review chair: shoe soles to lap underside
+SEAT_UNDER = SPEC["sitting"]["lap_under"]     # lap underside above her origin while seated
+
+
+def stage_chair():
+    """A plain wooden chair for the sit_seat review render, back behind her (+Y)."""
+    wood = bpy.data.materials.new("stage_chair")
+    wood.use_nodes = True
+    wood.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.35, 0.2, 0.1, 1)
+    obs = []
+
+    def box(loc, size):
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=loc)
+        ob = bpy.context.active_object
+        ob.scale = size
+        ob.data.materials.append(wood)
+        obs.append(ob)
+
+    box((0, 0.02, CHAIR_SEAT - 0.02), (0.36, 0.34, 0.04))
+    for x in (-0.15, 0.15):
+        for y in (-0.13, 0.17):
+            box((x, y, (CHAIR_SEAT - 0.04) / 2), (0.03, 0.03, CHAIR_SEAT - 0.04))
+    box((0, 0.175, CHAIR_SEAT + 0.2), (0.36, 0.03, 0.36))
+    return obs
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -636,7 +840,6 @@ def main():
     extra = build_outfits(parts)
     arm = build_rig()
     attach(parts, arm, extra)
-    build_thread(parts, arm)
     actions = build_actions(arm)
     arm["maris_spec_version"] = SPEC["version"]
     arm["maris_faces"] = json.dumps(FACES)
@@ -691,21 +894,38 @@ def main():
         for attr in dir(scene.render):         # no file path / date / host in the PNG metadata
             if attr.startswith("use_stamp"):
                 setattr(scene.render, attr, False)
+        maris = bpy.data.collections["Maris3D_Maris"].objects
+        chair = stage_chair()
         for name in POSES:
             arm.animation_data.action = actions[name]
             scene.frame_set(STILL[name])
+            outfit = "ninja" if name == "ninja_idle" else SPEC["default_outfit"]
+            set_outfit(maris, outfit, name)
+            on_seat = name == "sit_seat"            # the add-on puts her hips on the seat top
+            for ob in chair:
+                ob.hide_render = not on_seat
+            arm.location = (0, 0, CHAIR_SEAT - SEAT_UNDER if on_seat else 0)
             scene.render.filepath = os.path.join(OUT, f"pose-{name}.png")
             bpy.ops.render.render(write_still=True)
             print(f"MARIS rendered {name}", flush=True)
-        # outfits: idle pose, full body
-        maris = bpy.data.collections["Maris3D_Maris"].objects
-        arm.animation_data.action = actions["idle"]
-        scene.frame_set(1)
+        arm.location = (0, 0, 0)
+        for ob in chair:
+            ob.hide_render = True
+        # outfits: idle pose, full body; then each outfit placing a part with its tool
         for name in OUTFITS:
+            arm.animation_data.action = actions["idle"]
+            scene.frame_set(1)
             set_outfit(maris, name)
             scene.render.filepath = os.path.join(OUT, f"outfit-{name}.png")
             bpy.ops.render.render(write_still=True)
+            arm.animation_data.action = actions["place"]
+            scene.frame_set(STILL["place"])
+            set_outfit(maris, name, "place")
+            scene.render.filepath = os.path.join(OUT, f"tool-{name}.png")
+            bpy.ops.render.render(write_still=True)
             print(f"MARIS outfit {name}", flush=True)
+        arm.animation_data.action = actions["idle"]
+        scene.frame_set(1)
         set_outfit(maris, SPEC["default_outfit"])
         # face close-ups: idle pose, camera on the head
         arm.animation_data.action = actions["idle"]

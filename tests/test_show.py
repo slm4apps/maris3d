@@ -83,7 +83,7 @@ class Designs(unittest.TestCase):
             self.assertEqual(show.save_user_design(path, SPEC, dict(mine, label="Sea")), "sea_2")
             self.assertEqual(show.save_user_design(path, SPEC, mine), "night_sky_2")
             allk = list(show.all_designs(SPEC, path))
-            self.assertEqual(allk[:3], list(SPEC["outfits"]))
+            self.assertEqual(allk[:len(SPEC["outfits"])], list(SPEC["outfits"]))
             self.assertTrue(show.delete_user_design(path, SPEC, "sea_2"))
             self.assertNotIn("sea_2", show.load_user_designs(path, SPEC))
             mats = show.design_materials(SPEC, mine)

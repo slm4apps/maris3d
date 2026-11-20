@@ -37,6 +37,7 @@ _VENDOR = {
     "copilot/apply_change.py": "apply_change.py",
     "copilot/describe_parts.py": "describe_parts.py",
     "copilot/size_words.py": "size_words.py",
+    "copilot/kit_words.py": "kit_words.py",
     "copilot/edit_words.py": "edit_words.py",
     "copilot/describe_scene.py": "describe_scene.py",
     "copilot/loop.py": "loop.py",
@@ -45,6 +46,7 @@ _VENDOR = {
     "copilot/framing.py": "framing.py",
     "copilot/trace.py": "trace.py",
     "copilot/show.py": "show.py",
+    "copilot/voice.py": "voice.py",
     "copilot/colours.py": "colours.py",
     "copilot/vocabulary.py": "vocabulary.py",
     "text/__init__.py": "text.py",
@@ -168,6 +170,16 @@ def configure_addon(blender_bin, server_url, model):
             % (EXT_NAME, server_url, model))
     r = subprocess.run([blender_bin, "-b", "--python-expr", expr], capture_output=True, text=True, timeout=300)
     return r.returncode == 0 and "COPT-CONFIGURED" in (r.stdout + r.stderr)
+
+
+def configure_voice(blender_bin, whisper, model):
+    """Give the add-on the whisper.cpp program and model `maris3d install --voice` set up."""
+    expr = ("import bpy; p = bpy.context.preferences.addons['%s'].preferences; "
+            "p.voice_whisper = %r; p.voice_model = %r; "
+            "bpy.ops.wm.save_userpref(); print('COPT-VOICE', bool(p.voice_whisper))"
+            % (EXT_NAME, str(whisper), str(model)))
+    r = subprocess.run([blender_bin, "-b", "--python-expr", expr], capture_output=True, text=True, timeout=300)
+    return r.returncode == 0 and "COPT-VOICE True" in (r.stdout + r.stderr)
 
 
 def enable_in_blender(blender_bin, module=EXT_NAME):

@@ -83,5 +83,31 @@ class MarisSpec(unittest.TestCase):
         self.assertEqual(key, "maris_skin.mocha")
 
 
+    def test_tools_and_seated_pieces(self):
+        """Each outfit has a tool built for it; seated pieces and pose rules name real poses."""
+        tools = set(re.findall(r'tool\("(\w+)", "(\w+)"', SCRIPT))
+        tools |= {(o, f"{base}{i}") for o, base in
+                  re.findall(r'tool\("(\w+)", f"(\w+)\{i\}"', SCRIPT) for i in range(3)}
+        listed = {(o, t) for o, outfit in SPEC["outfits"].items() for t in outfit["tool"]}
+        self.assertEqual(tools, listed)
+        for rule_pose, rule in SPEC["pose_parts"].items():
+            self.assertIn(rule_pose, SPEC["poses"])
+            self.assertLessEqual(set(rule), {"hide", "toy", "tool"}, rule_pose)
+        seated = re.findall(r'seated\(\(([^)]*)\), "(\w+)"', SCRIPT)
+        self.assertGreaterEqual(len(seated), 5)
+        for poses, _name in seated:
+            for pose in re.findall(r'"(\w+)"', poses):
+                self.assertIn(pose, SPEC["poses"])
+        self.assertTrue({"lap_under", "seat_height"} <= set(SPEC["sitting"]))
+
+    def test_outfit_idles_are_poses(self):
+        for name, outfit in SPEC["outfits"].items():
+            self.assertIn(show.idle_pose(SPEC, name), SPEC["poses"], name)
+        self.assertEqual(show.idle_pose(SPEC, "ninja"), "ninja_idle")
+        self.assertIn("ninja_idle", show.looping(SPEC))
+        self.assertIn("NinjaMask", SPEC["outfits"]["ninja"]["pieces"])
+        self.assertIn("Hair", SPEC["outfits"]["ninja"]["hide"])
+
+
 if __name__ == "__main__":
     unittest.main()

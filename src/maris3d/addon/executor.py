@@ -157,6 +157,10 @@ def reset_scene():
 
 
 def scene_objects():
+    # matrix_world and dimensions are only refreshed by a depsgraph update: without one the list after
+    # a move still showed the old place, the result line said "Nothing changed", and the change was
+    # reported on the NEXT request instead ("Moved 9" on a street lamp)
+    bpy.context.view_layer.update()
     out = []
     for o in _work_objects():
         mats = [s.material.name for s in o.material_slots if s.material]
@@ -361,11 +365,22 @@ def submit(job):
     return job[-1]["res"]
 
 
+AROUND_JOB = []   # fn(running: bool), called before and after each job: show.carry_pause shows the
+                  # parts Maris has not carried in yet, so tool code can select them and checks see them
+
+
 def pump():
     """THE persistent main-thread timer: drain the queue, then let the UI redraw."""
     try:
         while True:
-            _dispatch(_Q.get_nowait())
+            job = _Q.get_nowait()
+            for fn in AROUND_JOB:
+                fn(True)
+            try:
+                _dispatch(job)
+            finally:
+                for fn in AROUND_JOB:
+                    fn(False)
     except queue.Empty:
         pass
     return 0.04

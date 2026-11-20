@@ -562,6 +562,52 @@ def finish_calls(inst):
 EXACT = re.compile(r"\bnamed\s+\S+\s+at\s+-?\d")
 
 
+_NUM = r"(-?\d+(?:\.\d+)?)"
+_VEC = _NUM + r"\s*,\s*" + _NUM + r"\s*,\s*" + _NUM
+EXACT_SHAPES = {"cube": "cube", "cylinder": "cylinder", "cone": "cone", "torus": "torus", "plane": "plane",
+                "ico sphere": "ico_sphere", "icosphere": "ico_sphere", "uv sphere": "uv_sphere", "sphere": "uv_sphere",
+                "monkey": "monkey", "circle": "circle", "grid": "grid"}
+_EXACT_FULL = re.compile(
+    r"^\s*add\s+an?\s+(?P<shape>" + "|".join(sorted(EXACT_SHAPES, key=len, reverse=True)) + r")\s+named\s+"
+    r"(?P<name>[A-Za-z_][A-Za-z0-9_.\-]*)\s+at\s+" + _VEC + r"(?P<rest>.*?)\s*\.?\s*$", re.I)
+_EXACT_PARTS = {
+    "scale": re.compile(r"^\s*(?:,|and)?\s*with\s+a\s+scale\s+of\s+" + _VEC, re.I),
+    "radius_depth": re.compile(r"^\s*(?:,|and)?\s*with\s+a\s+radius\s+of\s+" + _NUM + r"\s+and\s+a\s+depth\s+of\s+" + _NUM, re.I),
+    "torus": re.compile(r"^\s*(?:,|and)?\s*with\s+a\s+major\s+radius\s+of\s+" + _NUM + r"\s+and\s+a\s+minor\s+radius\s+of\s+" + _NUM, re.I),
+    "rotation": re.compile(r"^\s*(?:,|and)?\s*(?:with\s+a\s+rotation\s+of|rotated(?:\s+by)?)\s+" + _VEC + r"(?:\s*degrees)?", re.I),
+}
+
+
+def exact_shape(text):
+    """"Add a cube named Seat at 0, 0, 0.45 with a scale of 0.4, 0.4, 0.05." -> the `shape` change it states, read by
+    code (every number is in the sentence, so no model is asked and none can miscopy one). None when the sentence is
+    not wholly in this form (it then goes to the edit model as before)."""
+    m = _EXACT_FULL.match(str(text or ""))
+    if not m:
+        return None
+    ch = {"do": "shape", "shape": EXACT_SHAPES[m.group("shape").lower()], "name": m.group("name"),
+          "at": [float(m.group(i)) for i in (3, 4, 5)]}
+    rest = m.group("rest")
+    while rest.strip():
+        for key, rx in _EXACT_PARTS.items():
+            p = rx.match(rest)
+            if p:
+                v = [float(x) for x in p.groups()]
+                if key == "scale":
+                    ch["scale"] = v
+                elif key == "radius_depth":
+                    ch["radius"], ch["depth"] = v
+                elif key == "torus":
+                    ch["major_radius"], ch["minor_radius"] = v
+                else:
+                    ch["rotation"] = v
+                rest = rest[p.end():]
+                break
+        else:
+            return None
+    return ch
+
+
 def is_exact_instruction(text):
     """"Add a cube named X at 1, 2, 3 ..." is already the instruction a plan compiles TO: it goes
     straight to Build. (The takes are made of these; planning them would build a whole table for

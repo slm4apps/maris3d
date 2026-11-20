@@ -505,3 +505,400 @@ def all_designs(spec, path=None):
     if path:
         out.update(load_user_designs(path, spec))
     return out
+
+
+# ---- poses, pieces and tools per outfit (maris.json outfits[].idle / tool, pose_parts) ---------
+
+def idle_pose(spec, outfit):
+    """The outfit's resting loop: its "idle" (the ninja's never stands still), else idle."""
+    return (spec["outfits"].get(outfit) or {}).get("idle", "idle")
+
+
+def looping(spec):
+    """Poses that loop until another pose starts: every idle, plus weave, run and float."""
+    return {"weave", "run", "float"} | {idle_pose(spec, o) for o in spec["outfits"]} | {"idle"}
+
+
+def visible(spec, names, outfit, pose="idle", props=None, toy=None):
+    """{object name: shown} for Maris's objects in this outfit and pose. Objects not in the
+    result keep their state (mouths: face() picks them).
+
+    props: {name: custom properties} (maris_outfit, maris_tool, maris_pose, maris_toy). Rules:
+    a tool shows only in a pose with tool true and only for its outfit; a maris_pose mesh only in
+    those poses; a toy only if it is the current toy and the pose keeps the toy (as the thread);
+    outfit pieces only for their outfit; what the outfit or the pose hides is hidden."""
+    props = props or {}
+    pre = spec["prefix"]
+    rule = (spec.get("pose_parts") or {}).get(pose) or {}
+    hidden = set(spec["outfits"][outfit]["hide"]) | set(rule.get("hide", ()))
+    managed = ({h for o in spec["outfits"].values() for h in o["hide"]}
+               | {h for r in (spec.get("pose_parts") or {}).values() for h in r.get("hide", ())})
+    keep_toy, tool = rule.get("toy", True), rule.get("tool", False)
+    out = {}
+    for name in names:
+        p = props.get(name) or {}
+        base = name[len(pre):] if name.startswith(pre) else name
+        if "maris_tool" in p:
+            out[name] = tool and p["maris_tool"] == outfit
+        elif "maris_pose" in p:
+            out[name] = pose in str(p["maris_pose"]).split(",")
+        elif "maris_toy" in p:
+            out[name] = keep_toy and p["maris_toy"] == toy
+        elif base == "Thread":
+            out[name] = keep_toy
+        elif "maris_outfit" in p:
+            out[name] = p["maris_outfit"] == outfit and base not in hidden
+        elif base in managed:
+            out[name] = base not in hidden
+    return out
+
+
+# ---- sitting: on a seat near her, else on the ground ---------------------------------------------
+
+SEAT_WORDS = ("chair", "seat", "bench", "sofa", "stool", "couch", "armchair", "settee", "throne")
+
+
+def name_words(name):
+    """Lower-case words of an object name: 'OfficeChair.001' -> ['office', 'chair']."""
+    import re
+    base = name.split(".")[0]
+    parts = re.findall(r"[A-Z]+(?![a-z])|[A-Z]?[a-z]+", base)
+    return [w.lower() for w in parts]
+
+
+def is_seat_name(name):
+    """A thing to sit on, by its main (last) word: chair, bench, sofa, stool ... ('BenchLeg' and
+    'ChairBack' are parts, not seats)."""
+    words = name_words(name)
+    if not words:
+        return False
+    last = words[-1]
+    return any(last == w or last in (w + "s", w + "es") for w in SEAT_WORDS)
+
+
+def seat_facing(centre_top, side_tops, height):
+    """Which way to face on a seat. centre_top is the seat height at its middle; side_tops is
+    [((dx, dy), top or None)] at four sides. A side clearly higher than the seat (a back) means
+    face away from it: returns the (x, y) unit direction, or None (no back: face the camera)."""
+    best, best_top = None, centre_top + 0.2 * height
+    for (dx, dy), top in side_tops:
+        if top is not None and top > best_top:
+            best, best_top = (dx, dy), top
+    if best is None:
+        return None
+    n = math.hypot(*best) or 1.0
+    return (-best[0] / n, -best[1] / n)
+
+
+def seat_scale(spec, seat_height, height):
+    """Her height on a seat whose top is seat_height above the floor: legs reaching the floor,
+    within half to twice her height in this scene; None if the seat does not fit her at all."""
+    want = seat_height / spec["sitting"]["seat_height"]
+    if not (0.5 * height <= want <= 2.0 * height):
+        return None
+    return want
+
+
+def yaw_to(dx, dy):
+    """Rig rotation about z (radians) that turns her front (-Y) toward (dx, dy)."""
+    return math.atan2(dx, -dy)
+
+
+# ---- carrying parts to their places ----------------------------------------------------------------
+# A new part pops in at a spot a few of her heights from its place; she pops in beside it, grabs
+# it (it floats over her head), dashes to its place (lean, arms back) and places it with the
+# outfit's tool. On the way, things in her line: small ones she trips over (or phases), big ones
+# she crashes into and goes round, goes round, or phases through (flickering). Where she stands
+# she never overlaps anything. Presentation only: the real part is already built.
+
+CARRY_HOLD = (0.0, 0.0, 1.35)     # a carried part's centre: over her head (her space, height 1)
+CARRY_SIZE = 0.6                  # a carried part is at most this many of her heights across
+CARRY_MAX_WAITING = 12            # more waiting parts than this appear at once, uncarried
+CARRY_TIMES = {"pop": 0.18, "pickup": 0.3, "place": 0.55, "speed": 4.0, "trip": 0.45,
+               "crash": 0.7, "phase_speed": 2.5}
+FOOT = 0.2                        # her footprint radius (heights): standing spots keep clear by this
+SMALL = 0.3                       # things lower than this many of her heights are tripped over
+FLAT = 0.04                       # thinner than this (floors, rugs): walked on, never an obstacle
+
+
+CARRY_MAX_SIZE = 3.0             # parts bigger than this many of her heights: she watches instead (person-sized, she still carries a house block)
+
+
+GROW_SMALL = 0.5                 # parts smaller than this many of her heights grow in, not carried
+
+
+def carry_choice(kind, has_parent, has_children, size, height, waiting, attached=False):
+    """How a new part comes in. "carry": she brings it to its place (a single stand-alone mesh, not
+    too big, not when many wait). "grow": it grows in where it belongs while she points her tool
+    at it: a small piece, or one fixed to the side of a bigger thing (a door, a window, a bauble);
+    running with those only looks busy. "watch": she turns to it and looks; it simply appears
+    (groups, non-meshes, very big parts, a long queue)."""
+    if kind != "MESH" or has_parent or has_children:
+        return "watch"
+    if attached or size < GROW_SMALL * height:
+        return "grow"
+    if size > CARRY_MAX_SIZE * height or waiting >= 4:
+        return "watch"
+    return "carry"
+
+
+def attached_to(part, others, height):
+    """True when the part (a world box) is fixed to the side of a bigger thing: it touches a box
+    with more than 1.5 times its volume and does not sit on top of it (a roof on walls or a tier on
+    a tree is placed, so it is carried)."""
+    (x0, y0, z0), (x1, y1, z1) = part
+    vol = max(1e-9, (x1 - x0) * (y1 - y0) * (z1 - z0))
+    g = 0.05 * height
+    for (a0, b0, c0), (a1, b1, c1) in others:
+        if (a1 - a0) * (b1 - b0) * (c1 - c0) <= 1.5 * vol:
+            continue
+        if x1 < a0 - g or x0 > a1 + g or y1 < b0 - g or y0 > b1 + g or z1 < c0 - g or z0 > c1 + g:
+            continue
+        if z0 >= c1 - 0.25 * (z1 - z0):
+            continue                           # on top of it: placed, not fixed to its side
+        return True
+    return False
+
+
+GROW_TIMES = {"gap": 0.35, "each": 0.7}   # seconds between growing parts, seconds each takes
+
+
+def grow_scale(x):
+    """Scale of a growing part at x (0..1 of its time): from nothing, a little past full, back."""
+    x = _clamp(x)
+    if x >= 1.0:
+        return 1.0
+    c = 1.70158                                # ease-out-back
+    y = x - 1.0
+    return max(0.01, 1 + (c + 1) * y ** 3 + c * y ** 2)
+
+
+# ---- ground, size, where things come from ----------------------------------------------------------
+
+def is_ground(dims, height):
+    """A wide flat thing she stands on (snow, a floor, a path): low and at least two of her heights
+    across. It never sets her size and it is walked on."""
+    wide = max(dims[0], dims[1])
+    return wide >= 2.0 * height and dims[2] <= 0.1 * wide
+
+
+def ground_top(grounds, x, y):
+    """Top of the highest ground box under (x, y), or None."""
+    best = None
+    for (x0, y0, _z0), (x1, y1, z1) in grounds:
+        if x0 <= x <= x1 and y0 <= y <= y1:
+            best = z1 if best is None else max(best, z1)
+    return best
+
+
+def person_height(tallest, current):
+    """Her height in a scene whose tallest standing thing (not ground) is `tallest` high: about two
+    thirds of it, like a person by a house, 0.4 to 3 m. She keeps her height unless the new one is
+    off by more than a third, so she does not grow and shrink while a scene is built."""
+    if tallest <= 0:
+        return current
+    want = max(0.4, min(3.0, 0.65 * tallest))
+    return want if abs(want - current) > current / 3 else current
+
+
+def rim_spot(ground, goal, height, eye=None, rng=None, out=0.45):
+    """Where a part she will carry pops in when there is ground: just past its edge on the side
+    nearest the part's place (toward the viewer when the place is near the middle). The ground box
+    is taken as the ellipse inside it (a disc of snow, a round rug)."""
+    (x0, y0, _z0), (x1, y1, _z1) = ground
+    cx, cy, rx, ry = (x0 + x1) / 2, (y0 + y1) / 2, max(1e-6, (x1 - x0) / 2), max(1e-6, (y1 - y0) / 2)
+    dx, dy = goal[0] - cx, goal[1] - cy
+    if math.hypot(dx / rx, dy / ry) < 0.3 and eye is not None:
+        dx, dy = eye[0] - cx, eye[1] - cy
+    a = math.atan2(dy, dx) + (rng.uniform(-0.45, 0.45) if rng is not None else 0.0)
+    ux, uy = math.cos(a), math.sin(a)
+    edge = 1.0 / math.sqrt((ux / rx) ** 2 + (uy / ry) ** 2)
+    d = edge + out * height                    # out < 0: just inside the edge (she stands there)
+    return (cx + d * ux, cy + d * uy, goal[2])
+
+
+def moved_groups(before, after, height, min_move=0.5):
+    """What one request moved, as groups: {(dx, dy, dz) rounded: [names]} for things that moved by
+    the same amount and at least min_move of her heights (a snowman's three balls move together)."""
+    out = {}
+    for name, a in after.items():
+        b = before.get(name)
+        if b is None:
+            continue
+        d = tuple(round(a[k] - b[k], 3) for k in range(3))
+        if math.hypot(d[0], d[1]) >= min_move * height:
+            out.setdefault(d, []).append(name)
+    return out
+
+
+def turn_step(current, target, rate=7.0 / 30):
+    """One frame of turning from yaw `current` toward `target` (radians), the short way round."""
+    diff = (target - current + math.pi) % (2 * math.pi) - math.pi
+    return current + diff * min(1.0, rate)
+
+
+def carry_speedup(waiting):
+    """How much faster each carry goes with this many parts waiting: 1 to 4 times."""
+    return min(4.0, 1.0 + 0.35 * max(0, waiting))
+
+
+def hold_scale(size, height):
+    """Scale for a part `size` across (largest side) while she holds it: never bigger than it is,
+    at most CARRY_SIZE of her height."""
+    if size <= 0:
+        return 1.0
+    return min(1.0, CARRY_SIZE * height / size)
+
+
+def ease(x):
+    """Smooth 0..1 (ease in and out)."""
+    x = _clamp(x)
+    return x * x * (3 - 2 * x)
+
+
+def place_path(start, end, x, lift):
+    """A point on the arc from start to end (x in 0..1), `lift` metres up at the middle."""
+    e = ease(x)
+    p = [start[k] + (end[k] - start[k]) * e for k in range(3)]
+    p[2] += lift * 4 * e * (1 - e)
+    return tuple(p)
+
+
+def _overlaps(p, r, box):
+    (x0, y0, _), (x1, y1, _) = box
+    dx = max(x0 - p[0], 0.0, p[0] - x1)
+    dy = max(y0 - p[1], 0.0, p[1] - y1)
+    return dx * dx + dy * dy < r * r
+
+
+def solid(boxes, height):
+    """The boxes she can bump into: not flat (floors, rugs)."""
+    return [b for b in boxes if b[1][2] - b[0][2] >= FLAT * height]
+
+
+def free_spot(spot, height, boxes, tries=12):
+    """`spot` (x, y, z), moved the least so her footprint overlaps no box: she always stands
+    clear of things. Boxes are ((x0, y0, z0), (x1, y1, z1)); flat ones are ignored."""
+    r = FOOT * height
+    p = [spot[0], spot[1]]
+    boxes = solid(boxes, height)
+    for _ in range(tries):
+        hit = next((b for b in boxes if _overlaps(p, r, b)), None)
+        if hit is None:
+            break
+        (x0, y0, _), (x1, y1, _) = hit
+        moves = [(x0 - r - p[0], 0.0), (x1 + r - p[0], 0.0), (0.0, y0 - r - p[1]), (0.0, y1 + r - p[1])]
+        dx, dy = min(moves, key=lambda m: abs(m[0]) + abs(m[1]))
+        p = [p[0] + dx * 1.001, p[1] + dy * 1.001]
+    return (p[0], p[1], spot[2])
+
+
+def pop_spot(goal, height, eye, rng, boxes=()):
+    """Where a new part pops in: 2.5 to 4 of her heights from its place, toward the camera side
+    (so the dash shows), on clear ground."""
+    if eye is not None:
+        base = math.atan2(eye[1] - goal[1], eye[0] - goal[0])
+    else:
+        base = -math.pi / 2                    # Blender's front view looks along +y
+    a = base + rng.uniform(-1.1, 1.1)
+    d = rng.uniform(2.5, 4.0) * height
+    return free_spot((goal[0] + d * math.cos(a), goal[1] + d * math.sin(a), goal[2]), height, boxes)
+
+
+def _crossing(a, b, box, r):
+    """(t_in, t_out) where segment a->b crosses the box grown by r, or None."""
+    (x0, y0, _), (x1, y1, _) = box
+    lo, hi = [x0 - r, y0 - r], [x1 + r, y1 + r]
+    t0, t1 = 0.0, 1.0
+    for k in range(2):
+        d = b[k] - a[k]
+        if abs(d) < 1e-9:
+            if not lo[k] <= a[k] <= hi[k]:
+                return None
+            continue
+        u, v = (lo[k] - a[k]) / d, (hi[k] - a[k]) / d
+        t0, t1 = max(t0, min(u, v)), min(t1, max(u, v))
+        if t0 > t1:
+            return None
+    return (t0, t1)
+
+
+def _lerp2(a, b, t):
+    return (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+
+
+def _cuts(a, b, box, r):
+    """Segment a->b passes through the inside of the box grown by r (touching is fine)."""
+    c = _crossing(a, b, box, r)
+    return c is not None and c[1] - c[0] > 1e-6
+
+
+def _round(a, b, box, r):
+    """The shortest way from a to b round the box: via one or two of its corners (grown by r)."""
+    (x0, y0, _), (x1, y1, _) = box
+    cs = [(x0 - r, y0 - r), (x1 + r, y0 - r), (x1 + r, y1 + r), (x0 - r, y1 + r)]
+    ways = [[c] for c in cs] + [[cs[i], cs[(i + d) % 4]] for i in range(4) for d in (1, 3)]
+    best, best_len = None, None
+    for way in ways:
+        pts = [a] + way + [b]
+        if any(_cuts(p, q, box, 0.0) for p, q in zip(pts, pts[1:])):
+            continue
+        length = sum(math.dist(p, q) for p, q in zip(pts, pts[1:]))
+        if best is None or length < best_len:
+            best, best_len = way, length
+    return best or [cs[0]]
+
+
+def dash_route(start, goal, boxes, height, rng, hurry=False):
+    """Her dash from start to goal (x, y) past the boxes in the way, as steps:
+    ("run", a, b), ("phase", a, b) (through a thing, flickering), ("trip", p), ("crash", p).
+    Small things: trip (or phase); big ones: crash then go round, go round, or phase. hurry
+    (many parts waiting): straight through, phasing. Boxes holding start or goal are skipped."""
+    r = FOOT * height
+    todo = [bx for bx in solid(boxes, height)
+            if not _overlaps(start, r * 0.5, bx) and not _overlaps(goal, r * 0.5, bx)]
+    steps, cur = [], tuple(start[:2])
+    goal = tuple(goal[:2])
+    for _ in range(10):
+        hits = [(c, bx) for bx in todo for c in [_crossing(cur, goal, bx, r * 0.5)] if c]
+        if not hits:
+            break
+        (t_in, t_out), bx = min(hits, key=lambda h: h[0][0])
+        todo.remove(bx)
+        enter, leave = _lerp2(cur, goal, t_in), _lerp2(cur, goal, t_out)
+        low = bx[1][2] - bx[0][2] < SMALL * height
+        roll = rng.random()
+        if hurry:
+            act = "phase"
+        elif low:
+            act = "trip" if roll < 0.7 else "phase"
+        else:
+            act = "crash" if roll < 0.3 else "round" if roll < 0.65 else "phase"
+        if math.dist(cur, enter) > 1e-6:
+            steps.append(("run", cur, enter))
+        if act == "trip":
+            steps += [("trip", enter), ("run", enter, leave)]
+            cur = leave
+        elif act == "phase":
+            steps.append(("phase", enter, leave))
+            cur = leave
+        else:
+            if act == "crash":
+                steps.append(("crash", enter))
+            prev = enter
+            for way in _round(enter, goal, bx, r):
+                steps.append(("run", prev, way))
+                prev = way
+            cur = prev
+    if math.dist(cur, goal) > 1e-6:
+        steps.append(("run", cur, goal))
+    return steps
+
+
+def step_time(step, height, hurry_k=1.0):
+    """Seconds one dash step takes (divided by the hurry factor)."""
+    t = CARRY_TIMES
+    if step[0] in ("trip", "crash"):
+        return t[step[0]] / hurry_k
+    speed = t["speed"] if step[0] == "run" else t["phase_speed"]
+    return math.dist(step[1], step[2]) / (speed * height) / hurry_k

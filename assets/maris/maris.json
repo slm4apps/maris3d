@@ -1,6 +1,6 @@
 {
   "name": "Maris",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "about": "The Maris3D mascot, Maris. Single source for the build script, the add-on and the web pages. Change this file (and build_maris.py for new geometry), rebuild, bump the version. See README.md.",
   "prefix": "Maris_",
   "rig": "Maris_Rig",
@@ -20,7 +20,14 @@
     "sit": 12,
     "sad": 12,
     "dance": 12,
-    "inspect": 10
+    "inspect": 10,
+    "sit_seat": 12,
+    "carry": 6,
+    "run": 4,
+    "place": 9,
+    "ninja_idle": 10,
+    "trip": 3,
+    "crash": 2
   },
   "faces": {
     "happy": {
@@ -63,7 +70,11 @@
       "colours": {},
       "pieces": [],
       "hide": [],
-      "toy_theme": "everyday"
+      "toy_theme": "everyday",
+      "tool": [
+        "ToolSeaWand",
+        "ToolSeaStar"
+      ]
     },
     "winter": {
       "label": "Winter",
@@ -85,7 +96,14 @@
       "hide": [
         "Band"
       ],
-      "toy_theme": "christmas"
+      "toy_theme": "christmas",
+      "tool": [
+        "ToolWinterCane",
+        "ToolWinterStripe0",
+        "ToolWinterStripe1",
+        "ToolWinterStripe2",
+        "ToolWinterFlake"
+      ]
     },
     "conductor": {
       "label": "Conductor",
@@ -110,7 +128,53 @@
       "hide": [
         "Band"
       ],
-      "toy_theme": "everyday"
+      "toy_theme": "everyday",
+      "tool": [
+        "ToolConductorGrip",
+        "ToolConductorBaton",
+        "ToolConductorTip"
+      ]
+    },
+    "ninja": {
+      "label": "Ninja",
+      "about": "Dark suit with a hood and mask (eyes showing), a headband with two tails, a sash and a sword on her back. Never stands still.",
+      "colours": {
+        "dress": {
+          "hex": "#24262d"
+        },
+        "bodice": {
+          "hex": "#15161b"
+        },
+        "band": {
+          "name": "crimson"
+        }
+      },
+      "pieces": [
+        "NinjaHood",
+        "NinjaMask",
+        "NinjaBand",
+        "NinjaTailL",
+        "NinjaTailR",
+        "NinjaSash",
+        "NinjaKnot",
+        "NinjaSheath",
+        "NinjaHilt"
+      ],
+      "hide": [
+        "Band",
+        "Hair",
+        "Braid0",
+        "Braid1",
+        "Braid2",
+        "Braid3"
+      ],
+      "toy_theme": "everyday",
+      "idle": "ninja_idle",
+      "tool": [
+        "ToolNinjaGrip",
+        "ToolNinjaGuard",
+        "ToolNinjaBlade"
+      ]
     }
   },
   "default_skin": "light",
@@ -162,7 +226,7 @@
       }
     },
     "gold": {
-      "label": "Thread and toy",
+      "label": "Wand star and toy",
       "colour": {
         "name": "tinsel_gold"
       }
@@ -180,7 +244,7 @@
       }
     },
     "wood": {
-      "label": "Spindle",
+      "label": "Wand",
       "colour": {
         "hex": "#8a593b"
       }
@@ -195,6 +259,12 @@
       "label": "Buttons and badge",
       "colour": {
         "name": "brass"
+      }
+    },
+    "blade": {
+      "label": "Blade",
+      "colour": {
+        "name": "silver"
       }
     }
   },
@@ -283,5 +353,64 @@
     "random_any": "Random (any toy)"
   },
   "default_toy": "random",
-  "about_toys": "The Maris always weaves a gold-thread toy that is not finished yet. A design picks one toy or a random mode; random picks a new toy each time she starts weaving (\"random\" from the outfit's toy_theme, \"random_any\" from all). Each toy object has maris_toy and thread_end_local (where the thread's end marker goes)."
+  "about_toys": "The Maris always weaves a gold toy that is not finished yet; it floats beside the star on her wand (no thread ties them). A design picks one toy or a random mode; random picks a new toy each time she starts weaving (\"random\" from the outfit's toy_theme, \"random_any\" from all). Each toy object has maris_toy.",
+  "about_tools": "Each outfit's tool (wand, candy-cane wand, baton, sword) is in her right hand only while she places a part (pose place). An outfit's idle pose is its 'idle' (default idle).",
+  "pose_parts": {
+    "sit": {
+      "hide": [
+        "Dress",
+        "WinterHem"
+      ],
+      "toy": false
+    },
+    "sit_seat": {
+      "hide": [
+        "Dress",
+        "WinterHem"
+      ],
+      "toy": false
+    },
+    "carry": {
+      "hide": [
+        "Spindle",
+        "WandStar"
+      ],
+      "toy": false
+    },
+    "run": {
+      "hide": [
+        "Spindle",
+        "WandStar"
+      ],
+      "toy": false
+    },
+    "place": {
+      "hide": [
+        "Spindle",
+        "WandStar"
+      ],
+      "toy": false,
+      "tool": true
+    },
+    "trip": {
+      "hide": [
+        "Spindle",
+        "WandStar"
+      ],
+      "toy": false
+    },
+    "crash": {
+      "hide": [
+        "Spindle",
+        "WandStar"
+      ],
+      "toy": false
+    }
+  },
+  "about_pose_parts": "Per pose: objects to hide, whether the toy shows (toy, default true) and whether the outfit's tool shows (tool, default false). Meshes with maris_pose (comma-separated pose names) show only in those poses: the seated skirt and shoes.",
+  "sitting": {
+    "lap_under": 0.1,
+    "seat_height": 0.28,
+    "about": "Seated (sit, sit_seat): the lap's underside is lap_under above her origin and her shoes reach seat_height below it, both at height 1.0. The add-on puts her origin at seat top - lap_under * scale and scales her so seat_height fits the seat."
+  }
 }

@@ -8,7 +8,7 @@
 # `maris3d install` (the Blender add-on, the model files from Hugging Face, llama-server, a self-test).
 $ErrorActionPreference = "Stop"
 
-$Version = "0.2.1.1"
+$Version = "0.2.2"
 $WheelUrl = "https://github.com/slm4apps/maris3d/releases/download/v$Version/maris3d-$Version-py3-none-any.whl"
 if ($env:MARIS3D_WHEEL) { $WheelUrl = $env:MARIS3D_WHEEL }   # a local wheel, for testing (as in install.sh)
 $HomeDir = if ($env:MARIS3D_HOME) { $env:MARIS3D_HOME } else { Join-Path $env:LOCALAPPDATA "maris3d" }

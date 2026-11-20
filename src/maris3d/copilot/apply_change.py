@@ -927,6 +927,9 @@ def _rename(ctx, ch, spec):
 _OPS = {"remove": _remove, "recolor": _recolor, "scale": _scale, "move": _move, "turn": _turn,
         "add": _add, "copy": _copy, "rename": _rename, "tilt": _tilt, "shape": _shape}
 
+from . import kit_words as _KIT  # noqa: E402  (0.2.2 words: camera, light, text, attach, aim, finish, scene)
+_OPS.update(_KIT.OPS)
+
 
 def apply_answer(answer, specs, scene=None):
     """One change answer on the stored specs -> Applied (calls, new specs, errors, expected facts).
@@ -959,8 +962,10 @@ def apply_answer(answer, specs, scene=None):
                 raise ChangeError("a change is an object")
             op = _OPS.get(ch.get("do"))
             if op is None:
-                raise ChangeError(f"unknown do {ch.get('do')!r}; the changes are: " + ", ".join(DOS))
-            if op is _shape:
+                raise ChangeError(f"unknown do {ch.get('do')!r}; the changes are: " + ", ".join(_OPS))
+            if op is _remove and _KIT.is_other(ctx, ch.get("object")):     # a camera / light / text the kit made
+                op = _KIT.remove_other
+            if op is _shape or getattr(op, "no_object", False):
                 calls, expect = op(ctx, ch)
             else:
                 calls, expect = op(ctx, ch, _thing(ctx, ch.get("object")))

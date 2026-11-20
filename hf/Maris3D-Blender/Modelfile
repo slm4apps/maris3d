@@ -1,10 +1,10 @@
-# Maris3D SLM Blender 0.5B 0.2.1 -- Ollama entry "maris3d-slm-blender-0.5b" (tags :latest and :0.2.1): the base with the 0.2 adapter (plans, parts, word edits, talk).
+# Maris3D SLM Blender 0.5B 0.2.2 -- Ollama entry "maris3d-slm-blender-0.5b" (tags :latest and :0.2.2): the base with the 0.2.2 adapter (plans, parts, word edits, talk).
 #   ollama create maris3d-slm-blender-0.5b -f Modelfile
-#   ollama cp maris3d-slm-blender-0.5b maris3d-slm-blender-0.5b:0.2.1    # the same model under its version tag
+#   ollama cp maris3d-slm-blender-0.5b maris3d-slm-blender-0.5b:0.2.2    # the same model under its version tag
 # The Maris3D app sends these same settings on every request (src/maris3d/runtimes/ollama.py); they are here
 # so a direct call matches. Ollama's own default repeat_penalty (1.1) is not what the adapter was measured with.
 FROM ./maris3d-slm-blender-0.5b-q8_0.gguf
-ADAPTER ./maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf
+ADAPTER ./maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf
 PARAMETER temperature 0
 PARAMETER repeat_penalty 1.05
 PARAMETER num_ctx 8192

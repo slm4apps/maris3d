@@ -4,20 +4,20 @@
 relations such as "behind" or "on top of", sizes such as "half" or "double"); the app's compiler turns the words into correct Blender tool calls and
 every size and position is computed by code. The model never writes a number. 0.1 wrote tool calls with coordinates; that is why 0.2 is a breaking change.
 
-**Which files do I need?** The base `maris3d-slm-blender-0.5b-q8_0.gguf` (531 MB, same file as 0.1) and the adapter `maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf` (12 MB).
+**Which files do I need?** The base `maris3d-slm-blender-0.5b-q8_0.gguf` (531 MB, same file as 0.1) and the adapter `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf` (23 MB).
 `maris3d install` fetches both. There is one adapter for planning, the parts of a new thing, word edits and talk (0.1 had separate edit and planner adapters).
 
 **Do I need Blender?** Yes, to build the scene (headless is fine). Blender 4.2 or newer; 5.2 LTS is the verified version.
 
-**Can it edit my scene?** It edits scenes the app built: recolour, resize, move, turn, copy, remove, rename, add a part to a thing. Edit by words scored 90.4 % on 726
+**Can it edit my scene?** It edits scenes the app built: recolour, resize, move, turn, copy, remove, rename, add a part to a thing. Edit by words scored 85.4 % on 726
 held-out change requests. One known gap: a follow-up that adds a new thing to a scene that is already built often does nothing yet (in one test
 14 of 30 follow-up edits changed the scene). Say it as a new request or press **Undo** and describe the whole scene again.
 
 **Can it animate, add lights, cameras or text?** Simple animation (spin, swing, bounce, grow, shrink, rise, move, orbit, pulse, colour change) is done by
-the app's code from your sentence, not by the model. No lights, cameras or text from a plain request yet: the model has no words for them, so it builds a look-alike object (a lamp for "a light", a sign with a blank panel for text) or does nothing. An animation that names a camera or a light ("a camera circling the cube", "a light pulsing") gets a real one from the app's animation code.
+the app's code from your sentence, not by the model. No lights, cameras or text from a plain request yet. From 0.2.2 a change to a built scene can add a camera, a light or a text. An animation that names a camera or a light ("a camera circling the cube", "a light pulsing") gets a real one from the app's animation code.
 They are planned for a later version, with no date.
 
-**Can it answer questions about the scene?** Yes, "talk": it answers from what is in the scene (95.8 % right on 118 held-out turns; it invented nothing
+**Can it answer questions about the scene?** Yes, "talk": it answers from what is in the scene (96.1 % right on 152 held-out turns; it invented nothing
 in 383 turns).
 
 **Does it work with Blender 4.x?** The add-on needs 4.2 or newer. Only 5.2 LTS is verified.

@@ -24,7 +24,7 @@ def adapters(url):
         return []
 
 
-# the one adapter's file name carries its release version (maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf);
+# the one adapter's file name carries its release version (maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf);
 # development builds carry the mark "blender-one" instead
 ONE_MARK = "blender-one"
 ONE_VERSIONED = re.compile(r"-v\d+(?:\.\d+)*-lora")

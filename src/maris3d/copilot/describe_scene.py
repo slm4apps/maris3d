@@ -212,7 +212,20 @@ def nouns_line(specs):
     return "Scene: " + ", ".join(f"{n} x{c}" if c > 1 else n for n, c in count.items())
 
 
-def edit_input(specs, request, focus=(), last=None, clarified=(), extra_boxes=None, budget=BUDGET):
+OTHER_KINDS = {"CAMERA": "camera", "LIGHT": "light", "FONT": "text"}
+
+
+def others_line(objects, specs):
+    """'Others: Camera (camera), Sun (light), Sign (text)': the scene's cameras, lights and texts that are not
+    parts of a built thing, so a follow-up ("make the sign say Closed", "point the camera at the tree") can name
+    them. None when there are none. Read from the scene itself, so it holds after undo and in a new session."""
+    member = set(specs) | {p["name"] for s in specs.values() for p in s.get("parts", [])}
+    names = [f"{o['name']} ({OTHER_KINDS[o.get('type')]})" for o in objects or []
+             if o.get("type") in OTHER_KINDS and o.get("name") not in member]
+    return "Others: " + ", ".join(names) if names else None
+
+
+def edit_input(specs, request, focus=(), last=None, clarified=(), extra_boxes=None, budget=BUDGET, others=None):
     """The user turn of one edit pass, within `budget` tokens (with the system prompt).
     Returns (text, notes): notes say what was cut, for the panel and the trace."""
     notes = []
@@ -232,11 +245,25 @@ def edit_input(specs, request, focus=(), last=None, clarified=(), extra_boxes=No
         shown = len(focus_lines)
         notes.append(f"focus cut: {shown} of {len(want)} things shown")
         focus_lines.append(f"Too many to show: {len(want)} things; ask for fewer, or change them as a group")
+    if not focus:
+        # with no focus asked for, the other things' parts follow the last one's while they fit (the
+        # same Focus lines a selection gives): "add a cushion on the seat" after a chair, legs and a back
+        # showed only the back's parts, and the edit model named a Seat it had not been shown
+        for sid in specs:
+            if sid in want:
+                continue
+            line = part_line(specs[sid])
+            if est_tokens("\n".join(focus_lines + [line])) > room * 0.6:
+                break
+            want.append(sid)
+            focus_lines.append(line)
     room -= est_tokens("\n".join(focus_lines))
     flat = describe_scene(specs, last=None, open_things=(), extra_boxes=extra_boxes).splitlines()
     flat = [l for l in flat if not l.startswith("Last:")]
     if est_tokens("\n".join(flat)) > room:
         flat = [nouns_line(specs)]
         notes.append("scene shown as nouns with counts")
+    if others:                       # 0.2.1: the cameras, lights and texts the kit words made (others_line)
+        flat.append(others)
     body = flat + ([l.replace("Parts of ", "Focus: ", 1) for l in focus_lines] if focus_lines else []) + tail
     return "\n".join(body), notes

@@ -154,7 +154,7 @@ def gate_one_card():
 
 def gate_product_files():
     """The product is ONE base file plus the one adapter; both must be staged."""
-    need = ("maris3d-slm-blender-0.5b-q8_0.gguf", "maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf")
+    need = ("maris3d-slm-blender-0.5b-q8_0.gguf", "maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf")
     missing = [n for n in need if not os.path.exists(os.path.join(STAGING, n))]
     return Gate("product files", "pending" if missing else "ok",
                 f"missing {missing}" if missing else "base + one adapter staged")

@@ -141,7 +141,7 @@ class BpylessAddon(unittest.TestCase):
 
     def test_the_server_runs_the_adapter_of_the_turns_role(self):
         srv = client.LlamaServer()
-        srv.adapters = client.adapter_roles([{"id": 0, "path": "/m/maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf"},
+        srv.adapters = client.adapter_roles([{"id": 0, "path": "/m/maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf"},
                                              {"id": 1, "path": "/m/maris3d-slm-blender-parts-lora-f16.gguf"}])
         body = srv.body([{"role": "user", "content": "x"}], [], 100, role="planner")
         self.assertEqual(body["lora"], [{"id": 0, "scale": 1.0}, {"id": 1, "scale": 0.0}])
@@ -185,7 +185,7 @@ class CliContract(unittest.TestCase):
     def test_cli_imports_and_names_the_0_2_files(self):
         from maris3d import cli
         self.assertEqual(cli.MODELS, {"q8_0": "maris3d-slm-blender-0.5b-q8_0.gguf",
-                                      "one-lora": "maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf",
+                                      "one-lora": "maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf",
                                       "parts-lora": "maris3d-slm-blender-parts-lora-f16.gguf"})
         cmd = cli.serve_command("llama-server", "base.gguf", "one.gguf", 1, "parts.gguf")
         self.assertNotIn("--repeat-penalty", cmd)

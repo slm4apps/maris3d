@@ -1,6 +1,6 @@
 schema_version = 1
 id = "maris3d_copilot"
-version = "0.2.1"
+version = "0.2.2"
 name = "Maris3D Copilot"
 tagline = "Build and edit Blender scenes from a prompt with a local SLM"
 maintainer = "Maris3D contributors"

@@ -1,7 +1,7 @@
 {
  "schema": "maris3d-current/1",
  "family": "Maris3D",
- "release": "v0.2.1",
+ "release": "v0.2.2",
  "hf_org": "slm4apps",
  "benchmark": {
   "prompts": "frozen 180-request yardstick (kept with the maintainers; the public benchmark is being built)",
@@ -14,10 +14,10 @@
  },
  "repo_url": "https://github.com/slm4apps/maris3d",
  "current": {
-  "public_name": "Maris3D SLM Blender 0.5B 0.2.1",
+  "public_name": "Maris3D SLM Blender 0.5B 0.2.2",
   "base_model": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
-  "status": "Hugging Face slm4apps/Maris3D-Blender, tag v0.2.1; GitHub slm4apps/maris3d, tag v0.2.1",
-  "format": "one base file + one adapter: the q8_0 base (the 0.1 weights) is served once with the 12 MB adapter, which plans, designs a new thing's parts, edits by words and talks. The model answers in words; the app's compiler writes the tool calls. MANIFEST.json lists the current file of each role for `maris3d update`.",
+  "status": "Hugging Face slm4apps/Maris3D-Blender, tag v0.2.2; GitHub slm4apps/maris3d, tag v0.2.2",
+  "format": "one base file + one adapter: the q8_0 base (the 0.1 weights) is served once with the 23 MB adapter, which plans, designs a new thing's parts, edits by words and talks. The model answers in words; the app's compiler writes the tool calls. MANIFEST.json lists the current file of each role for `maris3d update`.",
   "artifacts": {
    "gguf-q8_0": {
     "file": "maris3d-slm-blender-0.5b-q8_0.gguf",
@@ -25,9 +25,9 @@
     "bytes": 531068032
    },
    "gguf-one-lora-f16": {
-    "file": "maris3d-slm-blender-0.5b-v0.2.1-lora-f16.gguf",
-    "sha256": "0b0c7e80e73a60501321eb70b34ee3f86766ac822ad14bd3221141d8f2d2e616",
-    "bytes": 11746528
+    "file": "maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf",
+    "sha256": "ca68f48f527598ed5b1f9c4527a70987721e6a00ad9ae812b6e0f2cf5f7b7379",
+    "bytes": 23477440
    }
   },
   "held_out": {

@@ -9,13 +9,13 @@
 #   2. makes a private Python environment in ~/.local/share/maris3d/venv (no admin rights, no system packages touched)
 #   3. installs the maris3d package from this repository's release into it
 #   4. links the `maris3d` command into ~/.local/bin
-#   5. runs `maris3d install`: the Blender add-on, the model files from Hugging Face (about 543 MB,
+#   5. runs `maris3d install`: the Blender add-on, the model files from Hugging Face (about 554 MB,
 #      sha256-checked) and llama-server if you have none, then a self-test in your Blender
 # Pass arguments after `sh -s --`, for example `... | sh -s -- --express` to answer every question with yes.
 # Remove everything again: `maris3d` files live in ~/.local/share/maris3d and ~/.cache/maris3d.
 set -eu
 
-VERSION="0.2.1.1"
+VERSION="0.2.2"
 WHEEL_URL="${MARIS3D_WHEEL:-https://github.com/slm4apps/maris3d/releases/download/v${VERSION}/maris3d-${VERSION}-py3-none-any.whl}"
 HOME_DIR="${MARIS3D_HOME:-$HOME/.local/share/maris3d}"
 BIN_DIR="$HOME/.local/bin"

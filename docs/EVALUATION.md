@@ -8,6 +8,9 @@
   nodes). Each request is run in Blender and the finished scene is judged against a per-request checklist, not by whether the output parses. **Pass** = fully correct; **usable** = pass, or correct
   with small fixes. They are always reported separately, never blended. The request set stays with the maintainers while a public benchmark is prepared.
 - **External benchmarks** (0.1 only, section 3).
+- **0.2.2** (BENCHMARKS.md section 2b): the held-out sets above, sets with the new change words (150 rows each), long
+  sentences, hard parts names and the 204 exact adds of the 0.1 demo scene, run on 0.2.1 and 0.2.2 with the same rows and
+  scorer. What each test measures is at the top of BENCHMARKS.md. The 180-request yardstick was not run again for 0.2.2.
 
 ## Rules for comparable numbers
 1. Say what was used: the files and their sha256, the app version, the runtime, Blender version, the settings (temperature 0, context 8,192, repeat penalty 1.05).

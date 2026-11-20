@@ -36,6 +36,8 @@ if not _HAS_BPY:
         pass
 
 else:
+    import time
+
     import bpy
 
     from . import executor, routing, show
@@ -303,6 +305,132 @@ else:
             threading.Thread(target=_worker, args=(prompt, settings), daemon=True).start()
             return {"FINISHED"}
 
+    # ---- voice input: press the mic, say the prompt, press it again (all offline) ---------------
+    _VOICE = {"state": "idle", "proc": None, "wav": None, "rec": None, "t0": 0.0, "text": None, "error": ""}
+
+    def _voice_paths():
+        prefs = bpy.context.preferences.addons[__package__].preferences
+        import os
+        w, m = prefs.voice_whisper.strip(), prefs.voice_model.strip()
+        if not w or not m:
+            from .vendor import voice
+            from pathlib import Path
+            cache = Path.home() / ".cache" / "maris3d"
+            w = w or (voice.find_whisper(cache) or "")
+            if not m:
+                found = sorted(cache.glob("whisper/ggml-*.bin"))
+                m = str(found[0]) if found else ""
+        return (w, m) if w and m and os.path.isfile(w) and os.path.isfile(m) else (None, None)
+
+    def _voice_transcribe(wav, whisper, model):
+        """Worker thread: whisper.cpp on the recording; the words go to _VOICE["text"]."""
+        import subprocess
+        from .vendor import voice
+        try:
+            r = subprocess.run(voice.transcribe_command(whisper, model, wav), capture_output=True,
+                               text=True, timeout=120)
+            _VOICE["text"] = voice.clean_transcript(r.stdout)
+            if r.returncode != 0 and not _VOICE["text"]:
+                _VOICE["error"] = "Voice: could not write down the recording"
+        except Exception as e:
+            _VOICE["text"], _VOICE["error"] = "", f"Voice: {e}"
+        finally:
+            try:
+                import os
+                os.unlink(wav)
+            except OSError:
+                pass
+
+    def _voice_stop():
+        import signal
+        import threading
+        from .vendor import voice
+        proc = _VOICE["proc"]
+        if proc is not None and proc.poll() is None:
+            try:
+                if voice.stops_by_stdin(_VOICE["rec"]):
+                    proc.stdin.write(voice.stop_line(_VOICE["rec"]))
+                    proc.stdin.flush()
+                else:
+                    proc.send_signal(signal.SIGINT)
+                proc.wait(timeout=5)
+            except Exception:
+                proc.kill()
+        _VOICE.update(state="hearing", proc=None, text=None)
+        whisper, model = _voice_paths()
+        threading.Thread(target=_voice_transcribe, args=(_VOICE["wav"], whisper, model), daemon=True).start()
+
+    def _voice_tick():
+        """Main thread: the recorder stopped by itself (time limit) -> transcribe; the words are
+        in -> they fill the prompt and it runs."""
+        from .vendor import voice
+        st = _VOICE["state"]
+        if st == "listening":
+            proc = _VOICE["proc"]
+            if proc is None or proc.poll() is not None or time.monotonic() - _VOICE["t0"] > voice.MAX_SECONDS + 2:
+                _voice_stop()
+            _STATE["dirty"] = True
+            return 0.2
+        if st == "hearing" and _VOICE["text"] is not None:
+            text, _VOICE["text"] = _VOICE["text"], None
+            _VOICE["state"] = "idle"
+            _STATE["dirty"] = True
+            if _VOICE["error"]:
+                _STATE.update(error=_VOICE["error"])
+                _VOICE["error"] = ""
+                return None
+            if not text:
+                _STATE.update(note="Voice: no words heard")
+                return None
+            bpy.context.window_manager.copt_prompt = text
+            if not _STATE["running"]:
+                try:
+                    bpy.ops.copt.run()
+                except Exception as e:
+                    _STATE.update(error=f"Voice: {e}")
+            return None
+        return 0.2 if st != "idle" else None
+
+    class COPT_OT_voice(bpy.types.Operator):
+        bl_idname, bl_label = "copt.voice", "Say it"
+        bl_description = ("Voice: press, say what to make or change, press again. The words fill the "
+                          "prompt and it runs (offline, whisper.cpp)")
+
+        @classmethod
+        def poll(cls, context):
+            return _VOICE["state"] != "hearing" and not _STATE["running"]
+
+        def execute(self, context):
+            import os
+            import subprocess
+            import tempfile
+            from .vendor import voice
+            if _VOICE["state"] == "listening":
+                _voice_stop()
+                return {"FINISHED"}
+            whisper, model = _voice_paths()
+            if not whisper:
+                self.report({"WARNING"}, "Voice input is not set up: run  maris3d install --voice")
+                _STATE.update(error="Voice input is not set up: run  maris3d install --voice", dirty=True)
+                return {"CANCELLED"}
+            rec = voice.find_recorder()
+            if rec is None:
+                self.report({"WARNING"}, "Voice needs a sound recorder (sox or ffmpeg)")
+                _STATE.update(error="Voice needs a sound recorder: install sox or ffmpeg", dirty=True)
+                return {"CANCELLED"}
+            fd, wav = tempfile.mkstemp(suffix=".wav", prefix="maris3d-voice-")
+            os.close(fd)
+            try:
+                proc = subprocess.Popen(voice.record_command(rec, wav), stdin=subprocess.PIPE,
+                                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
+            except Exception as e:
+                self.report({"ERROR"}, f"Voice: {e}")
+                return {"CANCELLED"}
+            _VOICE.update(state="listening", proc=proc, wav=wav, rec=rec, t0=time.monotonic(), error="")
+            _STATE.update(error="", note="", dirty=True)
+            bpy.app.timers.register(_voice_tick, first_interval=0.2)
+            return {"FINISHED"}
+
     class COPT_OT_maris_answer(bpy.types.Operator):
         bl_idname, bl_label = "copt.maris_answer", "Answer Maris"
         bl_description = "Answer Maris's question with this choice: the request runs again with it"
@@ -432,7 +560,13 @@ else:
             col.separator()
             row = col.row(align=True)
             row.prop(wm, "copt_prompt", text="", icon="SHADERFX")
+            row.operator("copt.voice", text="", icon="REC" if _VOICE["state"] == "listening" else "SPEAKER",
+                         depress=_VOICE["state"] == "listening")
             row.operator("copt.open_editor", text="", icon="FILE_TEXT")
+            if _VOICE["state"] == "listening":
+                col.label(text="Listening... press the mic again when done", icon="REC")
+            elif _VOICE["state"] == "hearing":
+                col.label(text="Writing down what you said...", icon="SORTTIME")
             row = col.row(align=True)
             row.scale_y = 1.3
             row.operator("copt.run", text="Run", icon="PLAY")
@@ -558,6 +692,12 @@ else:
         model: bpy.props.StringProperty(name="model name", default="maris3d",
                                         description="the -m alias your llama-server was started with")
         ollama_url: bpy.props.StringProperty(name="Ollama URL", default="http://127.0.0.1:11434")
+        voice_whisper: bpy.props.StringProperty(
+            name="whisper.cpp program", subtype="FILE_PATH",
+            description="Voice input: whisper-cli (set by  maris3d install --voice)")
+        voice_model: bpy.props.StringProperty(
+            name="speech model", subtype="FILE_PATH",
+            description="Voice input: the whisper.cpp model file (set by  maris3d install --voice)")
         ollama_model: bpy.props.StringProperty(
             name="Ollama model (one)", default="maris3d-slm-blender-0.5b",
             description="The Ollama entry built from the base file plus the one adapter (Modelfile)")
@@ -605,6 +745,10 @@ else:
                 self.layout.prop(self, "ollama_url")
                 self.layout.prop(self, "ollama_model")
                 self.layout.prop(self, "ollama_parts_model")
+            vbox = self.layout.box()
+            vbox.label(text="Voice input (the mic button; offline)", icon="SPEAKER")
+            vbox.prop(self, "voice_whisper")
+            vbox.prop(self, "voice_model")
             build = self.layout.box()
             build.label(text="Build")
             build.prop(self, "placement")
@@ -637,7 +781,7 @@ else:
     # Maris switches live in the preferences so they persist (addon/show.py)
     COPT_preferences.__annotations__.update(show.pref_props())
 
-    _CLASSES = (COPT_OT_run, COPT_OT_maris_answer, COPT_OT_undo, COPT_OT_test, COPT_OT_open_editor, COPT_OT_open_log,
+    _CLASSES = (COPT_OT_run, COPT_OT_voice, COPT_OT_maris_answer, COPT_OT_undo, COPT_OT_test, COPT_OT_open_editor, COPT_OT_open_log,
                 COPT_PT_main, COPT_PT_log, COPT_preferences)
 
     def register():

@@ -1,10 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 """One request: place, edit by words, or plan first -> design what is missing -> build by code."""
 import json
+import os
+import re
 from dataclasses import dataclass, field
 
 from . import animate as AN
 from . import apply_change as AC
+from . import kit_words as KIT  # after apply_change: it imports kit_words
 from . import compile_plan as CP
 from . import describe_parts as PARTS
 from . import place as PLACE
@@ -33,6 +36,11 @@ def _reply_text(message):
         text = "<tool_call>\n" + json.dumps({"name": fn.get("name"), "arguments": args}) + "\n</tool_call>"
         break
     return text
+
+
+# a whole request that only asks to undo: code undoes the last request (the edit adapter has no word for it)
+UNDO = re.compile(r"^\s*((ok|okay|now|right)\s*,?\s+)?(please\s+)?(now\s+)?(undo( that| it| the last (change|step|one))?|go back( to how it was)?|revert( that| it)?|"
+                  r"take (that|it) back|put it back( the way it was| how it was)?)\s*,?\s*(now|please|for me)?\s*[.!]*\s*$", re.I)
 
 
 @dataclass
@@ -188,6 +196,11 @@ class Copilot:
             self._say(t("speaker.router"), t("say.router.exact_edit"))
         # a motion over time ("spin it once over one second", "a ball bouncing twice") is written by
         # code (animate.py): the edit adapter has no word for it and the compiler has the keyframes
+        if not exact and UNDO.match(request):
+            result = Result(mode="undo")
+            result.text = t("say.code.undone") if self.undo() else t("say.code.nothing_to_undo")
+            self._say(t("speaker.code"), result.text)
+            return result
         motions = [] if exact else AN.parse(request)
         if motions:
             animated = self.run_animate(request, motions)
@@ -259,10 +272,19 @@ class Copilot:
     def _change_fell_short(changed):
         """True when the word edit answer changed nothing and asked nothing: no calls, no
         infrastructure error, no error to show (an unreadable answer, a change that failed), and its kind is not a question / talk / look the panel must show."""
-        if changed.calls or changed.api_error or changed.errors:
+        if changed.calls or changed.api_error:
             return False
-        kind = ((getattr(changed, "changed", None) or {}).get("answer") or {}).get("kind")
-        return kind not in ("question", "talk", "look")
+        answer = (getattr(changed, "changed", None) or {}).get("answer")
+        if changed.errors:
+            # a failed change ends the turn with its error ("make the dragon red": there is no dragon; an
+            # answer that cannot be read), except an `add` that did not apply ("add a cushion on the seat" named
+            # a part as the thing): a new thing is a build, so the planner is asked (yardstick 0.2: 16 of 30 edit
+            # follow-ups ended in the edit with no calls and no reply)
+            if answer is None:
+                return False
+            dos = [c.get("do") for c in answer.get("changes") or [] if isinstance(c, dict)]
+            return answer.get("kind") == "change" and bool(dos) and all(d == "add" for d in dos)
+        return (answer or {}).get("kind") not in ("question", "talk", "look")
 
     def _apply_done(self, result, answer, done):
         """Run what a change answer came to (apply_change.Applied), read it back, fill `result`."""
@@ -299,16 +321,24 @@ class Copilot:
         from . import describe_scene as DS
         from . import edit_words as EW
         result = Result(mode="change")
+        stated = CP.exact_shape(request)
+        if stated is not None:           # every number is in the sentence: code reads it, no model is asked
+            answer = {"kind": "change", "changes": [stated]}
+            self._say(t("speaker.code"), t("say.code.exact_read", name=stated["name"]))
+            done = EW.apply_words(answer, self.session.specs, self.session.objects(), design=self._design_word)
+            return self._apply_done(result, answer, done)
         focus = ()
         for _ in range(EDIT_PASSES):
             self.turn += 1
+            kit = self.kit_words()
+            others = DS.others_line(self.session.objects(), self.session.specs) if kit else None
             text, notes = DS.edit_input(self.session.specs, request, focus=focus, last=self._last_built(),
-                                        clarified=clarified)
+                                        clarified=clarified, others=others)
             for note in notes:
                 self._say(t("speaker.code"), note)
             self._say(t("speaker.edit"), t("say.edit.asked"))
             try:
-                system = EW.EDIT_SYSTEM_EXACT
+                system = EW.EDIT_SYSTEM_EXACT + (KIT.KIT_SYSTEM if kit else "")
                 message = self.runtime.chat([{"role": "system", "content": system},
                                              {"role": "user", "content": text}], [],
                                             max_tokens=EDIT_TOKENS, role="edit")
@@ -670,3 +700,11 @@ class Copilot:
 
     def undo(self):
         return self.session.undo()
+
+    def kit_words(self):
+        """The 0.2.2 adapter was trained with the kit words (camera, light, text, retext, attach, aim, finish,
+        scene): every edit prompt carries KIT_SYSTEM and the input an Others line, the bytes it learned.
+        On unless MARIS3D_KIT_WORDS=0 or the runtime says kit_words=False (an older adapter)."""
+        if os.getenv("MARIS3D_KIT_WORDS") == "0":
+            return False
+        return bool(getattr(self.runtime, "kit_words", True))

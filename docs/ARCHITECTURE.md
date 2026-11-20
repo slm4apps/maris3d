@@ -1,7 +1,7 @@
 # Architecture (0.2)
 
 ## Pieces
-- **Model**: Qwen2.5-Coder-0.5B-Instruct fine-tuned (`maris3d-slm-blender-0.5b-q8_0.gguf`, 531 MB) with ONE LoRA adapter (`maris3d-slm-blender-0.5b-v0.2.0-lora-f16.gguf`, 12 MB). The adapter is
+- **Model**: Qwen2.5-Coder-0.5B-Instruct fine-tuned (`maris3d-slm-blender-0.5b-q8_0.gguf`, 531 MB) with ONE LoRA adapter (`maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf`, 23 MB). The adapter is
   switched per request. The model answers in a small word language: which things, how many, what they are made of, where they stand, how a thing's parts fit together, what a change does,
   or a reply to a question. It never writes a number, a tool call or Blender code.
 - **Copilot** (`src/maris3d/copilot`): no dependencies, no server, no Blender import. It asks the model for words, then code does the rest: `compile_plan.py` and `place.py` turn the words

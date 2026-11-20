@@ -4,6 +4,7 @@ import json
 import unittest
 
 from maris3d.copilot import edit_words as EW
+from maris3d.copilot import kit_words as KIT
 from maris3d.copilot.loop import EDIT_PASSES, Copilot
 from maris3d.copilot.session import Session
 
@@ -46,7 +47,7 @@ class WordsMode(unittest.TestCase):
         self.assertTrue(result.ok, result.errors)
         ask = cop.runtime.asked[0]
         self.assertEqual(ask["role"], "edit")
-        self.assertEqual(ask["messages"][0]["content"], EW.EDIT_SYSTEM_EXACT)
+        self.assertEqual(ask["messages"][0]["content"], EW.EDIT_SYSTEM_EXACT + KIT.KIT_SYSTEM)
         self.assertIn("Request: make the seat red", ask["messages"][1]["content"])
         self.assertEqual(len(cop.runtime.asked), 1)
 
@@ -153,3 +154,31 @@ class EditFallsThrough(unittest.TestCase):
         result = cop.run_auto("make the chair smooth")
         self.assertEqual(result.text, "Which chair do you mean?")
         self.assertEqual(result.calls, [])
+
+
+class FailedEditFallsThrough(unittest.TestCase):
+    """A failed `add` goes on to the planner; any other failed change ends the turn
+    with its error ("add a cushion on the seat" answered as add on object Seat: unknown thing)."""
+    PLAN = json.dumps({"kind": "build", "items": [{"id": "cushion_1", "thing": "cushion", "count": 1}]})
+
+    def copilot(self, replies):
+        sim = Sim()
+        cop = Copilot(Runtime(replies), Session(sim))
+        cop.run_items([{"recipe": "chair"}])
+        cop.runtime.asked.clear()
+        return cop, sim
+
+    def test_a_failed_add_asks_the_planner(self):
+        cop, sim = self.copilot([words({"do": "add", "object": "Seat", "what": "cushion", "on": "Seat"}), self.PLAN,
+                                 "not parts"])
+        result = cop.run_auto("add a cushion on the seat")
+        roles = [a["role"] for a in cop.runtime.asked]
+        self.assertEqual(roles[:2], ["edit", "planner"])
+        self.assertNotEqual(result.mode, "change")
+
+    def test_a_failed_recolor_ends_the_turn_with_its_error(self):
+        cop, sim = self.copilot([words({"do": "recolor", "object": "Dragon", "color": "red"})])
+        result = cop.run_auto("make the dragon red")
+        self.assertEqual(result.mode, "change")
+        self.assertEqual([a["role"] for a in cop.runtime.asked], ["edit"])
+        self.assertTrue(result.errors)

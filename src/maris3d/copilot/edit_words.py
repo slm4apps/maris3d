@@ -37,6 +37,7 @@ import re
 
 from . import apply_change as AC
 from . import colours as COL
+from . import kit_words as KIT
 from . import describe_parts as DP
 from . import place as PLACE
 from . import show as SHOW
@@ -179,6 +180,15 @@ def to_change(ch, specs, design=None):
     spec = specs.get(ch.get("object"))
     if do == "shape":                   # the numbers the user typed, copied: no word to look up
         return {k: v for k, v in ch.items() if k in ("do",) + SHAPE_ARGS}
+    if do in KIT.DOS:                   # 0.2.2 words: kit_words reads them; a noun for one thing becomes its name
+        from . import describe_scene as DS
+        out = dict(ch)
+        for key in ("looks_at", "over", "near", "to", "at"):
+            if isinstance(out.get(key), str) and out[key] not in specs:
+                names = DS.expand(out[key], specs)
+                if len(names) == 1:
+                    out[key] = names[0]
+        return out
     if do == "scale" and "to" in ch:
         out["to"] = ch["to"]
     elif do == "scale":
