@@ -8,9 +8,10 @@
 #   1. finds Python 3.9+ (python3)
 #   2. makes a private Python environment in ~/.local/share/maris3d/venv (no admin rights, no system packages touched)
 #   3. installs the maris3d package from this repository's release into it
-#   4. links the `maris3d` command into ~/.local/bin
+#   4. links the `maris3d` command into ~/.local/bin and adds that folder to your PATH (one line in ~/.zshrc or ~/.bashrc)
 #   5. runs `maris3d install`: the Blender add-on, the model files from Hugging Face (about 554 MB,
 #      sha256-checked) and llama-server if you have none, then a self-test in your Blender
+#   6. starts the local server, so Blender can use it straight away
 # Pass arguments after `sh -s --`, for example `... | sh -s -- --express` to answer every question with yes.
 # Remove everything again: `maris3d` files live in ~/.local/share/maris3d and ~/.cache/maris3d.
 set -eu
@@ -44,11 +45,20 @@ mkdir -p "$BIN_DIR"
 for cmd in maris3d maris3d-mcp maris3d-setup; do
   ln -sf "$HOME_DIR/venv/bin/$cmd" "$BIN_DIR/$cmd"
 done
+# put the command on PATH for new terminals: one line in the shell's start-up file, added once
 case ":$PATH:" in
   *":$BIN_DIR:"*) ;;
-  *) say "to type 'maris3d' anywhere, add $BIN_DIR to your PATH, for example:"
-     say "  echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.zshrc   (bash: ~/.bashrc)"
-     say "until then: $BIN_DIR/maris3d";;
+  *)
+    case "${SHELL:-}" in
+      */zsh)  RC="$HOME/.zshrc"; LINE='export PATH="$HOME/.local/bin:$PATH"' ;;
+      */fish) RC="$HOME/.config/fish/config.fish"; LINE='fish_add_path $HOME/.local/bin' ;;
+      *)      RC="$HOME/.bashrc"; LINE='export PATH="$HOME/.local/bin:$PATH"' ;;
+    esac
+    mkdir -p "$(dirname "$RC")"
+    if ! grep -qs '\.local/bin' "$RC" 2>/dev/null; then
+      printf '\n# added by the Maris3D installer\n%s\n' "$LINE" >> "$RC"
+      say "added $BIN_DIR to your PATH in $RC (open a new terminal to use 'maris3d' anywhere)"
+    fi;;
 esac
 
 say "setting up Blender and the model"
@@ -58,4 +68,11 @@ if [ ! -t 0 ] && (exec </dev/tty) 2>/dev/null; then
   "$HOME_DIR/venv/bin/maris3d" install "$@" </dev/tty
 else
   "$HOME_DIR/venv/bin/maris3d" install "$@"
+fi
+
+# start the local server so it is ready when Blender opens (it keeps running in the background)
+if "$HOME_DIR/venv/bin/maris3d" serve start; then
+  say "done. Open Blender, press N in the 3D View and pick the Maris3D Copilot tab."
+else
+  say "the server did not start; run 'maris3d doctor' to see what is missing."
 fi

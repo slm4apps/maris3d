@@ -5,7 +5,7 @@
 #
 # Same steps as install.sh: finds Python 3.9+, makes a private environment in
 # %LOCALAPPDATA%\maris3d\venv, installs the maris3d package from the release, then runs
-# `maris3d install` (the Blender add-on, the model files from Hugging Face, llama-server, a self-test).
+# `maris3d install` (the Blender add-on, the model files from Hugging Face, llama-server, a self-test), then starts the local server.
 $ErrorActionPreference = "Stop"
 
 $Version = "0.2.2"
@@ -53,3 +53,8 @@ Say "setting up Blender and the model"
 # No @args: under "irm | iex" there are none, and in nested PowerShell hosts $args can hold the caller's own values.
 & $VPy -m maris3d install
 if ($LASTEXITCODE -ne 0) { throw "maris3d: setup did not finish; run 'maris3d doctor' in a new terminal to see what is missing" }
+
+# start the local server so it is ready when Blender opens (it keeps running in the background)
+& $VPy -m maris3d serve start
+if ($LASTEXITCODE -eq 0) { Say "done. Open Blender, press N in the 3D View and pick the Maris3D Copilot tab." }
+else { Say "the server did not start; run 'maris3d doctor' in a new terminal to see what is missing." }
