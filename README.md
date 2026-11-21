@@ -32,7 +32,7 @@ You do not need to clone this repository. One command installs the Blender add-o
 |---|---|
 | `curl -fsSL https://raw.githubusercontent.com/slm4apps/maris3d/main/install.sh \| sh` | `powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/slm4apps/maris3d/main/install.ps1 \| iex"` |
 
-You need Python 3.9+ and Blender 4.2 or newer. The installer asks before each step; add `-s -- --express` after `sh` to say yes to everything.
+You need Python 3.9+ and Blender 4.2 or newer. The installer asks nothing, since running it is the yes, and it puts the command on your PATH and starts the local server. To be asked before each step, set `MARIS3D_ASK=1`; to leave your shell files alone, set `MARIS3D_NO_MODIFY_PATH=1`. You can read the script first: open the URL above in a browser.
 
 <details>
 <summary>Other ways to install (pip, an existing Ollama / llama-server, by hand)</summary>

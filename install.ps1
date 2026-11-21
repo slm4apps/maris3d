@@ -44,14 +44,17 @@ $Bin = Join-Path $HomeDir "bin"
 New-Item -ItemType Directory -Force $Bin | Out-Null
 Set-Content -Path (Join-Path $Bin "maris3d.cmd") -Encoding ASCII -Value "@`"$VPy`" -m maris3d %*"
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if (-not ($UserPath -split ";" | Where-Object { $_ -eq $Bin })) {
+if ($env:MARIS3D_NO_MODIFY_PATH) {
+    Say "left your PATH alone (MARIS3D_NO_MODIFY_PATH is set); run $Bin\maris3d.cmd"
+} elseif (-not ($UserPath -split ";" | Where-Object { $_ -eq $Bin })) {
     [Environment]::SetEnvironmentVariable("Path", "$UserPath;$Bin", "User")
     Say "added $Bin to your PATH (new terminals will find 'maris3d')"
 }
 
 Say "setting up Blender and the model"
 # No @args: under "irm | iex" there are none, and in nested PowerShell hosts $args can hold the caller's own values.
-& $VPy -m maris3d install
+$ask = if ($env:MARIS3D_ASK) { @() } else { @("--express") }   # running this is the yes; MARIS3D_ASK=1 asks first
+& $VPy -m maris3d install @ask
 if ($LASTEXITCODE -ne 0) { throw "maris3d: setup did not finish; run 'maris3d doctor' in a new terminal to see what is missing" }
 
 # start the local server so it is ready when Blender opens (it keeps running in the background)

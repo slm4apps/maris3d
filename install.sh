@@ -12,7 +12,8 @@
 #   5. runs `maris3d install`: the Blender add-on, the model files from Hugging Face (about 554 MB,
 #      sha256-checked) and llama-server if you have none, then a self-test in your Blender
 #   6. starts the local server, so Blender can use it straight away
-# Pass arguments after `sh -s --`, for example `... | sh -s -- --express` to answer every question with yes.
+# It asks nothing (running it is the yes). To be asked before each step: `... | MARIS3D_ASK=1 sh`.
+# To leave your shell files alone: `... | MARIS3D_NO_MODIFY_PATH=1 sh`. Read the script first: open the URL in a browser.
 # Remove everything again: `maris3d` files live in ~/.local/share/maris3d and ~/.cache/maris3d.
 set -eu
 
@@ -49,6 +50,9 @@ done
 case ":$PATH:" in
   *":$BIN_DIR:"*) ;;
   *)
+    if [ -n "${MARIS3D_NO_MODIFY_PATH:-}" ]; then
+      say "left your shell files alone (MARIS3D_NO_MODIFY_PATH is set); run $BIN_DIR/maris3d, or add $BIN_DIR to your PATH"
+    else
     case "${SHELL:-}" in
       */zsh)  RC="$HOME/.zshrc"; LINE='export PATH="$HOME/.local/bin:$PATH"' ;;
       */fish) RC="$HOME/.config/fish/config.fish"; LINE='fish_add_path $HOME/.local/bin' ;;
@@ -58,10 +62,13 @@ case ":$PATH:" in
     if ! grep -qs '\.local/bin' "$RC" 2>/dev/null; then
       printf '\n# added by the Maris3D installer\n%s\n' "$LINE" >> "$RC"
       say "added $BIN_DIR to your PATH in $RC (open a new terminal to use 'maris3d' anywhere)"
+    fi
     fi;;
 esac
 
 say "setting up Blender and the model"
+# this one command is the consent: no questions unless you pass your own arguments or set MARIS3D_ASK=1
+if [ $# -eq 0 ] && [ -z "${MARIS3D_ASK:-}" ]; then set -- --express; fi
 # reading answers from the terminal even when this script itself arrives through a pipe
 # (no terminal at all, as in CI: the installer sees that and asks nothing)
 if [ ! -t 0 ] && (exec </dev/tty) 2>/dev/null; then
