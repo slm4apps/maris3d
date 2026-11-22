@@ -66,6 +66,7 @@ Want one shape with your own numbers? Type them: `Add a cylinder named Cup at 0.
 - **Voice in many languages:** English only (the default) or a many-language speech model that detects the language as you speak (see below).
 - **The same model files as 0.2.2:** re-run the one-line install to get the new app; there is nothing new to download for the model.
 - **Maris keeps moving** after an error in one of her moves.
+- **Preview: Maris3D SLM Blender Tiny 0.02B.** A 24.5-million-parameter model trained from scratch, one 50 MB file, out as a preview on [Hugging Face](https://huggingface.co/slm4apps/Maris3D-Blender/tree/tiny-0.02b-preview) with its numbers on the model card. The app picks it up in a later release; the installer keeps installing the 0.5B.
 
 ### Voice input
 

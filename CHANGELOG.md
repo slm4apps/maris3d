@@ -3,6 +3,8 @@
 All notable changes. Release numbers are public versions (v0.1, v0.2 ...), kept as git tags and Hugging Face revisions.
 
 ## [0.3.0] - 2026-11-22
+- **Preview: Maris3D SLM Blender Tiny 0.02B** on Hugging Face (tag `tiny-0.02b-preview`): 24.5 M parameters, trained
+  from scratch, one 50 MB GGUF. Not used by the app yet; the installer keeps installing the 0.5B.
 - **The same model files as 0.2.2** (base and `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf`): update the app (re-run
   the one-line install); `maris3d update` has nothing new to fetch.
 - **Picture input (optional module).** A picture button next to the prompt: pick a picture, a small vision model

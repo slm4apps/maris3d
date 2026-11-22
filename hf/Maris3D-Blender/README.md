@@ -86,8 +86,43 @@ gore, horror props, standard 3D art fare) are planned like anything else. 0 of 1
 |---|---|
 | `maris3d-slm-blender-0.5b-q8_0.gguf` | The base (531 MB): the 0.1 weights, with Maris3D metadata. |
 | `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf` | The adapter (23 MB): plans, parts, word edits, talk. |
+| `maris3d-slm-blender-tiny-0.02b-f16.gguf` | **Preview:** Maris3D SLM Blender Tiny 0.02B (50 MB), a whole model trained from scratch. See below. |
 | `Modelfile` | The Ollama entry `maris3d-slm-blender-0.5b`, with the settings the app sends. |
 | `MANIFEST.json`, `SHA256SUMS` | The current file of each role with its sha256, read by `maris3d update`. |
+
+## Maris3D SLM Blender Tiny 0.02B (preview)
+
+A second, much smaller model: **24.5 million parameters, one 50 MB file**, about twenty times smaller than
+the 0.5B. It is not a cut-down copy of a bigger model. It was trained from scratch, first on Simple
+English Wikipedia, then on the Maris3D task data, and it answers in the same word language as the 0.5B.
+
+- Its own dictionary: 17,665 entries, 1,281 of them whole Blender words (sizes, places, colours,
+  finishes), one entry each. A standard 0.5B dictionary at this width would need 58 M parameters alone.
+- Llama architecture, 10 layers, width 384, context 2,048 tokens. One file, no adapter.
+- Speed: about **590 tokens a second** writing on a laptop CPU (Apple M3, 4 threads, no GPU), 7,400 a
+  second reading the prompt (`llama-bench`, this file).
+- The file is a weight average of three checkpoints (steps 5,670, 7,560 and 15,192), picked by scoring
+  every checkpoint on the job, not by held-out loss.
+
+Same test sets as the 0.5B (150 rows a set), share done right:
+
+| Set | Tiny 0.02B | Maris3D 0.5B (0.2.1) |
+|---|---|---|
+| Direct commands: camera, light, text, finish | **97.6 %** | 76.1 % |
+| Object designs that pass every check | **52.0 %** | 31.3 % |
+
+**Preview** means the file is out for people to try and measure; the Maris3D app picks it up in a
+later release, and until then the installer keeps installing the 0.5B. Run it on its own with
+llama.cpp:
+
+```sh
+llama-server -m maris3d-slm-blender-tiny-0.02b-f16.gguf --port 8080
+```
+
+The chat template inside the file maps the app's own system prompts to the jobs Tiny was trained on.
+Limits: it cannot copy exact numbers (the app reads those from the request in code), whole-scene
+plans and word edits are better on the 0.5B, its context is 2,048 tokens, and like the 0.5B it was not trained to refuse anything. Stage-one text: Simple English
+Wikipedia (`wikimedia/wikipedia`, `20231101.simple`), CC BY-SA 3.0 and GFDL.
 
 ## What is new in 0.2
 
