@@ -34,3 +34,13 @@ in 383 turns).
 through the 0.2 app. See [BENCHMARKS.md](BENCHMARKS.md).
 
 **Which route should I use: the app, llama-server, Ollama or MCP?** The app drives llama-server or Ollama; the MCP server wraps the same request for MCP clients. See [USAGE.md](USAGE.md).
+
+**Does it work in languages other than English?** It is trained on English requests. The Qwen base reads many
+languages: in a small test, simple requests in Spanish, French, German and Chinese built the right things in the right number 8 times in 12 in a small test; English is the most reliable. Voice
+input uses an English-only speech model by default; `maris3d install --voice --voice-lang multi` sets up a
+many-language one of the same size that detects the language as you speak.
+
+**Can it build from a picture?** Yes, with the optional picture input (`maris3d install --vision`). A small vision
+model (SmolVLM 500M) is asked a few short questions about the picture on your machine and closes after each one; the
+answers become a short request ("a red ball", "5 brown chairs") that Maris3D builds. It works best on a picture of one
+kind of thing; it does not copy a whole scene or its layout.

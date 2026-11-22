@@ -55,8 +55,8 @@ class Ground(unittest.TestCase):
 class Size(unittest.TestCase):
     def test_person_sized(self):
         self.assertAlmostEqual(show.person_height(1.6, 1.0), 1.0)    # within a third: keeps
-        self.assertAlmostEqual(show.person_height(3.0, 1.0), 1.95)
-        self.assertAlmostEqual(show.person_height(20.0, 1.0), 3.0)
+        self.assertAlmostEqual(show.person_height(3.0, 1.0), 1.8)
+        self.assertAlmostEqual(show.person_height(20.0, 1.0), 1.8)
         self.assertAlmostEqual(show.person_height(0.0, 1.3), 1.3)    # only ground: keeps
 
 

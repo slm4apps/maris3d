@@ -16,6 +16,12 @@ This product includes and is derived from third-party work. Full licence texts a
    - llama.cpp / ggml (MIT, Copyright 2023-2026 The ggml authors): GGUF conversion and inference.
    - mlx-lm (MIT): LoRA training and merging on Apple silicon.
    - Ollama: optional local runtime.
+   - Picture input (optional module): SmolVLM-500M-Instruct (Apache-2.0, Hugging Face) in the GGUF build published by
+     ggml-org, run with llama.cpp's llama-mtmd-cli. Not shipped in this repository or in the model repos: the
+     installer downloads it from Hugging Face and checks its sha256 when the user chooses picture input.
+   - Voice input (optional module): whisper.cpp (MIT, The ggml authors) and its ggml-base speech models (English only or
+     many languages, converted from OpenAI Whisper, MIT). Not shipped: the installer downloads them and checks their sha256
+     when the user chooses voice input.
 
 3. Blender: the code in src/maris3d/blender/ runs inside Blender and imports its Python API (bpy), so it is
    licensed GPL-3.0-or-later (LICENSES/GPL-3.0-or-later.txt).

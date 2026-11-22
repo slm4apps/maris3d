@@ -161,14 +161,14 @@ class UpdateFlow(unittest.TestCase):
         before = self.have()
         self.put(ONE_NEXT, b"one v3, another answer shape")
         os.remove(os.path.join(self.src, ONE))
-        U.write_manifest(self.src, [("base", "v1", BASE), ("one", "v3", ONE_NEXT)], "0.3.0", needs_app="0.3.0")
+        U.write_manifest(self.src, [("base", "v1", BASE), ("one", "v3", ONE_NEXT)], "0.4.0", needs_app="0.4.0")
         with self.assertRaises(ValueError) as raised:
             U.update(self.src, self.models, log=lambda *_: None)
         self.assertIn("update the program first", str(raised.exception))
         self.assertEqual(self.have(), before)                       # the old adapter still serves
         self.assertEqual(U.read_installed(self.models)["release"], "0.2.0")
-        self.assertEqual(U.read_manifest(self.src, app="0.3.0")["release"], "0.3.0")   # the new program takes it
-        self.assertEqual(U.read_manifest(self.src, app="0.3.1.dev0")["release"], "0.3.0")
+        self.assertEqual(U.read_manifest(self.src, app="0.4.0")["release"], "0.4.0")   # the new program takes it
+        self.assertEqual(U.read_manifest(self.src, app="0.4.1.dev0")["release"], "0.4.0")
 
     def test_an_answer_format_this_program_cannot_read_is_refused(self):
         U.write_manifest(self.src, [("base", "v1", BASE), ("one", "v9", ONE), ("parts", "v1", PARTS)], "0.2.5",

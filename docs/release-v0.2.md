@@ -35,7 +35,7 @@ Full table: [BENCHMARKS.md](BENCHMARKS.md).
 - **Lights, cameras and text are not in 0.2.** No lights, cameras or text from a plain request yet: the model has no words for them, so it builds a look-alike object (a lamp for "a light", a sign with a blank panel for text) or does nothing. An animation that names a camera or a light ("a camera circling the cube", "a light pulsing") gets a real one from the app's animation code. They are planned for a later version.
 - **A follow-up that adds a new thing to a scene that is already built often does nothing yet** (14 of 30 follow-up edits changed the scene in one test).
 - **It is not a general tool caller** and is not accurate enough to trust unattended: check the scene in the viewport.
-- English only; Blender 5.2 LTS verified; serve with temperature 0, a context of 8,192 and a repeat penalty of 1.05.
+- Trained on English requests, not English only (the Qwen base reads many languages); Blender 5.2 LTS verified; serve with temperature 0, a context of 8,192 and a repeat penalty of 1.05.
 
 More in [SAFETY-AND-LIMITATIONS.md](SAFETY-AND-LIMITATIONS.md).
 

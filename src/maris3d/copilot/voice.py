@@ -9,6 +9,7 @@ import os
 import re
 import shutil
 import sys
+from pathlib import Path
 
 RATE = 16000                 # whisper.cpp wants 16 kHz mono 16-bit WAV
 MAX_SECONDS = 30             # a prompt is a sentence or two; the recorder stops itself after this
@@ -67,9 +68,11 @@ def stop_line(recorder):
 
 
 def transcribe_command(whisper, model, wav, threads=None):
-    """whisper.cpp's command line: English, plain text, no timestamps, no progress."""
+    """whisper.cpp's command line: plain text, no timestamps, no progress. An English-only model (".en" in its
+    name) is told English; a many-language model detects the language."""
     threads = threads or max(1, min(8, (os.cpu_count() or 4) - 1))
-    return [str(whisper), "-m", str(model), "-f", str(wav), "-l", "en", "-nt", "-np",
+    lang = "en" if ".en" in Path(str(model)).name else "auto"
+    return [str(whisper), "-m", str(model), "-f", str(wav), "-l", lang, "-nt", "-np",
             "-t", str(threads)]
 
 

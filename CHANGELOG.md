@@ -2,6 +2,29 @@
 
 All notable changes. Release numbers are public versions (v0.1, v0.2 ...), kept as git tags and Hugging Face revisions.
 
+## [0.3.0] - 2026-11-22
+- **The same model files as 0.2.2** (base and `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf`): update the app (re-run
+  the one-line install); `maris3d update` has nothing new to fetch.
+- **Picture input (optional module).** A picture button next to the prompt: pick a picture, a small vision model
+  (SmolVLM-500M-Instruct, asked a few short questions, one run each, by llama.cpp's `llama-mtmd-cli`) describes it on
+  your machine; each run exits, then the description (after anything typed) runs like a typed prompt. If the machine
+  has no room for both models, the copilot's own server is stopped for those seconds and started again. MCP
+  `scene_request` takes an optional `image` path. `maris3d install --vision` sets it up; the weights are downloaded
+  from Hugging Face and sha256-checked, not shipped.
+- **Voice in many languages.** Voice input can use English only (the default, best for English) or a many-language
+  speech model of the same size that detects the language as you speak: the interactive install asks, or
+  `maris3d install --voice --voice-lang multi`.
+- **The one-line installers ask nothing** (running them is the yes): they set up the add-on, the model, voice and
+  picture input, put `maris3d` on your PATH and start the local server. `MARIS3D_ASK=1` asks before each step;
+  `MARIS3D_NO_MODIFY_PATH=1` leaves your shell files alone. A plain `maris3d install` still asks about each module.
+- **Maris keeps moving after a fault.** An error in one of her moves no longer stops her animation for the rest of
+  the session; that one move is dropped.
+- **Maris stays person-sized and on the ground.** She is at most 1.8 m tall beside a tall building, never stands on a
+  roof or a ceiling plate, and a greeting or hint line dissolves by itself after a few seconds (questions and
+  choices stay until answered). Her wand points out and up in every pose.
+- **Docs:** the model is trained on English requests; in a small test, simple requests in Spanish, French, German and Chinese built the right things in the right number 8 times in 12 in a small test;
+  SLM4Apps SceneBench 1.0 results in [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+
 ## [0.2.2] - 2026-11-20
 - **New adapter, `maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf`.** The base file is unchanged; update the app (re-run the one-line install), then `maris3d update`
   fetches the new adapter. It knows more change words: camera (looks at a thing, from front, back, left, right or

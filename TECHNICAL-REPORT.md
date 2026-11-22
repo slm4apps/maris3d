@@ -2,6 +2,8 @@
 
 Technical report for release v0.1. Every headline number below comes from a file — `release/CURRENT.json`, `docs/figures/` or the staged model card — named in an HTML comment next to it (view the Markdown source). The previous generation of models (fixed JSON tool format, 206-prompt benchmark) is described in a short section at the end; its scores are not comparable with the numbers in this report.
 
+What changed from 0.2 to 0.3.0 (words instead of numbers, one adapter, picture input, SLM4Apps SceneBench 1.0): [TECHNICAL-REPORT-ADDENDUM-0.3.md](TECHNICAL-REPORT-ADDENDUM-0.3.md).
+
 ## Abstract
 
 We fine-tune Qwen2.5-Coder-0.5B-Instruct with LoRA to answer a plain-English request with native Qwen tool calls from a fixed set of 26 Blender tools. A host runs the calls one at a time in an agent loop (up to 20 calls per user turn); a small copilot compiles each call into Blender Python, the script runs in Blender, and a per-request check decides whether the scene is right. On a 180-request benchmark the product (the build model served with the edit LoRA as an adapter: scale 0 on a fresh request, 1.0 on a correction) passes 28.3% of requests fully correct and 88.9% usable (one run of all 180); the single-file fallback with the edit LoRA merged in passes 19.4% and 77.2%; the untrained base passes 0.0%. The model needs 0.58 GB of memory, answers in about 0.6 s, and runs offline on an 8 GB Mac. The training rows are text-only tool-call conversations that were run and checked in headless Blender before being kept; the data is not released. We also report what does not work: multi-turn steering (0 of 30 sessions) and general tool calling (49.25% on BFCL v4 simple_python against 76.0% for an untuned 0.8B model).

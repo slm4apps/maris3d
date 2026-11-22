@@ -18,6 +18,8 @@ EFFECTS = ("type", "rise", "weave", "pop", "sparkle", "float", "dissolve", "fade
 # default effect per message kind (design 3b table)
 DEFAULT_EFFECT = {"say": "type", "question": "type", "intro": "rise", "about": "rise",
                   "done": "weave", "small_talk": "pop", "praise": "sparkle", "remove": "dissolve", "choice": "pop"}
+# seconds a line stays before it dissolves by itself (questions and choices stay until answered)
+LINE_LIFE = {"intro": 8.0, "say": 12.0, "about": 10.0, "small_talk": 8.0, "praise": 6.0, "done": 10.0}
 DURATION = {"type": 0.045, "rise": 0.9, "weave": 1.2, "pop": 0.45, "sparkle": 0.7, "float": 0.0,
             "dissolve": 0.7, "fade": 0.4}   # type: seconds per character
 
@@ -697,7 +699,7 @@ def person_height(tallest, current):
     off by more than a third, so she does not grow and shrink while a scene is built."""
     if tallest <= 0:
         return current
-    want = max(0.4, min(3.0, 0.65 * tallest))
+    want = max(0.4, min(1.8, 0.65 * tallest))   # a person: never a giant beside a tall building
     return want if abs(want - current) > current / 3 else current
 
 

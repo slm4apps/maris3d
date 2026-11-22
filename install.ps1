@@ -5,10 +5,11 @@
 #
 # Same steps as install.sh: finds Python 3.9+, makes a private environment in
 # %LOCALAPPDATA%\maris3d\venv, installs the maris3d package from the release, then runs
-# `maris3d install` (the Blender add-on, the model files from Hugging Face, llama-server, a self-test), then starts the local server.
+# `maris3d install` (the Blender add-on, the model files from Hugging Face, llama-server, the voice and picture
+# modules, a self-test), then starts the local server.
 $ErrorActionPreference = "Stop"
 
-$Version = "0.2.2"
+$Version = "0.3.0"
 $WheelUrl = "https://github.com/slm4apps/maris3d/releases/download/v$Version/maris3d-$Version-py3-none-any.whl"
 if ($env:MARIS3D_WHEEL) { $WheelUrl = $env:MARIS3D_WHEEL }   # a local wheel, for testing (as in install.sh)
 $HomeDir = if ($env:MARIS3D_HOME) { $env:MARIS3D_HOME } else { Join-Path $env:LOCALAPPDATA "maris3d" }

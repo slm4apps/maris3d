@@ -177,14 +177,23 @@ def _dims(box):
 def _grounds(height=None):
     """World boxes of the wide flat things she stands on (snow, a floor, a path)."""
     h = maris_height() if height is None else height
-    return [b for _n, b in _user_boxes() if core.is_ground(_dims(b), h)]
+    boxes = [b for _n, b in _user_boxes() if core.is_ground(_dims(b), h)]
+    if boxes:       # a "ground" higher than her own height above the lowest one is a ceiling, a roof plate
+        low = min(b[1][2] for b in boxes)     # or a snow-fall volume: she never stands up there (one was 18 m up)
+        boxes = [b for b in boxes if b[1][2] <= low + h]
+    return boxes
 
 
 def ground_z(x, y, fallback):
     """Her feet's height at (x, y): the top of the ground there, else `fallback` (the part's
     bottom, as before there was any ground)."""
     top = core.ground_top(_grounds(), x, y)
-    return fallback if top is None else top
+    if top is not None:
+        return top
+    box = _scene_box()        # no ground here: never higher than the scene's own floor (on a lamp top, a
+    if box is not None and fallback > box[0][2] + 0.5 * maris_height():   # roof or a sky part she would stand
+        return box[0][2]      # in the air; she stays on the ground and watches instead)
+    return fallback
 
 
 def _person_size():
@@ -1442,10 +1451,17 @@ def tick():
         _follow_tick()
         _pose_tick(now)
         for m in list(_S["msgs"]):
+            life = core.LINE_LIFE.get(m["name"][len(core.PREFIX):].rsplit("_", 1)[0])
+            if life and not m["removing"] and now - m["t0"] > life:
+                m.update(removing=True, effect="dissolve", t0=now)   # a greeting or hint does not stay forever
             _apply_effect(m, now)
     except ReferenceError:                     # undo / file load removed something: start clean
         _S["msgs"].clear()
         _S["anim"] = None
+    except Exception:                          # any other fault: drop the job it was on and keep the timer
+        import traceback                       # (an error here unregisters the timer and Maris freezes)
+        traceback.print_exc()
+        _C["cur"] = None
     return 1 / 30 if (_S["anim"] or _S["msgs"] or _QUEUE or len(_ACTIONS) or _C["on"] or carrying()) else 0.5
 
 

@@ -763,6 +763,9 @@ def build_actions(arm):
     for name in POSES:
         arm.animation_data.action = None
         for frame, over in SEQUENCES[name]:
+            r = (over.get("arm.R") or {}).get("rot")
+            if r and "wand" not in over:    # the wand turns against the arm: it points out and up in every pose
+                over = {**over, "wand": dict(rot=tuple(-v for v in r))}   # (thumbs_up, point, shrug, dance... were wrong)
             key(arm, frame, merged(over))
         act = arm.animation_data.action
         act.name = "maris_" + name

@@ -102,7 +102,22 @@ class Server:
     # ---- tools
     def scene_request(self, a):
         # one entry, plan first: place, word edit, or planner -> compile -> build (Copilot.run_auto)
+        image = a.get("image")
+        if image:
+            return self.picture_request(image, a.get("request") or "")
         return result_text(self.copilot().run_auto(_text_arg(a, "request")))
+
+    def picture_request(self, image, typed=""):
+        """Picture input (optional module): the vision model describes the picture once and exits, then the
+        words go through the normal flow. The path is a file on this machine; nothing is uploaded."""
+        from ..copilot import vision
+        if not isinstance(image, str) or not image.lower().endswith(vision.IMAGE_TYPES):
+            raise ValueError("image must be the path of a PNG, JPG, WEBP or BMP file on this machine")
+        text, why = vision.describe_alone(os.path.expanduser(image), os.path.expanduser("~/.cache/maris3d"))
+        if not text:
+            raise RuntimeError(f"picture: {why}")
+        request = vision.to_request(text, typed)
+        return f"picture: {text}\n" + result_text(self.copilot().run_auto(request))
 
     def run_calls(self, a):
         calls = a.get("calls")
@@ -142,7 +157,9 @@ class Server:
         return {
             "scene_request": (self.scene_request, "Build, change or place things in the scene from a short request, e.g. "
                               "'a table with four legs' or 'make the chair red'.",
-                              {"request": {"type": "string", "description": "The request, as the user wrote it."}}, ["request"], {}),
+                              {"request": {"type": "string", "description": "The request, as the user wrote it."},
+                               "image": {"type": "string", "description": "Optional: path of a picture on this machine "
+                                         "(PNG, JPG, WEBP, BMP) to build from; needs  maris3d install --vision."}}, [], {}),
             "run_calls": (self.run_calls, "Run native tool calls sent by a host model. Each call is {tool, ...args}; max 20.",
                           {"calls": {"type": "array", "items": {"type": "object"}}}, ["calls"], {}),
             "scene_info": (self.scene_info, "List scene objects as a compact text table.",

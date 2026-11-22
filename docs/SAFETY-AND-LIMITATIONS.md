@@ -19,7 +19,7 @@
 | No lights, cameras or text from a plain request: a look-alike object or nothing (an animation that names a camera or a light gets a real one); from 0.2.2 a change to a built scene can add a camera, a light or a text | [FAQ.md](FAQ.md) |
 | Not a general tool caller: it was trained for Blender scenes only (0.1 scored 49.25 % on BFCL v4 simple_python; 0.2 was not run on it) | [BENCHMARKS.md](BENCHMARKS.md) section 3 |
 | No sculpting, rigging, simulation, node-based shaders beyond the basics, or file import | [DSL.md](DSL.md) |
-| English only; Blender 5.2 LTS verified; a context of 8,192 tokens | [USAGE.md](USAGE.md) |
+| Trained on English requests (in a small test, simple requests in four other languages were built right 8 times in 12; voice input in English or, with `--voice-lang multi`, many languages); Blender 5.2 LTS verified; a context of 8,192 tokens | [USAGE.md](USAGE.md) |
 
 ## Responsible use
 Do not present generated scenes as manually crafted work if that matters in your setting, and check licences of any asset you combine with them.

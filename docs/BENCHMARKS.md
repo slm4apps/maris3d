@@ -1,4 +1,34 @@
-# Benchmarks: Maris3D 0.2
+# Benchmarks: Maris3D
+
+## SLM4Apps SceneBench 1.0 (0.3.0)
+
+SLM4Apps SceneBench 1.0 brings every check into one frozen set: 4,269 items in 10 areas, each with a gold answer,
+scored by outcome through the app's own code. The score of an area is the mean of its checks; the overall score is the
+mean of the areas a version has a result for. 0.3.0 ships the 0.2.2 model files, so its column is the 0.2.2 model
+with the 0.3.0 app.
+
+| Area (items) | 0.2.1 | 0.3.0 |
+|---|---|---|
+| Make one thing (1,212) | 68.9 | 72.2 |
+| Lay out a scene (1,031) | 22.2 | 29.6 |
+| Place exactly (204): built exactly through the app | 93.7 | 99.5 |
+| Change what is there (841) | 58.8 | 65.4 |
+| Camera, light, text, finish (377) | 6.8 | 96.6 |
+| Make it move (30) | 53.3 | 43.3 |
+| Blender tools (108) | 19.0 | 21.5 |
+| Talk (344) | 85.7 | 96.4 |
+| Picture to scene (24) | – | 66.7 |
+| **Overall** | **51.0** (8 areas) | **65.7** (9 areas) |
+
+- **Picture to scene** (new in 0.3.0): 24 fixed reference pictures (balls, trees, cars, a table, chairs, a snowman, a house, boxes, a bench, a lamp, a flower, a pumpkin, a dog, a vase and
+  primitives in several colours and counts). The picture step names what it shows, the model builds it; an item is
+  right when the built scene has the right thing, count and colour. Thing right 75.0 %, count 66.7 %, colour 79.2 %.
+- **Whole scenes** (98 items: the Christmas street and the station, request by request): the 51-request demo replay
+  through the 0.3.0 app in Blender, 0 failed requests.
+
+The sections below are the sets each version was scored on before SceneBench 1.0.
+
+## Earlier sets (Maris3D 0.2)
 
 Maris3D 0.2 answers in words and the app's code writes the Blender calls, so it is scored in two ways: held-out sets for each kind of answer (section 2), and the 180-request yardstick that
 0.1 was also scored on (section 1). Section 3 holds the external benchmarks, which were run for 0.1 only.

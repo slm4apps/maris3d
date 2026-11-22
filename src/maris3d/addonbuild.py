@@ -14,7 +14,7 @@ from pathlib import Path
 
 SRC = Path(__file__).resolve().parent  # src/maris3d
 EXT_NAME = "maris3d_copilot"
-VERSION = "0.2.1"
+VERSION = "0.3.0"
 
 _ADDON_FILES = ("__init__.py", "executor.py", "client.py", "summary.py", "selftest.py",
                  "routing.py", "show.py")
@@ -47,6 +47,7 @@ _VENDOR = {
     "copilot/trace.py": "trace.py",
     "copilot/show.py": "show.py",
     "copilot/voice.py": "voice.py",
+    "copilot/vision.py": "vision.py",
     "copilot/colours.py": "colours.py",
     "copilot/vocabulary.py": "vocabulary.py",
     "text/__init__.py": "text.py",
@@ -180,6 +181,16 @@ def configure_voice(blender_bin, whisper, model):
             % (EXT_NAME, str(whisper), str(model)))
     r = subprocess.run([blender_bin, "-b", "--python-expr", expr], capture_output=True, text=True, timeout=300)
     return r.returncode == 0 and "COPT-VOICE True" in (r.stdout + r.stderr)
+
+
+def configure_vision(blender_bin, mtmd_cli):
+    """Give the add-on the llama-mtmd-cli program `maris3d install` found for picture input (a GUI Blender may not
+    see the shell PATH). The model files stay in ~/.cache/maris3d/vision, where the add-on looks for them."""
+    expr = ("import bpy; p = bpy.context.preferences.addons['%s'].preferences; "
+            "p.vision_cli = %r; bpy.ops.wm.save_userpref(); print('COPT-VISION', bool(p.vision_cli))"
+            % (EXT_NAME, str(mtmd_cli)))
+    r = subprocess.run([blender_bin, "-b", "--python-expr", expr], capture_output=True, text=True, timeout=300)
+    return r.returncode == 0 and "COPT-VISION True" in (r.stdout + r.stderr)
 
 
 def enable_in_blender(blender_bin, module=EXT_NAME):

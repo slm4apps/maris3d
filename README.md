@@ -9,7 +9,7 @@ Type a sentence, get a scene. Offline, on your own machine.
 [![Release](https://img.shields.io/github/v/release/slm4apps/maris3d)](https://github.com/slm4apps/maris3d/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/slm4apps/maris3d/ci.yml?label=CI)](https://github.com/slm4apps/maris3d/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-![Version 0.2.2](https://img.shields.io/badge/version-0.2.2-informational)
+![Version 0.3.0](https://img.shields.io/badge/version-0.3.0-informational)
 [![Blender 4.2+](https://img.shields.io/badge/Blender-4.2%2B%20(5.2%20LTS%20tested)-orange)](https://www.blender.org)
 
 <img src="docs/figures/demo-street.jpg" alt="A snowy street with houses, a bus, a snowman and a Christmas tree, built in Blender by Maris3D" width="820">
@@ -18,7 +18,7 @@ Type a sentence, get a scene. Offline, on your own machine.
 
 <img src="assets/maris/pose-ninja.png" alt="Maris, the Maris3D mascot, a low-poly figure in a ninja outfit in a ready stance" width="150" align="right">
 
-Maris3D 0.2.2 is a 0.5B model and a Blender add-on. You describe a scene in a sentence. The model
+Maris3D 0.3.0 is a 0.5B model and a Blender add-on. You describe a scene in a sentence. The model
 answers in plain words: which things, how many, what they are made of and where they stand. The
 app turns those words into exact Blender tool calls, builds the scene, reads it back and checks it.
 The model never writes a number; code computes every size and position. No cloud, no account, no
@@ -26,7 +26,7 @@ API key: the model is one 531 MB base file plus a 23 MB adapter.
 
 ## Install
 
-You do not need to clone this repository. One command installs the Blender add-on, downloads the model from Hugging Face (about 554 MB, sha256-checked) and tests it in your Blender.
+You do not need to clone this repository. One command installs the Blender add-on, downloads the model from Hugging Face (about 554 MB, sha256-checked), sets up voice and picture input (about 60 MB and 546 MB more) and tests it in your Blender. Run it with `MARIS3D_ASK=1` to be asked about each module.
 
 | macOS / Linux | Windows (PowerShell) |
 |---|---|
@@ -60,6 +60,27 @@ Every answer shows what was built, then a one-line summary read from the real sc
 
 Want one shape with your own numbers? Type them: `Add a cylinder named Cup at 0.45, 0.15, 0.86 with a radius of 0.10 and a depth of 0.18.` The numbers are copied as typed.
 
+## What is new in 0.3.0
+
+- **Picture input** (optional): press the picture button, pick a picture; a small vision model answers a few short questions about it on your machine, then Maris3D builds a short request made from the answers (see below).
+- **Voice in many languages:** English only (the default) or a many-language speech model that detects the language as you speak (see below).
+- **The same model files as 0.2.2:** re-run the one-line install to get the new app; there is nothing new to download for the model.
+- **Maris keeps moving** after an error in one of her moves.
+
+### Voice input
+
+1. `maris3d install --voice` (the express install sets it up; the interactive install asks). It sets up whisper.cpp with a small speech model, English only (the default) or many languages (`--voice-lang multi`, or answer the question); speech is turned into text on your machine.
+2. You need a sound recorder: sox, ffmpeg, ALSA's `arecord`, or Windows' own.
+3. In the **Maris3D Copilot** tab press the mic button next to the prompt, say what to make or change, press it again. The words fill the prompt and run.
+
+### Picture input
+
+1. `maris3d install --vision` (the express install sets it up; the interactive install asks). It downloads SmolVLM-500M-Instruct (about 550 MB, sha256-checked) from Hugging Face; it is not part of the Maris3D package.
+2. In the **Maris3D Copilot** tab press the picture button next to the prompt and pick a PNG, JPG, WEBP or BMP. The vision model answers a few short questions about it (what it is, which objects, the main colour) on your machine, then a short request made from the answers (after anything you typed) runs like a typed prompt.
+
+![a picture of two trees, and the two trees Maris3D built from it with the picture button](docs/figures/picture-input.png)
+3. MCP hosts: `scene_request` takes an optional `image` path.
+
 ## What is new in 0.2.2
 
 - **A new adapter** (`maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf`, 23 MB) on the same base; update the app (re-run the one-line install), then `maris3d update` fetches only the adapter. It knows more change words: camera, light, text, retext, attach, aim, finish (bevel, subdivide, thicken, wire, mirror, array, taper, bend, twist) and scene (background colour, length, frame rate). The app tells the model which cameras, lights and texts are in the scene; `MARIS3D_KIT_WORDS=0` turns the new words off.
@@ -67,12 +88,6 @@ Want one shape with your own numbers? Type them: `Add a cylinder named Cup at 0.
 - **Undo by voice or text:** "undo", "undo that", "go back" or "revert it" undoes the last request.
 - **Voice input**, on your machine (see below).
 - **Maris** behaves more like she lives in the scene: sized like a person, carries parts in from the edge of the ground, keeps facing what she placed, runs to a chair before she sits, carries a whole group when a request moves it. **Follow Maris** (off by default) lets the view drift after her.
-
-### Voice input
-
-1. `maris3d install --voice` (the interactive install asks too). It sets up whisper.cpp with a small English speech model; speech is turned into text on your machine.
-2. You need a sound recorder: sox, ffmpeg, ALSA's `arecord`, or Windows' own.
-3. In the **Maris3D Copilot** tab press the mic button next to the prompt, say what to make or change, press it again. The words fill the prompt and run.
 
 ## What is new in 0.2
 
@@ -98,7 +113,7 @@ Want one shape with your own numbers? Type them: `Add a cylinder named Cup at 0.
 ```
 
 Nothing is ever asked to write or run free-form code. More in
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the [0.1 technical report](TECHNICAL-REPORT.md).
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the [0.1 technical report](TECHNICAL-REPORT.md) with its [0.2 to 0.3.0 addendum](TECHNICAL-REPORT-ADDENDUM-0.3.md).
 
 <details>
 <summary>MCP server and other Blender MCPs</summary>
@@ -121,6 +136,8 @@ scenes, replayed through the 0.2.2 app, build **203 of 204 exactly** (right thin
 | ![room build](demo/gifs/build-room.gif) | ![play park build](demo/gifs/build-park.gif) |
 | **the tree, the snowman, the gift, the bus and the people** | **the family, with Maris** |
 | ![Christmas street build](demo/gifs/build-christmas.gif) | ![the family, part by part, then turned 360](demo/gifs/maris-group-family.gif) |
+| **the train station, request by request** | **Maris by the things of the demo street, one outfit each** |
+| ![train station build](demo/gifs/build-station.gif) | ![Maris turning by each thing of the demo street](demo/gifs/maris-spin.gif) |
 
 ## Meet Maris
 

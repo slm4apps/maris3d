@@ -18,6 +18,11 @@ build 188 exactly (right thing, place and size).
 ![park](build-park.gif)
 ![Christmas street](build-christmas.gif)
 
+The train station, built request by request (screen recording, Blender 5.2, recorded with 0.1, sped up 1.6x):
+[build-station.gif](build-station.gif).
+
+![train station](build-station.gif)
+
 ## The finished scene (rendered in Blender, the scene's own camera)
 
 | file | what |
@@ -27,6 +32,11 @@ build 188 exactly (right thing, place and size).
 ![hero street](hero-street.gif)
 
 ## Maris and the things she built
+
+[maris-spin.gif](maris-spin.gif): Maris turns 360 by each thing of the demo street, in a new outfit each time (rendered in
+Blender, sped up 2x).
+
+![Maris by the things of the demo street](maris-spin.gif)
 
 Maris, the add-on's mascot, beside groups of things from the street (rendered from the shipped
 `assets/maris/maris.blend`): every part appears in turn while she weaves, then a 360 turn while she

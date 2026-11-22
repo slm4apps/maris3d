@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """maris3d — one command installs the Copilot add-on into Blender and wires the local model.
 
-  maris3d install [--model q8_0|one-lora|all] [--from DIR] [--skip-model] [--express]
+  maris3d install [--model q8_0|one-lora|all] [--from DIR] [--skip-model] [--express] [--voice] [--voice-lang en|multi] [--vision]
   maris3d serve start|stop|status
   maris3d update [--from DIR-or-URL]      new adapter versions, without a new download of the base
   maris3d doctor
@@ -29,7 +29,7 @@ from .runtimes.detect import detect
 CACHE = Path.home() / ".cache" / "maris3d"
 SETTINGS = Path.home() / ".config" / "maris3d" / "settings.json"
 HF_BASE = "https://huggingface.co/slm4apps/Maris3D-Blender"
-HF_TAG = "v0.2.2"   # install reads this release's tagged files; `maris3d update` reads main (MANIFEST needs_app guards it)
+HF_TAG = "v0.3.0"   # install reads this release's tagged files; `maris3d update` reads main (MANIFEST needs_app guards it)
 MODELS = {"q8_0": "maris3d-slm-blender-0.5b-q8_0.gguf",                    # the base everything rides on
           "one-lora": "maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf",           # outline plan, word edit, talk
           "parts-lora": "maris3d-slm-blender-parts-lora-f16.gguf"}       # parts designer add-on
@@ -153,12 +153,15 @@ def download_llama_server():
 
 
 # Voice input: one tested whisper.cpp build (binaries for Linux and Windows; macOS uses Homebrew's
-# whisper-cpp, or builds from the same source tag) and one small English model, sha256-pinned.
+# whisper-cpp, or builds from the same source tag) and one small speech model, sha256-pinned: English only (the
+# default, best for English) or many languages (the person picks; whisper detects the language).
 WHISPER_BUILD = "b5454"
 WHISPER_SRC_TAG = "v1.9.5"
-WHISPER_MODEL = "ggml-base.en-q5_1.bin"
-WHISPER_MODEL_SHA = "4baf70dd0d7c4247ba2b81fafd9c01005ac77c2f9ef064e00dcf195d0e2fdd2f"
-WHISPER_MODEL_URL = f"https://huggingface.co/ggerganov/whisper.cpp/resolve/main/{WHISPER_MODEL}"
+WHISPER_MODELS = {
+    "en": ("ggml-base.en-q5_1.bin", "4baf70dd0d7c4247ba2b81fafd9c01005ac77c2f9ef064e00dcf195d0e2fdd2f"),
+    "multi": ("ggml-base-q5_1.bin", "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898"),
+}
+WHISPER_MODEL, WHISPER_MODEL_SHA = WHISPER_MODELS["en"]
 
 
 def _whisper_asset():
@@ -236,27 +239,28 @@ def download_whisper():
     raise RuntimeError("no whisper.cpp build for this machine (install whisper-cpp, or cmake + git)")
 
 
-def download_whisper_model():
-    """The small English speech model, sha256-checked."""
-    dest = CACHE / "whisper" / WHISPER_MODEL
-    if dest.exists() and hashlib.sha256(dest.read_bytes()).hexdigest() == WHISPER_MODEL_SHA:
+def download_whisper_model(lang="en"):
+    """The small speech model, sha256-checked: "en" (English only) or "multi" (many languages)."""
+    name, sha = WHISPER_MODELS[lang]
+    dest = CACHE / "whisper" / name
+    if dest.exists() and hashlib.sha256(dest.read_bytes()).hexdigest() == sha:
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
-    body = _get(WHISPER_MODEL_URL, timeout=1200)
+    body = _get(f"https://huggingface.co/ggerganov/whisper.cpp/resolve/main/{name}", timeout=1200)
     got = hashlib.sha256(body).hexdigest()
-    if got != WHISPER_MODEL_SHA:
-        raise RuntimeError(t("cli.error.sha_mismatch", name=WHISPER_MODEL, got=got[:16], want=WHISPER_MODEL_SHA[:16]))
+    if got != sha:
+        raise RuntimeError(t("cli.error.sha_mismatch", name=name, got=got[:16], want=sha[:16]))
     tmp = dest.with_suffix(".part")
     tmp.write_bytes(body)
     tmp.rename(dest)
     return dest
 
 
-def setup_voice():
-    """{"whisper": path, "model": path} or None (and says why)."""
+def setup_voice(lang="en"):
+    """{"whisper": path, "model": path} or None (and says why). lang: "en" or "multi" (WHISPER_MODELS)."""
     from .copilot import voice
     try:
-        prog, model = download_whisper(), download_whisper_model()
+        prog, model = download_whisper(), download_whisper_model(lang)
     except Exception as e:
         _say(t("cli.install.voice_failed", error=e))
         return None
@@ -264,6 +268,23 @@ def setup_voice():
     if voice.find_recorder() is None:
         _say(t("cli.install.voice_no_recorder"))
     return {"whisper": str(prog), "model": str(model)}
+
+
+def setup_vision():
+    """Picture input (optional module): the SmolVLM 500M files, sha256-checked, from Hugging Face (or an earlier
+    Hugging Face download on this machine), and llama-mtmd-cli. {"dir": path, "cli": path} or None (and says why)."""
+    from .copilot import vision
+    exe = vision.find_mtmd_cli(CACHE)   # before the 546 MB download: without the runner the files are no use
+    if not exe:
+        _say(t("cli.install.vision_no_cli"))
+        return None
+    try:
+        d = vision.download_vision(CACHE, lambda url: _get(url, timeout=1200), say=_say, local=vision.hf_cache_dirs())
+    except Exception as e:
+        _say(t("cli.install.vision_failed", error=e))
+        return None
+    _say(t("cli.install.vision_ready", path=d))
+    return {"dir": str(d), "cli": exe}
 
 
 def selftest(blender_bin, live=False):
@@ -362,9 +383,13 @@ def cmd_install(args):
         else:
             _say(t("cli.install.model_skipped"))
     voice_cfg = None
-    want_voice = getattr(args, "voice", False) or (live and _ask_yes(t("cli.install.ask_voice"), default=False))
+    # voice and picture input are optional modules: express (or no terminal) sets both up, a person is asked
+    want_voice = getattr(args, "voice", False) or not live or _ask_yes(t("cli.install.ask_voice"), default=False)
     if want_voice:
-        voice_cfg = setup_voice()
+        lang = getattr(args, "voice_lang", None)
+        if lang is None:   # a person picks; express and scripted installs keep English
+            lang = "multi" if live and not _ask_yes(t("cli.install.ask_voice_lang"), default=True) else "en"
+        voice_cfg = setup_voice(lang)
     else:
         _say(t("cli.install.voice_skipped"))
     if voice_cfg:
@@ -372,6 +397,17 @@ def cmd_install(args):
             addonbuild.configure_voice(blender, voice_cfg["whisper"], voice_cfg["model"])
         except Exception as e:
             _say(t("cli.install.voice_failed", error=e))
+    vision_cfg = None
+    want_vision = getattr(args, "vision", False) or not live or _ask_yes(t("cli.install.ask_vision"), default=False)
+    if want_vision:
+        vision_cfg = setup_vision()
+    else:
+        _say(t("cli.install.vision_skipped"))
+    if vision_cfg:
+        try:
+            addonbuild.configure_vision(blender, vision_cfg["cli"])
+        except Exception as e:
+            _say(t("cli.install.vision_failed", error=e))
     ready, out = None, ""
     want_test = True if not live else _ask_yes(t("cli.install.ask_selftest"))
     if want_test:
@@ -392,7 +428,7 @@ def cmd_install(args):
     SETTINGS.parent.mkdir(parents=True, exist_ok=True)
     SETTINGS.write_text(json.dumps({"blender": str(blender), "blender_version": ver,
                                     "addon_dir": str(ext), "runtime": runtime or {},
-                                    "voice": voice_cfg or {}}, indent=2))
+                                    "voice": voice_cfg or {}, "vision": vision_cfg or {}}, indent=2))
     _say(t("cli.install.settings_saved", path=SETTINGS))
     if ready is None:
         _say(t("cli.install.done_untested"))
@@ -435,6 +471,7 @@ def _start_one(binary, gguf, lora, port, pid_path, log, parts=None):
             return None
         raise
     pid_path.write_text(str(proc.pid))
+    pid_path.with_suffix(".cmd").write_text(json.dumps(cmd))   # picture input stops and restarts it from this
     for _ in range(60):
         time.sleep(0.5)
         try:
@@ -461,6 +498,7 @@ def _stop_one(pid_path, port):
     try:
         os.kill(int(pid_path.read_text().strip()), 15)
         pid_path.unlink(missing_ok=True)
+        pid_path.with_suffix(".cmd").unlink(missing_ok=True)
         _say(t("cli.serve.stopped", port=port))
         return True
     except Exception as e:
@@ -598,6 +636,9 @@ def main(argv=None):
     i.add_argument("--from", dest="from_dir", help=t("cli.help.from_dir"))
     i.add_argument("--skip-model", action="store_true", help=t("cli.help.skip_model"))
     i.add_argument("--voice", action="store_true", help=t("cli.help.voice"))
+    i.add_argument("--voice-lang", dest="voice_lang", choices=["en", "multi"], default=None,
+                   help=t("cli.help.voice_lang"))
+    i.add_argument("--vision", action="store_true", help=t("cli.help.vision"))
     i.add_argument("--express", action="store_true",
                    help=t("cli.help.express"))
     i.set_defaults(fn=cmd_install)

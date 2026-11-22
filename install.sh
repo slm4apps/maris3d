@@ -10,14 +10,15 @@
 #   3. installs the maris3d package from this repository's release into it
 #   4. links the `maris3d` command into ~/.local/bin and adds that folder to your PATH (one line in ~/.zshrc or ~/.bashrc)
 #   5. runs `maris3d install`: the Blender add-on, the model files from Hugging Face (about 554 MB,
-#      sha256-checked) and llama-server if you have none, then a self-test in your Blender
+#      sha256-checked), llama-server if you have none, the voice and picture modules (about 60 MB and 546 MB,
+#      sha256-checked), then a self-test in your Blender
 #   6. starts the local server, so Blender can use it straight away
 # It asks nothing (running it is the yes). To be asked before each step: `... | MARIS3D_ASK=1 sh`.
 # To leave your shell files alone: `... | MARIS3D_NO_MODIFY_PATH=1 sh`. Read the script first: open the URL in a browser.
 # Remove everything again: `maris3d` files live in ~/.local/share/maris3d and ~/.cache/maris3d.
 set -eu
 
-VERSION="0.2.2"
+VERSION="0.3.0"
 WHEEL_URL="${MARIS3D_WHEEL:-https://github.com/slm4apps/maris3d/releases/download/v${VERSION}/maris3d-${VERSION}-py3-none-any.whl}"
 HOME_DIR="${MARIS3D_HOME:-$HOME/.local/share/maris3d}"
 BIN_DIR="$HOME/.local/bin"

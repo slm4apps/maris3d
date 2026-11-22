@@ -431,6 +431,81 @@ else:
             bpy.app.timers.register(_voice_tick, first_interval=0.2)
             return {"FINISHED"}
 
+    # ---- picture input: pick a picture; a small vision model describes it once and exits; the words run ---------
+    _PICTURE = {"state": "idle", "text": None, "error": "", "typed": ""}
+
+    def _picture_worker(path, cli):
+        """Worker thread: one llama-mtmd-cli run (the vision model loads, describes, exits)."""
+        from pathlib import Path
+        from .vendor import vision
+        # our model server is stopped while the vision model runs and started again before the words are sent
+        try:
+            text, why = vision.describe_alone(path, Path.home() / ".cache" / "maris3d", exe=cli or None)
+        except Exception as e:   # e.g. the model server could not be started again: never leave the button stuck
+            text, why = "", str(e)
+        _PICTURE["text"], _PICTURE["error"] = (text or ""), ("" if text else f"Picture: {why}")
+
+    def _picture_tick():
+        """Main thread: the description is in -> it fills the prompt (after anything typed) and it runs."""
+        if _PICTURE["state"] != "reading":
+            return None
+        if _PICTURE["text"] is None:
+            _STATE["dirty"] = True
+            return 0.3
+        from .vendor import vision
+        text, _PICTURE["text"] = _PICTURE["text"], None
+        _PICTURE["state"] = "idle"
+        _STATE["dirty"] = True
+        if not text:
+            _STATE.update(error=_PICTURE["error"] or "Picture: no description")
+            return None
+        bpy.context.window_manager.copt_prompt = vision.to_request(text, _PICTURE["typed"])
+        if not _STATE["running"]:
+            try:
+                bpy.ops.copt.run()
+            except Exception as e:
+                _STATE.update(error=f"Picture: {e}")
+        return None
+
+    class COPT_OT_picture(bpy.types.Operator):
+        bl_idname, bl_label = "copt.picture", "Build from a picture"
+        bl_description = ("Picture input: pick a picture. A small vision model describes it on your machine, "
+                          "then closes; the description (after anything you typed) runs like a typed prompt")
+
+        filepath: bpy.props.StringProperty(subtype="FILE_PATH")
+        filter_image: bpy.props.BoolProperty(default=True, options={"HIDDEN"})
+        filter_folder: bpy.props.BoolProperty(default=True, options={"HIDDEN"})
+
+        @classmethod
+        def poll(cls, context):
+            return _PICTURE["state"] == "idle" and not _STATE["running"]
+
+        def invoke(self, context, event):
+            context.window_manager.fileselect_add(self)
+            return {"RUNNING_MODAL"}
+
+        def execute(self, context):
+            import os
+            import threading
+            from pathlib import Path
+            from .vendor import vision
+            prefs = bpy.context.preferences.addons[__package__].preferences
+            cache = Path.home() / ".cache" / "maris3d"
+            cli = prefs.vision_cli.strip() or vision.find_mtmd_cli(cache)
+            if not vision.vision_ready(cache) or not cli or not os.path.isfile(cli):
+                msg = "Picture input is not set up: run  maris3d install --vision"
+                self.report({"WARNING"}, msg)
+                _STATE.update(error=msg, dirty=True)
+                return {"CANCELLED"}
+            if not os.path.isfile(self.filepath) or not self.filepath.lower().endswith(vision.IMAGE_TYPES):
+                self.report({"WARNING"}, "Pick a PNG, JPG, WEBP or BMP picture")
+                return {"CANCELLED"}
+            _PICTURE.update(state="reading", text=None, error="", typed=_current_prompt(context) or "")
+            _STATE.update(error="", note="", dirty=True)
+            threading.Thread(target=_picture_worker, args=(self.filepath, cli), daemon=True).start()
+            bpy.app.timers.register(_picture_tick, first_interval=0.3)
+            return {"FINISHED"}
+
     class COPT_OT_maris_answer(bpy.types.Operator):
         bl_idname, bl_label = "copt.maris_answer", "Answer Maris"
         bl_description = "Answer Maris's question with this choice: the request runs again with it"
@@ -562,7 +637,10 @@ else:
             row.prop(wm, "copt_prompt", text="", icon="SHADERFX")
             row.operator("copt.voice", text="", icon="REC" if _VOICE["state"] == "listening" else "SPEAKER",
                          depress=_VOICE["state"] == "listening")
+            row.operator("copt.picture", text="", icon="IMAGE_DATA")
             row.operator("copt.open_editor", text="", icon="FILE_TEXT")
+            if _PICTURE["state"] == "reading":
+                col.label(text="Looking at the picture...", icon="SORTTIME")
             if _VOICE["state"] == "listening":
                 col.label(text="Listening... press the mic again when done", icon="REC")
             elif _VOICE["state"] == "hearing":
@@ -698,6 +776,9 @@ else:
         voice_model: bpy.props.StringProperty(
             name="speech model", subtype="FILE_PATH",
             description="Voice input: the whisper.cpp model file (set by  maris3d install --voice)")
+        vision_cli: bpy.props.StringProperty(
+            name="llama-mtmd-cli program", subtype="FILE_PATH",
+            description="Picture input: the llama.cpp program that runs the vision model (set by  maris3d install)")
         ollama_model: bpy.props.StringProperty(
             name="Ollama model (one)", default="maris3d-slm-blender-0.5b",
             description="The Ollama entry built from the base file plus the one adapter (Modelfile)")
@@ -749,6 +830,9 @@ else:
             vbox.label(text="Voice input (the mic button; offline)", icon="SPEAKER")
             vbox.prop(self, "voice_whisper")
             vbox.prop(self, "voice_model")
+            pbox = self.layout.box()
+            pbox.label(text="Picture input (the picture button; offline)", icon="IMAGE_DATA")
+            pbox.prop(self, "vision_cli")
             build = self.layout.box()
             build.label(text="Build")
             build.prop(self, "placement")
@@ -781,7 +865,7 @@ else:
     # Maris switches live in the preferences so they persist (addon/show.py)
     COPT_preferences.__annotations__.update(show.pref_props())
 
-    _CLASSES = (COPT_OT_run, COPT_OT_voice, COPT_OT_maris_answer, COPT_OT_undo, COPT_OT_test, COPT_OT_open_editor, COPT_OT_open_log,
+    _CLASSES = (COPT_OT_run, COPT_OT_voice, COPT_OT_picture, COPT_OT_maris_answer, COPT_OT_undo, COPT_OT_test, COPT_OT_open_editor, COPT_OT_open_log,
                 COPT_PT_main, COPT_PT_log, COPT_preferences)
 
     def register():

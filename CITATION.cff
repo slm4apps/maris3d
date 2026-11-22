@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use Maris3D, please cite the technical report."
 title: "Maris3D SLM Blender 0.5B: a small language model that builds and edits Blender scenes"
 type: software
-version: 0.2.0
-date-released: 2026-11-18
+version: 0.3.0
+date-released: 2026-11-22
 license: Apache-2.0
 repository-code: "https://github.com/slm4apps/maris3d"
 abstract: >-

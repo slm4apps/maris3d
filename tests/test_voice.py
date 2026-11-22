@@ -42,9 +42,25 @@ class Recorder(unittest.TestCase):
 
 class Transcribe(unittest.TestCase):
     def test_command(self):
-        cmd = voice.transcribe_command("/w/whisper-cli", "/w/m.bin", "/t/a.wav", threads=4)
-        self.assertEqual(cmd[:7], ["/w/whisper-cli", "-m", "/w/m.bin", "-f", "/t/a.wav", "-l", "en"])
+        cmd = voice.transcribe_command("/w/whisper-cli", "/w/m.en.bin", "/t/a.wav", threads=4)
+        self.assertEqual(cmd[:7], ["/w/whisper-cli", "-m", "/w/m.en.bin", "-f", "/t/a.wav", "-l", "en"])
         self.assertIn("-nt", cmd)
+
+    def test_language_follows_the_model(self):
+        """an English-only model is told English; the many-language model detects the language"""
+        en = voice.transcribe_command("w", "/c/whisper/ggml-base.en-q5_1.bin", "a.wav", threads=2)
+        multi = voice.transcribe_command("w", "/c/whisper/ggml-base-q5_1.bin", "a.wav", threads=2)
+        self.assertEqual(en[en.index("-l") + 1], "en")
+        self.assertEqual(multi[multi.index("-l") + 1], "auto")
+
+    def test_both_voice_models_are_pinned(self):
+        from maris3d import cli
+        self.assertEqual(set(cli.WHISPER_MODELS), {"en", "multi"})
+        for name, sha in cli.WHISPER_MODELS.values():
+            self.assertTrue(name.startswith("ggml-") and name.endswith(".bin"))
+            self.assertEqual(len(sha), 64)
+        self.assertIn(".en", cli.WHISPER_MODELS["en"][0])
+        self.assertNotIn(".en", cli.WHISPER_MODELS["multi"][0])
 
     def test_clean(self):
         self.assertEqual(voice.clean_transcript(" Add a red cube named Box.\n"), "Add a red cube named Box")

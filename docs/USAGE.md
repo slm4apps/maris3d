@@ -16,7 +16,9 @@ standard library.
 
 ```sh
 maris3d install          # the add-on into Blender, the base and the adapter (sha256-checked), a self-test
-maris3d install --voice  # also voice input: whisper.cpp and a 60 MB English speech model (sha256-checked)
+maris3d install --voice  # also voice input: whisper.cpp and a 60 MB speech model (sha256-checked)
+maris3d install --voice --voice-lang multi  # voice in many languages (detected as you speak); default en
+maris3d install --vision # also picture input: a 550 MB vision model (SmolVLM-500M, sha256-checked)
 maris3d serve start      # one llama-server on port 9931: the base with the adapter loaded
 maris3d serve status     # what is running
 maris3d doctor           # checks Blender, the add-on, the server and the settings

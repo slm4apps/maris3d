@@ -1,6 +1,6 @@
 {
  "schema": "maris3d-files/1",
- "release": "0.2.2",
+ "release": "0.3.0",
  "files": [
   {
    "role": "base",

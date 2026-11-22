@@ -36,7 +36,7 @@ model-index:
       name: usable scene %
 ---
 
-# Maris3D SLM Blender 0.5B (v0.2.2)
+# Maris3D SLM Blender 0.5B (v0.3.0)
 
 *A 0.5B model that builds Blender scenes from plain words, offline.*
 
@@ -108,6 +108,12 @@ gore, horror props, standard 3D art fare) are planned like anything else. 0 of 1
   more change words: cameras, lights, texts, aim, attach, finishes (bevel, mirror, array, twist ...) and scene settings.
   Same base file; update the app (re-run the one-line install), then `maris3d update` fetches only the adapter (23 MB). The app reads exact adds ("Add a cube named Path
   at -1, 0, 0 with a scale of 0.4, 2.0, 0.01") by code, and adds voice input, undo and a livelier Maris.
+- **0.3.0:** The same model files as 0.2.2; the app is new. Optional **picture input**: `maris3d install --vision`
+  adds a small vision model (SmolVLM 500M, downloaded from Hugging Face, not part of these files); pick a picture and
+  Maris3D builds from it. Voice input in English or, with `--voice-lang multi`, in many languages. On SLM4Apps SceneBench 1.0 (4,269 items in
+  10 areas) 0.3.0 scores 65.7 overall; see Results.
+
+![a picture of two trees, and the two trees Maris3D built from it with the picture button](figures/picture-input.png)
 
 ## See it build
 
@@ -132,6 +138,7 @@ hair and pose each time; every part appears in turn, then a 360 turn.
 |---|---|
 | ![the tree and the snowman, with Maris](figures/maris-group-treeandsnowman.gif) | ![the gifts at the door, with Maris](figures/maris-group-giftsatthedoor.gif) |
 | ![the kitchen, with Maris](figures/maris-group-kitchen.gif) | ![the park friends, with Maris](figures/maris-group-parkfriends.gif) |
+| ![the train station, request by request](figures/build-station.gif) | ![Maris by the things of the demo street](figures/maris-spin.gif) |
 
 ## Ways to run it
 
@@ -141,11 +148,28 @@ hair and pose each time; every part appears in turn, then a 360 turn.
 - **llama-server by hand:**
   `llama-server -m maris3d-slm-blender-0.5b-q8_0.gguf --lora maris3d-slm-blender-0.5b-v0.2.2-lora-f16.gguf --lora-init-without-apply --jinja -c 8192`
 - **Ollama:** `ollama create maris3d-slm-blender-0.5b -f Modelfile` (that is `:latest`, the name the app uses;
-  `ollama cp maris3d-slm-blender-0.5b maris3d-slm-blender-0.5b:0.2.2` keeps this version by name), then pick Ollama in the app's settings.
+  `ollama cp maris3d-slm-blender-0.5b maris3d-slm-blender-0.5b:0.3.0` keeps this version by name), then pick Ollama in the app's settings.
 
 Serve with temperature 0, a context of 8,192 and repeat penalty 1.05 (the app sends these on every request).
 
 ## Results
+
+### SLM4Apps SceneBench 1.0 (0.3.0)
+
+One frozen set of 4,269 items in 10 areas, each with a gold answer, scored by outcome through the app's own code.
+The strongest areas are below; the overall score is the mean of all 9 areas 0.3.0 has a result for.
+
+| Area (items) | 0.3.0 |
+|---|---|
+| Make one thing (1,212) | 72.2 |
+| Place exactly (204): built exactly through the app | 99.5 |
+| Change what is there (841) | 65.4 |
+| Camera, light, text, finish (377) | 96.6 |
+| Talk (344) | 96.4 |
+| Picture to scene (24 reference pictures): thing, count and colour right | 66.7 |
+| **Overall** (mean of 9 areas) | **65.7** |
+
+Every area, side by side with 0.2.1: [BENCHMARKS](https://github.com/slm4apps/maris3d/blob/main/docs/BENCHMARKS.md).
 
 ### Held-out sets
 
